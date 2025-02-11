@@ -27,7 +27,14 @@
   
   <h5>3. Content Fetching and Display</h5>
   <li>Fetching and displaying text from various APIs: </li>
-  <li>News (incorporate different viewpoints by offering user</li>
+  <li>News (incorporate different viewpoints by offering user suggestions of an article with an opposing claim) </li>
+  <li>Books</li>
+  <li>Poems</li>
+  <li>Scholarly Articles/Research</li>
+
+  <h5>4. Searching and Filtering Mechanisms</h5>
+  <li>Ability to filter each type of media (news, books, poems, research, etc.) into different topics</li>
+  <li>Create tagging system for each type of media that allows for keyword searching </li>
 </div> 
  
 
