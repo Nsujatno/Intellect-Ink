@@ -6,9 +6,7 @@
 <p align="center"><b>The app has 3 main goals:</b></p>
 
 <div align="center">
-  <ol>
-    <li>Improve daily reading</li>
-    <li>Improve critical thinking with access to diverse viewpoints</li>
-    <li>Promote daily learning</li>
-  </ol>
+    <li>1. Improve daily reading</li>
+    <li>2. Improve critical thinking with access to diverse viewpoints</li>
+    <li>3. Promote daily learning</li>
 </div>
