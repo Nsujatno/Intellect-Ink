@@ -19,14 +19,15 @@
   <li>Login</li>
   <li>Password Recovery </li>
  
-  <h5>Daily Reading Tracker</h5>
+  <h5>2. Daily Reading Tracker</h5>
   <li>Track total number of minutes read daily, monthly, and yearly</li>
   <li>Custom goal setting mechanism</li>
   <li>Data visualization of reading minutes</li>
   <li>Reminders and notifications</li>
   
-  <h5>Content Fetching and Display</h5>
-  <li></li>
+  <h5>3. Content Fetching and Display</h5>
+  <li>Fetching and displaying text from various APIs: </li>
+  <li>News (incorporate different viewpoints by offering user</li>
 </div> 
  
 
