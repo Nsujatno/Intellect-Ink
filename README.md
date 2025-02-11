@@ -78,10 +78,12 @@
 
 <h1 align="center">Milestones</h1>
 
-
+<h1 align="center">Competition</h1>
+<h4>&nbsp;&nbsp;&nbsp;&nbsp; Bookly</h4>
+<li></li>
 <h1 align="center">Other Reources/Guides</h1>
 
-<h1 align="center">Meet the team!</h1>
+<h1 align="center">Meet the team</h1>
 
 <h4>Project Manager:</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; Tamanna Khurana</p>
