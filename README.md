@@ -79,8 +79,10 @@
 <h1 align="center">Milestones</h1>
 
 <h1 align="center">Competition</h1>
-<h4>&nbsp;&nbsp;&nbsp;&nbsp; Bookly</h4>
-<li></li>
+<h4>Bookly</h4>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;  Including daily reading, bookmarks, and progress tracking but is only limited towards books</li>
+<li>&nbsp;&nbsp;&nbsp;&nbsp; Does not have a pop quiz or trivia feature</li>
+<li>&nbsp;&nbsp;&nbsp;&nbsp; Targeted towards promoting reading but not necessarily towards daily learning </li>
 <h1 align="center">Other Reources/Guides</h1>
 
 <h1 align="center">Meet the team</h1>
