@@ -5,7 +5,6 @@
 The app has 3 main goals: 
 1. Improve daily reading
 2. Improve critical thinking with access to diverse viewpoints
-3. Promote daily learning
-</p>
+3. Promote daily learning </p>
 
 
