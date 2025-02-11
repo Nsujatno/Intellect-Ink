@@ -26,7 +26,7 @@
   <li>Reminders and notifications</li>
   
   <h5>3. Content Fetching and Display</h5>
-  <li>Fetching and displaying text from various APIs: </li>
+  <p>Fetching and displaying text from various APIs: </p>
   <li>News (incorporate different viewpoints by offering user suggestions of an article with an opposing claim) </li>
   <li>Books</li>
   <li>Poems</li>
