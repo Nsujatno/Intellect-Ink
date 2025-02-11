@@ -79,9 +79,6 @@
 <h1 align="center">Milestones</h1>
 
 
-
-<h1 align="center">Tech Stack</h1>
-
 <h1 align="center">Other Reources/Guides</h1>
 
 <h1 align="center">Meet the team!</h1>
