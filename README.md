@@ -84,13 +84,13 @@
 <h1 align="center">Meet the team!</h1>
 
 <h4>Project Manager:</h4>
-<p>Tamanna Khurana</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Tamanna Khurana</p>
 
 <h4>Industry Mentor:</h4>
-<p>Judith Liem</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Judith Liem</p>
 
 <h4>Team Members:</h4>
-<p style="margin-left: 20px;">Jazmin Gutierrez</p>
-<p style="margin-left: 20px;">Alexander Chan</p>
-<p style="margin-left: 20px;">Afra Ibnat</p>
-<p style="margin-left: 20px;">Nathan Sujatno</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Jazmin Gutierrez</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Alexander Chan</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Afra Ibnat</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Nathan Sujatno</p>
