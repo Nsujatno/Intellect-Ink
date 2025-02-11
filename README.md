@@ -11,16 +11,16 @@
     3. Promote daily learning
 </div>
 
-<h1>MVP Features</h1>
+<h1 align="center">MVP Features</h1>
 
-<h1>Stretch Goals</h1>
+<h1 align="center">Stretch Goals</h1>
 
-<h1>Tech Stack</h1>
+<h1 align="center">Tech Stack</h1>
 
-<h1>Milestones</h1>
+<h1 align="center">Milestones</h1>
 
-<h1>Tech Stack</h1>
+<h1 align="center">Tech Stack</h1>
 
-<h1>Other Reources/Guides</h1>
+<h1 align="center">Other Reources/Guides</h1>
 
-<h1>Meet the team!</h1>
+<h1 align="center">Meet the team!</h1>
