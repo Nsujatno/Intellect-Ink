@@ -59,17 +59,17 @@
 
 
 <h1 align="center">Tech Stack</h1>
- <h3>Wireframing: Figma</h3>
+ <h2>Wireframing: Figma</h2>
  <li>Collaborative design tool for creating the app’s UI</li>
  <li>Allows clear visualization of app’s components, page navigation with prototyping, and planning user flow</li>
 
- <h3>IDE: Android Studio or VSCode</h3>
+ <h2>IDE: Android Studio or VSCode</h2>
  <li>Android studio includes the emulator</li>
  <li>VSCode offers plug ins for flutter, dart, compatible with react native</li>
 
- <h3>Emulator: Android Studio</h3>
+ <h2>Emulator: Android Studio</h2>
 
- <h3>MERN Tech Stack:</h3>
+ <h2>MERN Tech Stack:</h2>
  <h4>Frontend: React Native</h4>
  <h4>Backend: Node JS and Express</h4>
  <h4>Programming Language: Javascript</h4>
