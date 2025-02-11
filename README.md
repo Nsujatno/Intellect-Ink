@@ -12,6 +12,13 @@
 </div>
 
 <h1 align="center">MVP Features</h1>
+
+<div align="center">
+  <li>User Authentication </li>
+  <li></li>
+  <li></li>
+</div> 
+
 User Authentication 
 Sign up 
 Log in
