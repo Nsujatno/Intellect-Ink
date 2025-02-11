@@ -82,3 +82,6 @@
 <h1 align="center">Other Reources/Guides</h1>
 
 <h1 align="center">Meet the team!</h1>
+
+<h4>Project Manager:</h4>
+<p>Tamanna Khurana</p>
