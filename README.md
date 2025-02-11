@@ -14,25 +14,25 @@
 <h1 align="center">MVP Features</h1>
 
 <div>
-  <h5>1. User Authenticaion</h5>
+  <h4>1. User Authenticaion</h5>
   <li>Sign up</li>
   <li>Login</li>
   <li>Password Recovery </li>
  
-  <h5>2. Daily Reading Tracker</h5>
+  <h4>2. Daily Reading Tracker</h5>
   <li>Track total number of minutes read daily, monthly, and yearly</li>
   <li>Custom goal setting mechanism</li>
   <li>Data visualization of reading minutes</li>
   <li>Reminders and notifications</li>
   
-  <h5>3. Content Fetching and Display</h5>
+  <h4>3. Content Fetching and Display</h5>
   <p>Fetching and displaying text from various APIs: </p>
   <li>News (incorporate different viewpoints by offering user suggestions of an article with an opposing claim) </li>
   <li>Books</li>
   <li>Poems</li>
   <li>Scholarly Articles/Research</li>
 
-  <h5>4. Searching and Filtering Mechanisms</h5>
+  <h4>4. Searching and Filtering Mechanisms</h5>
   <li>Ability to filter each type of media (news, books, poems, research, etc.) into different topics</li>
   <li>Create tagging system for each type of media that allows for keyword searching </li>
 </div> 
