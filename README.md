@@ -69,11 +69,11 @@
 
  <h4>Emulator: Android Studio</h4>
 
- <h4>MERN Route:</h4>
- <p>Frontend: React Native</p>
- <p>Backend: Node JS and Express</p>
- <p>Programming Language: Javascript</p>
- <p>Database: MongoDB</p>
+ <h3>MERN Tech Stack:</h3>
+ <h4>Frontend: React Native</h4>
+ <h4>Backend: Node JS and Express</h4>
+ <h4>Programming Language: Javascript</h4>
+ <h4>Database: MongoDB</h4>
  
 
 <h1 align="center">Milestones</h1>
