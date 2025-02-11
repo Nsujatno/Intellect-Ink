@@ -49,11 +49,11 @@
   <li>Adding a favorites section to any form of media that the user has bookmarked</li>
   <li>Gamification to display achievements</li>
 
-  <h4>Audiobook feature</h4>
+  <h4>3. Audiobook feature</h4>
    <li>Improving accessibility and allowing users to listen to media on the go</li>
    <li>Adding ambient background music for users during their reading time</li>
  
-  <h4>Educational daily quizzes</h4>
+  <h4>4. Educational daily quizzes</h4>
    <li>Either 1 daily trivia quiz for the user or a short pop quiz/trivia after the user finished reading a certain form of media</li>
 </div> 
 
@@ -80,9 +80,20 @@
 
 <h1 align="center">Competition</h1>
 <h4>Bookly</h4>
-<li>&nbsp;&nbsp;&nbsp;&nbsp;  Including daily reading, bookmarks, and progress tracking but is only limited towards books</li>
-<li>&nbsp;&nbsp;&nbsp;&nbsp; Does not have a pop quiz or trivia feature</li>
-<li>&nbsp;&nbsp;&nbsp;&nbsp; Targeted towards promoting reading but not necessarily towards daily learning </li>
+<li>Including daily reading, bookmarks, and progress tracking but is only limited towards books</li>
+<li>Does not have a pop quiz or trivia feature</li>
+<li>Targeted towards promoting reading but not necessarily towards daily learning </li>
+
+
+<h4>Headway</h4>
+<li>Includes book summaries for the main ideas of books, microlearning sessions, and self growth challenges but is only limited towards books and quotes</li>
+<li>Does not include the entire book, only has summaries</li>
+<li>Lack of ambient sounds to play while reading</li>
+
+<h4>Mindsnap</h4>
+<li>Includes fun facts, articles of different categories, and educational quizzes but does not include books</li>
+<li>Focuses on learning lessons or improving knowledge on a topic instead of staying up to date with the news and gaining different perspectives</li>
+
 <h1 align="center">Other Reources/Guides</h1>
 
 <h1 align="center">Meet the team</h1>
