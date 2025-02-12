@@ -104,91 +104,110 @@
 </ul>
 
 <h1 align="center">⋆˚.⋆ 🗓️ Milestones 🗓️ ⋆˚.⋆</h1>
-<h3>Week 1:</h3>
-<ul>
+
+<details>
+  <summary><h3>Week 1</h3></summary>
+  <ul>
     <li>Decide Tech Stack</li>
     <li>Finalize MVPs and stretch goals according to team members</li>
     <li>Assign roles to each member (Frontend, Backend, Full Stack based on experience and interest)</li>
     <li>Download necessary software</li>
     <li><b>Frontend:</b> Begin wireframing on Figma</li>
     <li><b>Backend:</b> Practice user authentication, watch tutorials to gain familiarity</li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 2:</h3>
-<ul>
+<details>
+  <summary><h3>Week 2</h3></summary>
+  <ul>
     <li><b>Frontend:</b>
-        <ul>
-            <li>Finish wireframing</li>
-            <li>Begin coding pages (at least have login/sign-up done so backend can begin integration)</li>
-        </ul>
+      <ul>
+        <li>Finish wireframing</li>
+        <li>Begin coding pages (at least have login/sign-up done so backend can begin integration)</li>
+      </ul>
     </li>
     <li><b>Backend:</b>
-        <ul>
-            <li>Practice making API calls</li>
-            <li>Experiment with data storage in Firebase Realtime Database</li>
-        </ul>
+      <ul>
+        <li>Practice making API calls</li>
+        <li>Experiment with data storage in Firebase Realtime Database</li>
+      </ul>
     </li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 3:</h3>
-<ul>
+<details>
+  <summary><h3>Week 3</h3></summary>
+  <ul>
     <li><b>Frontend:</b>
-        <ul>
-            <li>Continue coding pages</li>
-            <li>Ensure all pages are routed</li>
-            <li>Aim to have main pages (Home, Reading Tracker, Profile) completed</li>
-        </ul>
+      <ul>
+        <li>Continue coding pages</li>
+        <li>Ensure all pages are routed</li>
+        <li>Aim to have main pages (Home, Reading Tracker, Profile) completed</li>
+      </ul>
     </li>
     <li><b>Backend:</b>
-        <ul>
-            <li>Integrate Login/Sign-up/Password management with Firebase</li>
-        </ul>
+      <ul>
+        <li>Integrate Login/Sign-up/Password management with Firebase</li>
+      </ul>
     </li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 4:</h3>
-<ul>
+<details>
+  <summary><h3>Week 4</h3></summary>
+  <ul>
     <li><b>Backend:</b>
-        <ul>
-            <li>Begin integrating APIs</li>
-            <li>Fetch, cache, and display books/articles/poems</li>
-        </ul>
+      <ul>
+        <li>Begin integrating APIs</li>
+        <li>Fetch, cache, and display books/articles/poems</li>
+      </ul>
     </li>
     <li><b>Frontend:</b>
-        <ul>
-            <li>Incorporate data visualization widgets into the application</li>
-        </ul>
+      <ul>
+        <li>Incorporate data visualization widgets into the application</li>
+      </ul>
     </li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 5:</h3>
-<ul>
+<details>
+  <summary><h3>Week 5</h3></summary>
+  <ul>
     <li><b>Backend:</b> Integrate user data with data visualizations</li>
     <li><b>Frontend:</b> Begin working on presentation and script</li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 6:</h3>
-<ul>
+<details>
+  <summary><h3>Week 6</h3></summary>
+  <ul>
     <li><b>Backend:</b> Buffer week for any roadblocks and allow more time for integration</li>
     <li><b>Frontend:</b> All pages should be fully coded by now</li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 7:</h3>
-<ul>
+<details>
+  <summary><h3>Week 7</h3></summary>
+  <ul>
     <li>Work on stretch goals (if time permits)</li>
     <li><b>Backend:</b> Refine searching and filtering mechanisms</li>
     <li><b>Frontend:</b> Finalize presentation and script, begin practicing</li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 8:</h3>
-<ul>
+<details>
+  <summary><h3>Week 8</h3></summary>
+  <ul>
     <li>Practice and prepare for presentations</li>
-</ul>
+  </ul>
+</details>
 
-<h3>Week 9:</h3>
-<ul>
+<details>
+  <summary><h3>Week 9</h3></summary>
+  <ul>
     <li>Polish presentation and gather feedback</li>
-</ul>
+  </ul>
+</details>
 
 
 <h1 align="center">⋆˚.⋆ ⚔️ Competition ⚔️ ⋆˚.⋆</h1>
