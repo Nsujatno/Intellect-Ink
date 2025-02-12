@@ -105,8 +105,8 @@
 
 <h1 align="center">⋆˚.⋆ 🗓️ Milestones 🗓️ ⋆˚.⋆</h1>
 
-<details>
-  <summary><h3>Week 1</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 1</h3></summary>
   <ul>
     <li>Decide Tech Stack</li>
     <li>Finalize MVPs and stretch goals according to team members</li>
@@ -117,8 +117,8 @@
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 2</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 2</h3></summary>
   <ul>
     <li><b>Frontend:</b>
       <ul>
@@ -135,8 +135,8 @@
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 3</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 3</h3></summary>
   <ul>
     <li><b>Frontend:</b>
       <ul>
@@ -153,8 +153,8 @@
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 4</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 4</h3></summary>
   <ul>
     <li><b>Backend:</b>
       <ul>
@@ -170,24 +170,24 @@
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 5</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 5</h3></summary>
   <ul>
     <li><b>Backend:</b> Integrate user data with data visualizations</li>
     <li><b>Frontend:</b> Begin working on presentation and script</li>
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 6</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 6</h3></summary>
   <ul>
     <li><b>Backend:</b> Buffer week for any roadblocks and allow more time for integration</li>
     <li><b>Frontend:</b> All pages should be fully coded by now</li>
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 7</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 7</h3></summary>
   <ul>
     <li>Work on stretch goals (if time permits)</li>
     <li><b>Backend:</b> Refine searching and filtering mechanisms</li>
@@ -195,19 +195,20 @@
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 8</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 8</h3></summary>
   <ul>
     <li>Practice and prepare for presentations</li>
   </ul>
 </details>
 
-<details>
-  <summary><h3>Week 9</h3></summary>
+<details style="margin-bottom: 5px;">
+  <summary><h3 style="display: inline;">Week 9</h3></summary>
   <ul>
     <li>Polish presentation and gather feedback</li>
   </ul>
 </details>
+
 
 
 <h1 align="center">⋆˚.⋆ ⚔️ Competition ⚔️ ⋆˚.⋆</h1>
