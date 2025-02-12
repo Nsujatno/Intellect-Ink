@@ -11,7 +11,7 @@
     3. Promote daily learning
 </div>
 
-<h1 align="center">⋆⭒˚.⋆ ⚙️ MVP Features ⚙️ ⋆⭒˚.⋆</h1>
+<h1 align="center">⋆˚.⋆ ⚙️ MVP Features ⚙️ ⋆˚.⋆</h1>
 
 <div>
  <h4>1. User Authenticaion</h5>
