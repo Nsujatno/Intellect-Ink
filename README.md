@@ -82,7 +82,7 @@
     <li><a href="https://developer.android.com/studio?gad_source=1&gclid=CjwKCAiAh6y9BhBREiwApBLHC-xvDFPr-0W_RWyko142vI-RG-3ckHmZUMsWtPA1YKVEUgCmSLbeVhoCAqsQAvD_BwE&gclsrc=aw.ds" target="_blank">Android Studio Installation</a></li>
 </ul>
 
-<h3>MERN Tech Stack:</h3>
+<h2>MERN Techstack: </h2>
 
 <h4>Frontend: React Native</h4>
 <ul>
