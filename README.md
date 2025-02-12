@@ -208,6 +208,19 @@
 <li>Focuses on learning lessons or improving knowledge on a topic instead of staying up to date with the news and gaining different perspectives</li>
 
 <h1 align="center">Other Reources/Guides</h1>
+<h2>Possible APIs</h2>
+<ul>
+    <li><b>Google Books API</b> - <a href="https://developers.google.com/books" target="_blank">Google Books API Documentation</a></li>
+    <li><b>Open Library API</b> - <a href="https://openlibrary.org/developers/api" target="_blank">Open Library API Documentation</a></li>
+    <li><b>Core API</b> - <a href="https://www.coreapi.org/" target="_blank">Core API Documentation</a></li>
+    <li><b>Semantic Scholar API</b> - <a href="https://www.semanticscholar.org/product/api" target="_blank">Semantic Scholar API Documentation</a></li>
+    <li><b>Poemist API</b> - <a href="https://poemist.github.io/poemist-apidoc/" target="_blank">Poemist API Documentation</a></li>
+    <li><b>PoetryDB API</b> - <a href="https://poetrydb.org/index.html" target="_blank">PoetryDB API Documentation</a></li>
+    <li><b>News API</b> - <a href="https://newsapi.ai/gad_source=1&gclid=CjwKCAiAp4O8BhAkEiwAqv2UqMQZ9VIdF6AsYXiwFHBtvKl9NIGLpDdEk2k1jeE__HkZgZoj20xqGRoCOpQQAvD_BwE" target="_blank">News API Documentation</a></li>
+</ul>
+
+
+
 
 <h1 align="center">Meet the team</h1>
 
