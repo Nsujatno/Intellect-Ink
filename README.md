@@ -38,8 +38,7 @@
 </div> 
  
 
-
-<h1 align="center">Stretch Goals</h1>
+<h1 align="center">⋆˚.⋆ 🎯 Stretch Goals 🎯 ⋆˚.⋆</h1>
 
 <div>
  <h4>1. Discussion forums</h5>
@@ -57,7 +56,8 @@
    <li>Either 1 daily trivia quiz for the user or a short pop quiz/trivia after the user finished reading a certain form of media</li>
 </div> 
 
-<h1 align="center">Tech Stack</h1>
+
+<h1 align="center">⋆˚.⋆ 💻 Tech Stack 💻 ⋆˚.⋆</h1>
 
 <h3>Wireframing: Figma</h3>
 <ul>
@@ -103,7 +103,7 @@
     <li><a href="https://www.mongodb.com/try/download/community" target="_blank">MongoDB Download</a></li>
 </ul>
 
-<h1 align="center">Milestones</h1>
+<h1 align="center">⋆˚.⋆ 🗓️ Milestones 🗓️ ⋆˚.⋆</h1>
 <h3>Week 1:</h3>
 <ul>
     <li>Decide Tech Stack</li>
@@ -191,7 +191,7 @@
 </ul>
 
 
-<h1 align="center">Competition</h1>
+<h1 align="center">⋆˚.⋆ ⚔️ Competition ⚔️ ⋆˚.⋆</h1>
 <h4>Bookly</h4>
 <li>Including daily reading, bookmarks, and progress tracking but is only limited towards books</li>
 <li>Does not have a pop quiz or trivia feature</li>
@@ -207,7 +207,8 @@
 <li>Includes fun facts, articles of different categories, and educational quizzes but does not include books</li>
 <li>Focuses on learning lessons or improving knowledge on a topic instead of staying up to date with the news and gaining different perspectives</li>
 
-<h1 align="center">Other Reources/Guides</h1>
+
+<h1 align="center">⋆˚.⋆ 📓 Other Resources/Guides 📓 ⋆˚.⋆</h1>
 <h2>Possible APIs:</h2>
 <ul>
     <li><b>Google Books API</b> - <a href="https://developers.google.com/books" target="_blank">Google Books API Documentation</a></li>
@@ -239,7 +240,7 @@
 
 
 
-<h1 align="center">Meet the Team</h1>
+<h1 align="center">⋆˚.⋆ 👥 Meet the Team 👥 ⋆˚.⋆</h1>
 
 <h3>⭐ Project Manager:</h3>
 <ul>
@@ -251,7 +252,7 @@
     <li><b>Judith Liem</b></li>
 </ul>
 
-<h3>👥 Team Members:</h3>
+<h3>🪼 Team Members:</h3>
 <ul>
     <li><b>Jazmin Gutierrez</b></li>
     <li><b>Alexander Chan</b></li>
