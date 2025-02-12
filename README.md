@@ -239,18 +239,23 @@
 
 
 
+<h1 align="center">Meet the Team</h1>
 
+<h3>⭐ Project Manager:</h3>
+<ul>
+    <li><b>Tamanna Khurana</b></li>
+</ul>
 
-<h1 align="center">Meet the team</h1>
+<h3>⭐ Industry Mentor:</h3>
+<ul>
+    <li><b>Judith Liem</b></li>
+</ul>
 
-<h4>Project Manager:</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; Tamanna Khurana</p>
+<h3>👥 Team Members:</h3>
+<ul>
+    <li><b>Jazmin Gutierrez</b></li>
+    <li><b>Alexander Chan</b></li>
+    <li><b>Afra Ibnat</b></li>
+    <li><b>Nathan Sujatno</b></li>
+</ul>
 
-<h4>Industry Mentor:</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; Judith Liem</p>
-
-<h4>Team Members:</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; Jazmin Gutierrez</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; Alexander Chan</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; Afra Ibnat</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; Nathan Sujatno</p>
