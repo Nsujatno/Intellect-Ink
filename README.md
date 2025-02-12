@@ -71,7 +71,8 @@
 
  <h3>MERN Tech Stack:</h3>
  <h4>Frontend: React Native</h4>
- <a href="https://reactnative.dev/" target="_blank"> React Native Documentation</a>
+ <a href="[https://reactnative.dev/](https://reactnative.dev/docs/getting-started)" target="_blank"> React Native Documentation</a>
+  <a href="[https://reactnative.dev/](https://docs.expo.dev/)" target="_blank"> React Native Expo Documentation</a>
  <h4>Backend: Node JS and Express</h4>
  <h4>Programming Language: Javascript</h4>
  <h4>Database: MongoDB</h4>
