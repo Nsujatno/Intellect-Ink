@@ -69,7 +69,7 @@
  <br><a href="https://code.visualstudio.com/download" target="_blank"> VSCode Installation</a></br>
 
  <h3>Version Control: Git</h3>
-  <br><a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank"> Git Installation</a></br>
+ <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank"> Git Installation</a>
 
  <h3>Emulator: Android Studio</h3>
  <a href="https://developer.android.com/studio?gad_source=1&gclid=CjwKCAiAh6y9BhBREiwApBLHC-xvDFPr-0W_RWyko142vI-RG-3ckHmZUMsWtPA1YKVEUgCmSLbeVhoCAqsQAvD_BwE&gclsrc=aw.ds" target="_blank"> Android Studio Installation</a>
