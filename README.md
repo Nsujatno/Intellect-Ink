@@ -57,34 +57,51 @@
    <li>Either 1 daily trivia quiz for the user or a short pop quiz/trivia after the user finished reading a certain form of media</li>
 </div> 
 
-
 <h1 align="center">Tech Stack</h1>
- <h3>Wireframing: Figma</h3>
- <li>Collaborative design tool for creating the app’s UI</li>
- <li>Allows clear visualization of app’s components, page navigation with prototyping, and planning user flow</li>
 
- <h3>IDE: VSCode</h3>
- <li>Android studio includes the emulator</li>
- <li>VSCode offers plug ins for flutter, dart, compatible with react native</li>
- <br><a href="https://code.visualstudio.com/download" target="_blank"> VSCode Installation</a></br>
+<h3>Wireframing: Figma</h3>
+<ul>
+    <li>Collaborative design tool for creating the app’s UI</li>
+    <li>Allows clear visualization of app’s components, page navigation with prototyping, and planning user flow</li>
+</ul>
 
- <h3>Version Control: Git</h3>
- <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank"> Git Installation</a>
+<h3>IDE: VSCode</h3>
+<ul>
+    <li>Android Studio includes the emulator</li>
+    <li>VSCode offers plugins for Flutter, Dart, and is compatible with React Native</li>
+    <li><a href="https://code.visualstudio.com/download" target="_blank">VSCode Installation</a></li>
+</ul>
 
- <h3>Emulator: Android Studio</h3>
- <a href="https://developer.android.com/studio?gad_source=1&gclid=CjwKCAiAh6y9BhBREiwApBLHC-xvDFPr-0W_RWyko142vI-RG-3ckHmZUMsWtPA1YKVEUgCmSLbeVhoCAqsQAvD_BwE&gclsrc=aw.ds" target="_blank"> Android Studio Installation</a>
+<h3>Version Control: Git</h3>
+<ul>
+    <li><a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">Git Installation</a></li>
+</ul>
 
- <h3>MERN Tech Stack:</h3>
- <h4>Frontend: React Native</h4>
- <a href="https://reactnative.dev/docs/getting-started" target="_blank"> React Native Documentation</a>
- <br><a href="https://docs.expo.dev/" target="_blank"> React Native Expo Documentation</a></br>
- <h4>Backend: Node JS and Express</h4>
- <a href="https://nodejs.org/en" target="_blank"> Node JS Installation</a>
- <br><a href="https://github.com/nvm-sh/nvm" target="_blank"> Install NVM</a></br>
- <h4>Programming Language: Javascript</h4>
- <h4>Database: MongoDB</h4>
- <a href="https://www.mongodb.com/try/download/community" target="_blank"> MongoDB download</a>
- 
+<h3>Emulator: Android Studio</h3>
+<ul>
+    <li><a href="https://developer.android.com/studio?gad_source=1&gclid=CjwKCAiAh6y9BhBREiwApBLHC-xvDFPr-0W_RWyko142vI-RG-3ckHmZUMsWtPA1YKVEUgCmSLbeVhoCAqsQAvD_BwE&gclsrc=aw.ds" target="_blank">Android Studio Installation</a></li>
+</ul>
+
+<h3>MERN Tech Stack:</h3>
+
+<h4>Frontend: React Native</h4>
+<ul>
+    <li><a href="https://reactnative.dev/docs/getting-started" target="_blank">React Native Documentation</a></li>
+    <li><a href="https://docs.expo.dev/" target="_blank">React Native Expo Documentation</a></li>
+</ul>
+
+<h4>Backend: Node JS and Express</h4>
+<ul>
+    <li><a href="https://nodejs.org/en" target="_blank">Node JS Installation</a></li>
+    <li><a href="https://github.com/nvm-sh/nvm" target="_blank">Install NVM</a></li>
+</ul>
+
+<h4>Programming Language: JavaScript</h4>
+
+<h4>Database: MongoDB</h4>
+<ul>
+    <li><a href="https://www.mongodb.com/try/download/community" target="_blank">MongoDB Download</a></li>
+</ul>
 
 <h1 align="center">Milestones</h1>
 <h3>Week 1:</h3>
