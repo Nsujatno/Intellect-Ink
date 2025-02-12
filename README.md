@@ -63,11 +63,13 @@
  <li>Collaborative design tool for creating the app’s UI</li>
  <li>Allows clear visualization of app’s components, page navigation with prototyping, and planning user flow</li>
 
- <h3>IDE: Android Studio or VSCode</h3>
+ <h3>IDE: VSCode</h3>
  <li>Android studio includes the emulator</li>
  <li>VSCode offers plug ins for flutter, dart, compatible with react native</li>
+ <a href="https://code.visualstudio.com/download" target="_blank"> VSCode Installation</a>
 
  <h3>Emulator: Android Studio</h3>
+ <a href="https://developer.android.com/studio?gad_source=1&gclid=CjwKCAiAh6y9BhBREiwApBLHC-xvDFPr-0W_RWyko142vI-RG-3ckHmZUMsWtPA1YKVEUgCmSLbeVhoCAqsQAvD_BwE&gclsrc=aw.ds" target="_blank"> Android Studio Installation</a>
 
  <h3>MERN Tech Stack:</h3>
  <h4>Frontend: React Native</h4>
