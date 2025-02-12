@@ -75,7 +75,7 @@
  <br><a href="https://docs.expo.dev/" target="_blank"> React Native Expo Documentation</a></br>
  <h4>Backend: Node JS and Express</h4>
  <a href="https://nodejs.org/en" target="_blank"> Node JS Installation</a>
- <br<a href="https://github.com/nvm-sh/nvm" target="_blank"> Install NVM</a></br>
+ <br><a href="https://github.com/nvm-sh/nvm" target="_blank"> Install NVM</a></br>
  <h4>Programming Language: Javascript</h4>
  <h4>Database: MongoDB</h4>
  <a href="https://www.mongodb.com/try/download/community" target="_blank"> MongoDB download</a>
