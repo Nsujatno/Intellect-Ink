@@ -1,20 +1,20 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Titan One': require('../assets/fonts/TitanOne-Regular.ttf'),
+    'Lato Regular': require('../assets/fonts/Lato-Regular.ttf'),
+    'Lato Bold Italic': require('../assets/fonts/Lato-BoldItalic.ttf'),
+    'Literata Regular': require('../assets/fonts/Literata-VariableFont_opsz,wght.ttf'),
+
   });
 
   useEffect(() => {
@@ -28,12 +28,19 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+    <View style={styles.container}>
+      <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    </View>
+   
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+      backgroundColor: "#E2E2E2",
+      flex: 1,
+  },
+});
