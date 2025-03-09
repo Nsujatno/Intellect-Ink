@@ -24,7 +24,7 @@ export default function Login() {
                 <TextInput style={styles.inputContainer}/>
             </View>
             
-            <Pressable style={styles.button} onPress={() => router.push("/signup")}>
+            <Pressable style={styles.button} onPress={() => router.push("/home")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </Pressable>
 

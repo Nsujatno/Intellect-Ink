@@ -26,7 +26,7 @@ export default function Signup() {
                 <TextInput style={styles.inputContainer}/>
             </View>
             
-            <Pressable style={styles.button} onPress={() => router.push("/login")}>
+            <Pressable style={styles.button} onPress={() => router.push("/home")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </Pressable>
 
