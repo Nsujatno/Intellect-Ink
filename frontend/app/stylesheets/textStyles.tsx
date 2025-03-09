@@ -8,6 +8,14 @@ export const textStyles = StyleSheet.create ({
         color: 'white',
         textAlign: 'center',
     },
+    pageHeader: {
+        fontFamily: 'Lato Bold',
+        fontSize: 35,
+        marginVertical: 10,
+        color: '#413F6F',
+        fontWeight: 700,
+        textAlign: 'center',
+    },
     heading1: {
         fontFamily: 'Lato Bold Italic',
         fontSize: 35,
