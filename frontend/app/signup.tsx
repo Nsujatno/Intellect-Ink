@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 
@@ -26,9 +26,9 @@ export default function Signup() {
                 <TextInput style={styles.inputContainer}/>
             </View>
             
-            <Pressable style={styles.button} onPress={() => router.push("/createProfile")}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push("/createProfile")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
-            </Pressable>
+            </TouchableOpacity>
 
             <Text style={textStyles.subheading}>Already a user?</Text>
             <Link style={textStyles.link} href="/login">Login here</Link>
