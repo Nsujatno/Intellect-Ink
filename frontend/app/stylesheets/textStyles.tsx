@@ -52,3 +52,5 @@ export const textStyles = StyleSheet.create ({
         color: 'white',
     },
 });
+
+export default textStyles;
