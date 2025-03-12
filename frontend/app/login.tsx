@@ -1,9 +1,28 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from "react-native";
+import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
+import axios from 'axios'
 
 export default function Login() {
     const router = useRouter();
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+
+    const handleSubmit = async () => {
+        try {
+          const response = await axios.post(
+            'http://localhost:8000/api/user/signin',
+            {email, password}
+          );
+
+          router.push("/home")
+
+        } catch (error) {
+            console.log('Error: ', error)
+        }
+    }
 
   return (
     <View style={styles.container}>
@@ -19,12 +38,12 @@ export default function Login() {
             
             <View style={styles.leftContainer}>
                 <Text style={textStyles.heading2}>Email</Text>
-                <TextInput style={styles.inputContainer}/>
+                <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
                 <Text style={textStyles.heading2}>Password</Text>
-                <TextInput style={styles.inputContainer}/>
+                <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
             </View>
             
-            <Pressable style={styles.button} onPress={() => router.push("/home")}>
+            <Pressable style={styles.button} onPress={handleSubmit/*() => router.push("/home")*/}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </Pressable>
 
