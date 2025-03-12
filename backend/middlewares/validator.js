@@ -1,9 +1,10 @@
 const { check, validationResult } = require('express-validator')
 
-exports.validateUser = [check('name').trim().not().isEmpty()
-    .withMessage('Name is missing!').isLength({min: 3, max: 20})
-    .withMessage('Name must be between 3 to 20 characters long'),
-    check('email').normalizeEmail().isEmail().withMessage('Email is invalid!'),
+exports.validateUser = 
+    // [check('name').trim().not().isEmpty()
+    // .withMessage('Name is missing!').isLength({min: 3, max: 20})
+    // .withMessage('Name must be between 3 to 20 characters long'),
+    [check('email').normalizeEmail().isEmail().withMessage('Email is invalid!'),
     check('password').trim()
     .not()
     .isEmpty()

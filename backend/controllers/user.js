@@ -11,7 +11,7 @@ const { isValidObjectId } = require('mongoose')
 const verificationToken = require('../model/verificationToken')
 
 exports.createUser = async (req, res) =>{
-    const {name, email, password} = req.body
+    const {name='newUser', email, password} = req.body
     const user = await User.findOne({email})
     if(user) return sendError(res, 'This email already exitst!')
 
@@ -21,21 +21,21 @@ exports.createUser = async (req, res) =>{
         password 
     })
 
-    const OTP = generateOTP()
-    const verificationToken = new VerificationToken({
-        owner: newUser._id,
-        token: OTP
-    })
+    // const OTP = generateOTP()
+    // const verificationToken = new VerificationToken({
+    //     owner: newUser._id,
+    //     token: OTP
+    // })
 
-    await verificationToken.save()
+    // await verificationToken.save()
     await newUser.save()
 
-    mailTransport().sendMail({
-        from: 'emailverification@email.com',
-        to: newUser.email,
-        subject: "Verify your email account",
-        html: `<h1>Your verification code is: ${OTP}</h1>`
-    })
+    // mailTransport().sendMail({
+    //     from: 'emailverification@email.com',
+    //     to: newUser.email,
+    //     subject: "Verify your email account",
+    //     html: `<h1>Your verification code is: ${OTP}</h1>`
+    // })
 
     res.send(newUser)
 }
@@ -45,6 +45,7 @@ exports.signin = async (req, res) => {
     if(!email.trim() || !password.trim()) return sendError(res, 'Email/password is missing!')
 
     const user = await User.findOne({email})
+    console.log(user);
     if(!user) return sendError(res, 'User not found!')
     
     const isMatched = await user.comparePassword(password)
@@ -58,36 +59,36 @@ exports.signin = async (req, res) => {
 }
 
 exports.verifyEmail = async (req, res) => {
-    const {userId, otp} = req.body
-    if(!userId || !otp.trim()) return sendError(res, "Invalid request, missing parameters!");
+    // const {userId, otp} = req.body
+    // if(!userId || !otp.trim()) return sendError(res, "Invalid request, missing parameters!");
 
-    if(!isValidObjectId(userId)) return sendError(res, "Invalid user id!");
+    // if(!isValidObjectId(userId)) return sendError(res, "Invalid user id!");
 
-    const user = await User.findById(userId)
-    if(!user) return sendError(res, "User not found!");
+    // const user = await User.findById(userId)
+    // if(!user) return sendError(res, "User not found!");
 
-    if(user.verified) return sendError(res, "This account is already verified!");
+    // if(user.verified) return sendError(res, "This account is already verified!");
 
-    const token = await VerificationToken.findOne({owner: user._id})
-    if(!token) return sendError(res, "Sorry, user not found");
+    // const token = await VerificationToken.findOne({owner: user._id})
+    // if(!token) return sendError(res, "Sorry, user not found");
 
-    const isMatched = await token.compareToken(otp)
-    if(!isMatched) return sendError(res, "Please provide a valid token!");
+    // const isMatched = await token.compareToken(otp)
+    // if(!isMatched) return sendError(res, "Please provide a valid token!");
 
-    user.verified = true;
+    // user.verified = true;
 
-    await VerificationToken.findByIdAndDelete(token._id);
-    await user.save();
+    // await VerificationToken.findByIdAndDelete(token._id);
+    // await user.save();
 
-    mailTransport().sendMail({
-        from: 'emailverification@email.com',
-        to: user.email,
-        subject: "Verify your email account",
-        html: `<h1>Email verified successfully! Thank you for connecting with us!</h1>`
-    })
-    res.json({success: true, message: "your email is verified!", user: {name: user.name,
-        email: user.email, id: user._id
-    }})
+    // mailTransport().sendMail({
+    //     from: 'emailverification@email.com',
+    //     to: user.email,
+    //     subject: "Verify your email account",
+    //     html: `<h1>Email verified successfully! Thank you for connecting with us!</h1>`
+    // })
+    // res.json({success: true, message: "your email is verified!", user: {name: user.name,
+    //     email: user.email, id: user._id
+    // }})
 
 }
 
