@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -35,7 +35,6 @@ export default function Signup() {
         <View style={styles.textContainer}>
             <Text style={textStyles.logo}>Intellect Ink</Text>
             <Text style={textStyles.heading1}>to help you think!</Text>
-<<<<<<< HEAD
             
             <View style={styles.leftContainer}>
                 <Text style={textStyles.heading2}>Email</Text>
@@ -50,22 +49,6 @@ export default function Signup() {
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>
 
-=======
-            <form onSubmit={handleSubmit}>
-                <View style={styles.leftContainer}>
-                    <Text style={textStyles.heading2}>Email</Text>
-                    <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
-                    <Text style={textStyles.heading2}>Password</Text>
-                    <TextInput style={styles.inputContainer}/>
-                    <Text style={textStyles.heading2}>Confirm Password</Text>
-                    <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
-                </View>
-                
-                <Pressable style={styles.button} onPress={handleSubmit /*() => router.push("/createProfile")*/}>
-                    <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
-                </Pressable>
-            </form>
->>>>>>> origin/Nathan
             <Text style={textStyles.subheading}>Already a user?</Text>
             <Link style={textStyles.link} href="/login">Login here</Link>
         </View>

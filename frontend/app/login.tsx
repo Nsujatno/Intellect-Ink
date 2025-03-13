@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -43,7 +43,7 @@ export default function Login() {
                 <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
             </View>
             
-            <Pressable style={styles.button} onPress={handleSubmit/*() => router.push("/home")*/}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit/*() => router.push("/home")*/}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 
