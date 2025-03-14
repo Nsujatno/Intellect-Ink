@@ -1,9 +1,28 @@
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
+import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
+import axios from 'axios';
 
 export default function Signup() {
     const router = useRouter();
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+
+    const handleSubmit = async () => {
+        try {
+          const response = await axios.post(
+            'http://localhost:8000/api/user/create',
+            {email, password}
+          );
+
+          router.push("/createProfile")
+
+        } catch (error) {
+            console.log('Error: ', error)
+        }
+    }
 
   return (
     <View style={styles.container}>
