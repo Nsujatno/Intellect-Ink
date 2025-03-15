@@ -1,66 +1,104 @@
-import { Text, View, Button, Image, ImageBackground, ScrollView, TouchableOpacity } from "react-native";
-import { StyleSheet } from "react-native";
+import { Text, View, ImageBackground, ScrollView, StyleSheet } from "react-native";
+import { VictoryBar, VictoryChart, VictoryTheme, VictoryAxis } from "victory-native";
+import React, { useEffect, useState } from "react";
 import { textStyles } from "../stylesheets/textStyles";
-import { useEffect, useState } from 'react';
+import axios from "axios";
 
 export default function Stats() {
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState([ // Default y-values (in minutes) will be converted and updated dynamically
+    { x: "M", y: 0 },
+    { x: "T", y: 0 },
+    { x: "W", y: 0 },
+    { x: "T", y: 0 },
+    { x: "F", y: 0 },
+    { x: "S", y: 0 },
+    { x: "Sun", y: 0 },
+  ]);
 
-  {/* For fetching user statistics
-    useEffect(() => {
-        const fetchStats = async () => {
-          try {
-  
-          } catch (error) {
-            
-          } finally {
-            setLoading(false);
-          } 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const userId = ""; // Replace with userID or API key
+        const response = await axios.get(`api_url/${userId}`); // link
+        const timeSpent = response.data;
+
+        // Map API data
+        const formattedData = timeSpent.map((minutes, index) => ({
+          x: chartData[index].x, // Days of the week
+          y: minutes, // Time spent in minutes
+        }));
+        setChartData(formattedData);
+
+      } catch (error) {
+        console.error("Error: ", error); // Network error (Axios)
+      } finally {
+        setLoading(false);
+      }
     };
-     fetchStats();
+
+    fetchStats();
   }, []);
 
-  if (loading)
-  */}
+  if (loading) return <Text>Loading statistics...</Text>;
 
-    return (
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <View style={styles.container}>
-          {/* Heading */}
-          <Text style={textStyles.pageHeader}>Statistics</Text>
+  return (
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <View style={styles.container}>
+        <Text style={textStyles.pageHeader}>Statistics</Text>
 
-          {/* Gradient with waves background */}
-          <ImageBackground
+        {/* resize */ }
+        <ImageBackground
             source={require('../../assets/images/stats_background.png')}
-            style={styles.imagebg}/>
+            style={styles.imagebg}
+        />
 
-          {/* Display User's Data*/}
+        <VictoryChart
+          theme={VictoryTheme.material}
+          domain={{ y: [120, 360] }} // Minutes (2hr to 6hr)
+          style={{
+            parent: { backgroundColor: "#FFFFFF" },
+          }}
+        >
+          {/* X-Axis */}
+          <VictoryAxis
+            tickFormat={(x) => x} // Days of the week
+          />
 
-          {/* Dropdown Buttons */}
-          {/* <TouchableOpacity></TouchableOpacity*/}
-          
-        </View>
-      </ScrollView>
-    );
+          {/* Y-Axis */}
+          <VictoryAxis
+            dependentAxis
+            tickValues={[120, 180, 240, 300, 360]} // y-values in minutes
+            tickFormat={(y) => `${y / 60}h`} // Convert y-values to hours
+          />
+
+          {/* Bar Chart */}
+          <VictoryBar
+            data={chartData}
+            style={{
+              data: { fill: "#4A90E2", width: 20 }, // Customize later
+            }}
+          />
+        </VictoryChart>
+
+        <Text style={textStyles.heading1}>Time Spent</Text>
+
+      </View>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-    },
-    imagebg: {
-      flex: 1,
-      resizeMode: 'cover',
-      /* Once background image resizing is fixed, scrolling is enabled
-      width: 100%,
-      height: ,
-      resizeMode: 'contain',
-      */
-    },
-    scrollView: {
-      flexGrow: 1,
-    }
-  });
+  imagebg: {
+    flex: 1,
+    resizeMode: 'cover', 
+  },
+  scrollView: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+  },
+});
