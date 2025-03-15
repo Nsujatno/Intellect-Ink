@@ -1,5 +1,6 @@
-import { Text, View, Button } from "react-native";
-import { Image, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, View, Button, Image, ImageBackground, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
+import { textStyles } from "../stylesheets/textStyles";
 import { useEffect, useState } from 'react';
 
 export default function Stats() {
@@ -7,34 +8,59 @@ export default function Stats() {
     const [loading, setLoading] = useState(true);
     const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-  // for fetching user's statistics
-  //   useEffect(() => {
-  //       const fetchStats = async () => {
-  //         try {
+  {/* For fetching user statistics
+    useEffect(() => {
+        const fetchStats = async () => {
+          try {
   
-  //         } catch (error) {
+          } catch (error) {
             
-  //         } finally {
-  //           setLoading(false);
-  //         } 
-  //   };
-  //    fetchStats();
-  // }, []);
+          } finally {
+            setLoading(false);
+          } 
+    };
+     fetchStats();
+  }, []);
+
+  if (loading)
+  */}
 
     return (
+      <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.container}>
+          {/* Heading */}
+          <Text style={textStyles.pageHeader}>Statistics</Text>
+
           {/* Gradient with waves background */}
-          <Image>
-          </Image>
+          <ImageBackground
+            source={require('../../assets/images/stats_background.png')}
+            style={styles.imagebg}/>
+
+          {/* Display User's Data*/}
+
+          {/* Dropdown Buttons */}
+          {/* <TouchableOpacity></TouchableOpacity*/}
+          
         </View>
+      </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
+      alignItems: 'center',
     },
     imagebg: {
-      position: 'absolute',
+      flex: 1,
+      resizeMode: 'cover',
+      /* Once background image resizing is fixed, scrolling is enabled
+      width: 100%,
+      height: ,
+      resizeMode: 'contain',
+      */
     },
+    scrollView: {
+      flexGrow: 1,
+    }
   });
