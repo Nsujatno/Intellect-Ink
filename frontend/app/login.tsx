@@ -20,9 +20,13 @@ export default function Login() {
           router.push("/home")
 
         } catch (error) {
-            console.log('Error: ', error)
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
         }
-    }
+}
 
   return (
     <View style={styles.container}>

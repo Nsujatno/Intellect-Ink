@@ -20,7 +20,11 @@ export default function Signup() {
           router.push("/createProfile")
 
         } catch (error) {
-            console.log('Error: ', error)
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
         }
     }
 
@@ -35,7 +39,7 @@ export default function Signup() {
         <View style={styles.textContainer}>
             <Text style={textStyles.logo}>Intellect Ink</Text>
             <Text style={textStyles.heading1}>to help you think!</Text>
-            <form onSubmit={handleSubmit}>
+            {/* <form onSubmit={handleSubmit}> */}
                 <View style={styles.leftContainer}>
                     <Text style={textStyles.heading2}>Email</Text>
                     <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
@@ -48,7 +52,7 @@ export default function Signup() {
                 <Pressable style={styles.button} onPress={handleSubmit /*() => router.push("/createProfile")*/}>
                     <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
                 </Pressable>
-            </form>
+            {/* </form> */}
             <Text style={textStyles.subheading}>Already a user?</Text>
             <Link style={textStyles.link} href="/login">Login here</Link>
         </View>
