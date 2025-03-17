@@ -1,6 +1,8 @@
 import { Text, View, Image, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
 import { textStyles } from "./stylesheets/textStyles";
 import { useRouter } from "expo-router";
+import Buttons from "./components/buttons";
+
 export default function Index() {
   const router = useRouter();
 
@@ -14,13 +16,24 @@ export default function Index() {
               source={require('../assets/images/logoCircled.png')}
               style={styles.image}/>
            
-          <TouchableOpacity style={styles.button} onPress={() => router.push("/login")}>
+          {/* <TouchableOpacity style={styles.button} onPress={() => router.push("/login")}>
               <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button} onPress={() => router.push("/signup")}>
             <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
-          </TouchableOpacity> 
+          </TouchableOpacity> */}
+          
+          <Buttons
+            title=' Login '
+            variant='whiteOutline'
+            onPress={() => router.push('/login')}
+          />
+            <Buttons
+            title='Sign up'
+            variant='white'
+            onPress={() => router.push('/signup')}
+          />
         </View>
 
      
@@ -36,7 +49,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 250,
-    marginBottom: 20,
+    marginBottom: 30,
     resizeMode: 'contain',
   },
   imagebg: {
@@ -45,15 +58,15 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     position: 'absolute',
   },
-  button: {
-    backgroundColor: '#D9D9D9',
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    height: 50,
-    width: 200,
-    marginTop: 10,
-    marginBottom: 10,
-},
+//   button: {
+//     backgroundColor: '#D9D9D9',
+//     borderRadius: 5,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     textAlign: 'center',
+//     height: 50,
+//     width: 200,
+//     marginTop: 10,
+//     marginBottom: 10,
+// },
 });
