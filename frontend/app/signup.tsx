@@ -35,20 +35,18 @@ export default function Signup() {
         <View style={styles.textContainer}>
             <Text style={textStyles.logo}>Intellect Ink</Text>
             <Text style={textStyles.heading1}>to help you think!</Text>
-            
-            <View style={styles.leftContainer}>
-                <Text style={textStyles.heading2}>Email</Text>
-                <TextInput style={styles.inputContainer}/>
-                <Text style={textStyles.heading2}>Password</Text>
-                <TextInput style={styles.inputContainer}/>
-                <Text style={textStyles.heading2}>Confirm Password</Text>
-                <TextInput style={styles.inputContainer}/>
-            </View>
-            
+        
+                <View style={styles.leftContainer}>
+                    <Text style={textStyles.heading2}>Email</Text>
+                    <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
+                    <Text style={textStyles.heading2}>Password</Text>
+                    <TextInput style={styles.inputContainer}/>
+                    <Text style={textStyles.heading2}>Confirm Password</Text>
+                    <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
+                </View>
             <TouchableOpacity style={styles.button} onPress={() => router.push("/createProfile")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>
-
             <Text style={textStyles.subheading}>Already a user?</Text>
             <Link style={textStyles.link} href="/login">Login here</Link>
         </View>
@@ -70,12 +68,16 @@ const styles = StyleSheet.create({
 
     },
     imageContainer: {
-        top: -20,
+        width: '100%',
+        height: '60%',
         position: 'absolute',
+        top: -15,
     },
     image: {
-        width: 400,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
+        width: '100%',
+        height: undefined,
+        aspectRatio: 0.78,
     },
     textContainer: {
         position: "absolute",
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     leftContainer: {
-        alignSelf: 'flex-start',
+        alignSelf: 'center',
         marginTop: 30,
     },
     inputContainer: {
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
         width: 170,
         resizeMode: 'contain',
         position: 'absolute',
-        top: 580,
+         top: 580,
         left: 65,
     },
   });

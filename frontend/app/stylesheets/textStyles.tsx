@@ -11,7 +11,7 @@ export const textStyles = StyleSheet.create ({
     pageHeader: {
         fontFamily: 'Lato Bold',
         fontSize: 35,
-        marginVertical: 10,
+        marginVertical: 5,
         color: '#413F6F',
         fontWeight: 700,
         textAlign: 'center',
@@ -49,7 +49,7 @@ export const textStyles = StyleSheet.create ({
         fontFamily: 'Literata Regular',
         fontSize: 18,
         marginVertical: 5,
-        color: 'white',
+        color: '#504F4F',
     },
 });
 

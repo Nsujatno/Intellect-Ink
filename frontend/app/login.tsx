@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions} from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -68,12 +68,16 @@ const styles = StyleSheet.create({
 
     },
     imageContainer: {
-        top: -20,
+        width: '100%',
+        height: '60%',
         position: 'absolute',
+        top: -15,
     },
     image: {
-        width: 400,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
+        width: '100%',
+        height: undefined,
+        aspectRatio: 0.78,
     },
     textContainer: {
         position: "absolute",
