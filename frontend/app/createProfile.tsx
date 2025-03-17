@@ -1,6 +1,7 @@
 import { Text, ScrollView, View, Button, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import { textStyles } from "./stylesheets/textStyles";
 import CheckBox from "./components/checkbox";
+import Buttons from "./components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -42,9 +43,9 @@ export default function CreateProfile() {
 
         <View style={styles.leftContainer}>
           <Text style={textStyles.heading2}>Name</Text>
-          <TextInput style={styles.inputContainer} /*value={email} onChangeText={setEmail}*//>
+          <TextInput style={styles.inputContainer} /*value={name} onChangeText={setName}*//>
          
-          <Text style={[textStyles.heading1, {marginTop: 70}]}>Preferences</Text>
+          <Text style={[textStyles.heading1, {marginTop: 50}]}>Preferences</Text>
         
           <Text style={[textStyles.heading2, {marginVertical: 20}]}>Media</Text>
           <CheckBox
@@ -52,7 +53,7 @@ export default function CreateProfile() {
             checkedValues={medias}
             onChange={(updatedValues) => setMedias(updatedValues)}
           />
-          <Text style={[textStyles.heading2, {marginVertical: 20}]}>Daily Goal</Text>
+          <Text style={[textStyles.heading2, {marginVertical: 20, marginTop: 50,}]}>Daily Goal</Text>
         
         </View>
 
@@ -70,13 +71,25 @@ export default function CreateProfile() {
             </View>
 
           <Text style={textStyles.subheading}>minutes/day</Text>
-
         </View>
 
-        <Text style={[textStyles.heading2, {marginVertical: 20}]}>Daily Notifications</Text>
+        <Text style={[textStyles.heading2, {marginVertical: 20, marginTop: 50,}]}>Notifications</Text>
+        <View style={styles.notifications}>
+          <Text style={[textStyles.subheading, {alignSelf:'flex-start', margin: 20,}]}>Daily Reminder</Text>
+        </View>
 
-        <Button title="Skip" onPress={() => router.push('/home')} />
-        <Button title="Next" onPress={() => router.push('/home')} />
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
+          <Buttons
+            title='Skip'
+            variant='whiteOutline'
+            onPress={() => router.push('/home')}
+          />
+            <Buttons
+            title='Next'
+            variant='white'
+            onPress={() => router.push('/home')}
+          />
+        </View>
       </View>
 
     </ScrollView>
@@ -101,7 +114,7 @@ const styles = StyleSheet.create({
   pfpImg: {
       width: 112,
       height: 110,
-      marginTop: 40,
+      marginTop: 60,
       alignSelf: 'center',
   },
   textContainer: {
@@ -143,5 +156,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     borderRadius: 5,
-  }
+  },
+  notifications: {
+    width: '100%',
+    height: 50,
+    backgroundColor:'#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 5,
+    marginBottom: 50,
+  },
 });
