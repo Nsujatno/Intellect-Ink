@@ -10,11 +10,54 @@ const { generateOTP, mailTransport } = require('../utils/mail')
 const { isValidObjectId } = require('mongoose')
 const verificationToken = require('../model/verificationToken')
 
+exports.getProfile = async (req, res) => {
+    try{
+        res.json({
+            name: req.user.name,
+            email: req.user.email,
+            media: req.user.media || [],
+            dailyReadingTime: req.user.dailyReadingTime,
+            notification: req.user.notification,
+          });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+}
+
+
+exports.updateProfile = async (req, res) => {
+    try{
+        const {name, media, dailyReadingTime, notification} = req.body
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                name,
+                media,
+                dailyReadingTime,
+                notification,
+            },
+            { new: true, runValidators: true}
+        )
+
+        res.json({
+            name: updatedUser.name,
+            media: updatedUser.media,
+            dailyReadingTime: updatedUser.dailyReadingTime,
+            notification: updatedUser.notification,
+          });
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
 exports.createUser = async (req, res) =>{
     const {name='newUser', email, password} = req.body
     const user = await User.findOne({email})
-    if(user) return sendError(res, 'This email already exitst!')
-
+    if(user){
+        return sendError(res, 'This email already exitst!')
+    }
     const newUser = new User({
         name,
         email,
@@ -52,7 +95,7 @@ exports.signin = async (req, res) => {
     if(!isMatched) return sendError(res, 'Email/password does not match!')
 
     const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
-        expiresIn: '1d'
+        expiresIn: '7d'
     })
 
     res.json({success: true, message: "sign in successful", user: {name: user.name, email: user.email, id: user._id, token}})
