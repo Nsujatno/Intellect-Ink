@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import Buttons from "../components/buttons";
 import { textStyles } from "../stylesheets/textStyles";
-import axios from "axios";
 
 export default function Stats() {
   const router = useRouter();
@@ -97,19 +96,19 @@ export default function Stats() {
           {/* View Todays Data */}
           <View style={styles.todaysDataContainer}>
             <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Books</Text>
+              <Text style={textStyles.bodytext2}>Books</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.books ?? 0}</Text> */}
             </View>
           <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Poems</Text>
+              <Text style={textStyles.bodytext2}>Poems</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.poems ?? 0}</Text> */}
           </View>
           <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Politics</Text>
+              <Text style={textStyles.bodytext2}>Politics</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.politics ?? 0}</Text> */}
           </View>
           <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Research</Text>
+              <Text style={textStyles.bodytext2}>Research</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.research ?? 0}</Text> */}
           </View>
         </View>
@@ -214,13 +213,13 @@ const styles = StyleSheet.create({
   miniBoxContainer: {
     position: "absolute",
     flexDirection: "row",
-    justifyContent: "center",
-    top: -15,
+    justifyContent: "space-evenly",
+    width: '60%',
+    top: -20,
   },
   miniBoxWrapper: {
     flexDirection: "column",
     alignItems: "center",
-    gap: -15,
   },
   statsMiniBox: {
     width: 140,
@@ -239,17 +238,8 @@ const styles = StyleSheet.create({
   categoryRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: '80%',
-    paddingVertical: 8,
-  },
-  categoryName: { // Adjust fonts to textstyles
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#555",
-  },
-  categoryTime: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#111",
+    width: '55%',
+    top: -7,
+    paddingVertical: 0.5,
   },
 });
