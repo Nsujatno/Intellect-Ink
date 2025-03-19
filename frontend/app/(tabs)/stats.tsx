@@ -88,7 +88,7 @@ export default function Stats() {
 
         {/* Statistics Category Time Spent Box */}
         <Text style={[textStyles.heading1, {marginTop: 130, alignSelf: 'center'}]}>Time Spent</Text>
-        <Text style={textStyles.heading2}>Per Category</Text>
+        <Text style={textStyles.subheading2}>Per Category</Text>
         <View style={styles.timeSpentContainer}>
           <Image
               source={require('../../assets/images/stats_box1.png')}

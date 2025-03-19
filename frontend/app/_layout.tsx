@@ -12,10 +12,12 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     'Titan One': require('../assets/fonts/TitanOne-Regular.ttf'),
     'Lato Regular': require('../assets/fonts/Lato-Regular.ttf'),
+    'Lato Italic': require('../assets/fonts/Lato-Italic.ttf'),
     'Lato Bold Italic': require('../assets/fonts/Lato-BoldItalic.ttf'),
     'Lato Bold': require('../assets/fonts/Lato-Bold.ttf'),
     'Literata Regular': require('../assets/fonts/Literata-VariableFont_opsz,wght.ttf'),
-
+    'Literata Medium Italic': require('../assets/fonts/Literata-MediumItalic.ttf'),
+    'Literata Semi Bold': require('../assets/fonts/Literata-SemiBold.ttf'),
   });
 
   useEffect(() => {

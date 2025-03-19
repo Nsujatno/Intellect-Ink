@@ -37,6 +37,12 @@ export const textStyles = StyleSheet.create ({
         marginVertical: 5,
         color: '#504F4F',
     },
+    subheading2: {
+        fontFamily: 'Lato Italic',
+        fontSize: 24,
+        marginVertical: 5,
+        color: '#FFFFFF',
+    },
     link: {
         fontFamily: 'Lato Bold Italic',
         fontSize: 20,
@@ -51,6 +57,18 @@ export const textStyles = StyleSheet.create ({
         marginVertical: 5,
         color: '#504F4F',
     },
+    bodytext2: {
+        fontFamily: 'Literata Medium Italic',
+        fontSize: 20,
+        marginVertical: 5,
+        color: '#FFFFFF',
+    },
+    bodytext3: {
+        fontFamily: 'Literata Semi Bold',
+        fontSize: 16,
+        marginVertical: 5,
+        color: '#413F6F',
+    }
 });
 
 export default textStyles;
