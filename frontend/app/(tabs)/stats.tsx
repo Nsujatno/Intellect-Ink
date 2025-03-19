@@ -24,25 +24,7 @@ export default function Stats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        /* const formattedData = timeSpent.map((dayData, index) => ({
-          day: chartData[index].day, // Days of the week
-          books: dayData.books,
-          poems: dayData.poems,
-          politics: dayData.politics,
-          research: dayData.research,
-        }));
-
-        setChartData(formattedData);
-
-        Getting today's data
-        const daysOfTheWeek = ["Sun", "M", "T", "W", "Th", "F", "S"];
-        const currentDay = daysOfTheWeek[new Date().getDay()];
-        const currentDayData = formattedData.find((day) => day.day === currentDay);
-
-        Update state with today's data, defaulting to zeros if no data is found
-        setTodayData(currentDayData || { books: 0, poems: 0, politics: 0, research: 0 });
-        */
-
+        //
       } catch (error) {
         // console.error("Error fetching data:", error)
       } finally {
@@ -140,6 +122,19 @@ export default function Stats() {
             source={require('../../assets/images/stats_box1.png')}
             style={styles.statsBoxPlacement2}
           />
+          <View style={[styles.miniBoxContainer]}>
+            <View style={[styles.miniBoxWrapper]}>
+              <Image
+                source={require('../../assets/images/stats_mini_box.png')}
+                style={styles.statsMiniBox}/>
+              <Image
+                source={require('../../assets/images/stats_mini_box.png')}
+                style={styles.statsMiniBox}/>
+            </View>
+            <Image
+              source={require('../../assets/images/stats_mini_box.png')}
+              style={styles.statsMiniBox}/>
+          </View>
         </View>
 
 
@@ -215,6 +210,22 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: "contain",
     alignSelf: "center",
+  },
+  miniBoxContainer: {
+    position: "absolute",
+    flexDirection: "row",
+    justifyContent: "center",
+    top: -15,
+  },
+  miniBoxWrapper: {
+    flexDirection: "column",
+    alignItems: "center",
+    gap: -15,
+  },
+  statsMiniBox: {
+    width: 140,
+    height: 120,
+    resizeMode: "contain",
   },
   todaysDataContainer: { // Data for Statistics Category Time Spent Box
     position: "absolute", // overlay image
