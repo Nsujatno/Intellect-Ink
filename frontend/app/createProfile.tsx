@@ -4,6 +4,8 @@ import CheckBox from "./components/checkbox";
 import Buttons from "./components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 export default function CreateProfile() {
   const router = useRouter();
@@ -16,6 +18,13 @@ export default function CreateProfile() {
     { value: 'Research', label: 'Research' },
   ];
   const [dailyNotifications, setDailyNotifications] = useState(false);
+  const [time, setTimeState] = useState(new Date());
+  const handleTimeChange = (event: any, date: Date | undefined) => {
+    const { type } = event;
+    if (type === 'set' && date) {
+      setTimeState(date);
+    }
+  };
 
   const [count,setCount]=useState(0)
   const plus = ()=>{
@@ -86,6 +95,12 @@ export default function CreateProfile() {
         {dailyNotifications && (
             <View style={styles.notificationsExpanded}>
               <Text style={textStyles.subheading}>Set Time</Text>
+              <DateTimePicker
+                value={time}
+                mode="time"
+                is24Hour={true}
+                onChange={handleTimeChange}
+              />
             </View>
         )}
 
