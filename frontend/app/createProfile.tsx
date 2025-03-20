@@ -1,4 +1,4 @@
-import { Text, ScrollView, View, Button, Switch, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import { textStyles } from "./stylesheets/textStyles";
 import CheckBox from "./components/checkbox";
 import Buttons from "./components/buttons";
