@@ -1,11 +1,10 @@
-import { Text, ScrollView, View, Button, Switch, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import { textStyles } from "./stylesheets/textStyles";
 import CheckBox from "./components/checkbox";
 import Buttons from "./components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 
 export default function CreateProfile() {
   const router = useRouter();

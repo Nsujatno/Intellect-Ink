@@ -142,12 +142,16 @@ export default function Stats() {
         <DropDownButtons
             title=' Achievements '
             variant='purple'
-            bodyText=''
+            options={[
+              { value: 'achievement1', label: 'First Achievement'}
+            ]}
         />
         <DropDownButtons
             title=' Leaderboard '
             variant='purple'
-            bodyText=''
+            options={[
+              { value: 'achievement1', label: 'First Achievement'}
+            ]}
         />
         </View>
       </View>
