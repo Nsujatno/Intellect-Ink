@@ -181,11 +181,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chartContainer: { // Statistics Bar Graph
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 10,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -194,44 +194,44 @@ const styles = StyleSheet.create({
     top: 70,
   },
   timeSpentContainer: { // Statistics Category Time Spent Box
-    alignItems: "center",
+    alignItems: 'center',
   },
   overallStatsContainer: { // Statistics Overall Box
-    position: "relative",
-    alignItems: "center",
+    position: 'relative',
+    alignItems: 'center',
     height: 180,
   },
   statsBoxPlacement1: {
     width: 300,
     height: 400,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
     marginTop: -80,
   },
   statsBoxPlacement2: {
     width: 480,
     height: 200,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
   miniBoxContainer: {
-    position: "absolute",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     width: '60%',
     top: -20,
   },
   miniBoxWrapper: {
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   statsMiniBox: {
     width: 140,
     height: 120,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   todaysDataContainer: { // Data for Statistics Category Time Spent Box
-    position: "absolute", // overlay image
+    position: 'absolute', // overlay image
     top: 25,
     left: 50, // adjust once color boxes & times are added
     right: 0,
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   categoryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '55%',
     top: -7,
     paddingVertical: 0.5,

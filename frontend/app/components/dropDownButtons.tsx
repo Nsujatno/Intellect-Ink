@@ -37,10 +37,14 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,
+            variant == 'purple' ? styles.purpleContainer : null,
+            variant == 'white' ? styles.whiteContainer : null,
+            variant == 'whiteOutline' ? styles.outlineContainer: null,
+        ]}>
             <TouchableOpacity onPress={() => toggleListItem()}>
                 <View style={styles.titleContainer}>
-                <Text
+                    <Text
                         style={[
                             variant == 'purple' ? { color: '#FFFFFF' }: null,
                             variant == 'white' ? { color: '#413F6F' }: null,
