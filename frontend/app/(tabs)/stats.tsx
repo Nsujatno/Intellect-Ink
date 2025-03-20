@@ -2,9 +2,8 @@ import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
 import { CartesianChart, StackedBar } from "victory-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import Buttons from "../components/buttons";
+import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
-import axios from "axios";
 
 export default function Stats() {
   const router = useRouter();
@@ -24,25 +23,7 @@ export default function Stats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        /* const formattedData = timeSpent.map((dayData, index) => ({
-          day: chartData[index].day, // Days of the week
-          books: dayData.books,
-          poems: dayData.poems,
-          politics: dayData.politics,
-          research: dayData.research,
-        }));
-
-        setChartData(formattedData);
-
-        Getting today's data
-        const daysOfTheWeek = ["Sun", "M", "T", "W", "Th", "F", "S"];
-        const currentDay = daysOfTheWeek[new Date().getDay()];
-        const currentDayData = formattedData.find((day) => day.day === currentDay);
-
-        Update state with today's data, defaulting to zeros if no data is found
-        setTodayData(currentDayData || { books: 0, poems: 0, politics: 0, research: 0 });
-        */
-
+        //
       } catch (error) {
         // console.error("Error fetching data:", error)
       } finally {
@@ -106,7 +87,7 @@ export default function Stats() {
 
         {/* Statistics Category Time Spent Box */}
         <Text style={[textStyles.heading1, {marginTop: 130, alignSelf: 'center'}]}>Time Spent</Text>
-        <Text style={textStyles.heading2}>Per Category</Text>
+        <Text style={textStyles.subheading2}>Per Category</Text>
         <View style={styles.timeSpentContainer}>
           <Image
               source={require('../../assets/images/stats_box1.png')}
@@ -115,19 +96,19 @@ export default function Stats() {
           {/* View Todays Data */}
           <View style={styles.todaysDataContainer}>
             <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Books</Text>
+              <Text style={textStyles.bodytext2}>Books</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.books ?? 0}</Text> */}
             </View>
           <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Poems</Text>
+              <Text style={textStyles.bodytext2}>Poems</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.poems ?? 0}</Text> */}
           </View>
           <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Politics</Text>
+              <Text style={textStyles.bodytext2}>Politics</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.politics ?? 0}</Text> */}
           </View>
           <View style={styles.categoryRow}>
-              <Text style={styles.categoryName}>Research</Text>
+              <Text style={textStyles.bodytext2}>Research</Text>
               {/* <Text style={styles.categoryTime}>{todayData?.research ?? 0}</Text> */}
           </View>
         </View>
@@ -140,20 +121,37 @@ export default function Stats() {
             source={require('../../assets/images/stats_box1.png')}
             style={styles.statsBoxPlacement2}
           />
+          <View style={[styles.miniBoxContainer]}>
+            <View style={[styles.miniBoxWrapper]}>
+              <Image
+                source={require('../../assets/images/stats_mini_box.png')}
+                style={styles.statsMiniBox}/>
+              <Image
+                source={require('../../assets/images/stats_mini_box.png')}
+                style={styles.statsMiniBox}/>
+            </View>
+            <Image
+              source={require('../../assets/images/stats_mini_box.png')}
+              style={styles.statsMiniBox}/>
+          </View>
         </View>
 
 
         {/* Achievement & Leaderboard Buttons */}
         <View style={{flexDirection: 'column', marginTop: 130, width: 300, height: 60}}>
-        <Buttons
+        <DropDownButtons
             title=' Achievements '
             variant='purple'
-            onPress={() => router.push('/home')}
+            options={[
+              { value: 'achievement1', label: 'First Achievement'}
+            ]}
         />
-        <Buttons
+        <DropDownButtons
             title=' Leaderboard '
             variant='purple'
-            onPress={() => router.push('/home')}
+            options={[
+              { value: 'achievement1', label: 'First Achievement'}
+            ]}
         />
         </View>
       </View>
@@ -183,11 +181,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chartContainer: { // Statistics Bar Graph
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 10,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -196,28 +194,44 @@ const styles = StyleSheet.create({
     top: 70,
   },
   timeSpentContainer: { // Statistics Category Time Spent Box
-    alignItems: "center",
+    alignItems: 'center',
   },
   overallStatsContainer: { // Statistics Overall Box
-    position: "relative",
-    alignItems: "center",
+    position: 'relative',
+    alignItems: 'center',
     height: 180,
   },
   statsBoxPlacement1: {
     width: 300,
     height: 400,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
     marginTop: -80,
   },
   statsBoxPlacement2: {
     width: 480,
     height: 200,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
+  miniBoxContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '60%',
+    top: -20,
+  },
+  miniBoxWrapper: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  statsMiniBox: {
+    width: 140,
+    height: 120,
+    resizeMode: 'contain',
   },
   todaysDataContainer: { // Data for Statistics Category Time Spent Box
-    position: "absolute", // overlay image
+    position: 'absolute', // overlay image
     top: 25,
     left: 50, // adjust once color boxes & times are added
     right: 0,
@@ -226,19 +240,10 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   categoryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: '80%',
-    paddingVertical: 8,
-  },
-  categoryName: { // Adjust fonts to textstyles
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#555",
-  },
-  categoryTime: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#111",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '55%',
+    top: -7,
+    paddingVertical: 0.5,
   },
 });
