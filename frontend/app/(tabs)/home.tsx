@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList } from "react-native";
 import SwitchSelector from 'react-native-switch-selector';
 import LinearGradient from 'react-native-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
+
 
 const testSubjects = [
     {
@@ -34,6 +35,36 @@ const testSubjects = [
    
 export default function Home() {
     const [state, setState] = useState({page: 0})
+    const [level, setLevel]=useState(0)
+    const [percent, setPercent]=useState(0)
+    type ItemProps = {
+        id: string,
+        type: string,
+        image?: string,
+        title: string;
+        author: string;
+        summary?: string;
+        poem?: string;
+        link?: string;
+    };
+
+    const Item = ({item} : {item: ItemProps}) => (
+        <View style={styles.contentContainer}>
+            {item.image && <Image source={{uri: item.image}} style={styles.image}/>}
+            <Text style={textStyles.pageHeader}>{item.title}</Text>
+            <Text style={textStyles.subheading}>By: {item.author}</Text>
+            {(item.type === 'poem') &&
+                <Text style={textStyles.subheading}>{item.poem}</Text>
+            }
+            {(item.type !== 'poem') &&
+                <View>
+                    <Text style={textStyles.pageHeader}>Summary:</Text>
+                    <Text style={textStyles.subheading}>{item.summary}</Text>
+                </View>
+            }
+        </View>
+    );
+
 
     return (
         // <LinearGradient
@@ -47,20 +78,32 @@ export default function Home() {
                 selectedColor={'#413F6F'}
                 backgroundColor={'#736F96'}
                 buttonColor={'#E3E2EA'}
+                borderColor={'#736F96'}
                 hasPadding
-                valuePadding={5}
-                style={{ width: 200, marginTop: 20, }}
+                valuePadding={3}
+                style={{ width: 200, marginTop: 50, marginBottom: 15, }}
                 options={[{label: "For You", value: 0},{label: "Explore", value: 1}]}
             />
 
-            <View style={styles.contentContainer}>
 
+            <FlatList
+                data={testSubjects}
+                renderItem={({item}) => <Item item={item} />}
+                keyExtractor={item => item.id}
+                pagingEnabled={true}
+                showsVerticalScrollIndicator={false}
+                horizontal={false}
+            />
+
+            <View style={styles.lvlContainer}>
+                <Text>{percent}%</Text>
+                <Text>LVL {level}</Text>
             </View>
         </View>
         //</LinearGradient>
-        
     );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -72,11 +115,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     alignItems: 'center',
-    justifyContent: 'center',
     textAlign: 'center',
-    height: '80%',
-    width: '90%',
-    marginTop: 15,
-    marginBottom: 40,
+    height: 610,
+    width: 350,
+    marginBottom: 20,
+    padding: 10,
+  },
+  lvlContainer: {
+    backgroundColor: 'white',
+    borderRadius: 30,
+    width: 350,
+    height: 50,
+    marginVertical: 15,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: 15,
+  },
+  image: {
+    width: '100%',
+    height: '20%',
   },
 });
+
