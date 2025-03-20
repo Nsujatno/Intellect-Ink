@@ -2,7 +2,7 @@ import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
 import { CartesianChart, StackedBar } from "victory-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import Buttons from "../components/buttons";
+import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
 
 export default function Stats() {
@@ -139,15 +139,15 @@ export default function Stats() {
 
         {/* Achievement & Leaderboard Buttons */}
         <View style={{flexDirection: 'column', marginTop: 130, width: 300, height: 60}}>
-        <Buttons
+        <DropDownButtons
             title=' Achievements '
             variant='purple'
-            onPress={() => router.push('/home')}
+            bodyText=''
         />
-        <Buttons
+        <DropDownButtons
             title=' Leaderboard '
             variant='purple'
-            onPress={() => router.push('/home')}
+            bodyText=''
         />
         </View>
       </View>
