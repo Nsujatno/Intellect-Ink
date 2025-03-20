@@ -1,4 +1,8 @@
-import { Text, View } from "react-native";
+import { useState } from "react";
+import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import SwitchSelector from 'react-native-switch-selector';
+import LinearGradient from 'react-native-linear-gradient';
+import { textStyles } from "../stylesheets/textStyles";
 
 const testSubjects = [
     {
@@ -29,9 +33,50 @@ const testSubjects = [
 ]
    
 export default function Home() {
+    const [state, setState] = useState({page: 0})
+
     return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>Welcome to the Home Screen!</Text>
+        // <LinearGradient
+        // colors={['#4F3F7F','#615796','#646EA3']}
+        // style={styles.container}>
+        <View style={styles.container}>
+            <SwitchSelector
+                initial={0}
+                onPress={(value : number) => setState({ page : value })}
+                textColor={'white'}
+                selectedColor={'#413F6F'}
+                backgroundColor={'#736F96'}
+                buttonColor={'#E3E2EA'}
+                hasPadding
+                valuePadding={5}
+                style={{ width: 200, marginTop: 20, }}
+                options={[{label: "For You", value: 0},{label: "Explore", value: 1}]}
+            />
+
+            <View style={styles.contentContainer}>
+
+            </View>
         </View>
+        //</LinearGradient>
+        
     );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#4F3F7F',
+  },
+  contentContainer: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    height: '80%',
+    width: '90%',
+    marginTop: 15,
+    marginBottom: 40,
+  },
+});
