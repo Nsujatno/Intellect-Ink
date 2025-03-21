@@ -3,7 +3,9 @@ import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList } from "react
 import SwitchSelector from 'react-native-switch-selector';
 import LinearGradient from 'react-native-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
-
+import Buttons from "../components/buttons";
+import { useRouter } from "expo-router";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const testSubjects = [
     {
@@ -34,9 +36,13 @@ const testSubjects = [
 ]
    
 export default function Home() {
+    const router = useRouter();
     const [state, setState] = useState({page: 0})
     const [level, setLevel]=useState(0)
     const [percent, setPercent]=useState(0)
+    const [like, setLike] = useState('heart-outline')
+    const [favorite, setFavorite] = useState('bookmark-outline')
+
     type ItemProps = {
         id: string,
         type: string,
@@ -51,17 +57,40 @@ export default function Home() {
     const Item = ({item} : {item: ItemProps}) => (
         <View style={styles.contentContainer}>
             {item.image && <Image source={{uri: item.image}} style={styles.image}/>}
-            <Text style={textStyles.pageHeader}>{item.title}</Text>
-            <Text style={textStyles.subheading}>By: {item.author}</Text>
-            {(item.type === 'poem') &&
-                <Text style={textStyles.subheading}>{item.poem}</Text>
-            }
-            {(item.type !== 'poem') &&
-                <View>
-                    <Text style={textStyles.pageHeader}>Summary:</Text>
-                    <Text style={textStyles.subheading}>{item.summary}</Text>
+            <View style={{padding: 10}}>
+                <View style={styles.mediaTag}>
+                    <Text style={{color: 'white'}}>{item.type}</Text>
                 </View>
-            }
+                <Text style={textStyles.heading2purple}>{item.title}</Text>
+                <Text style={textStyles.subheading}>By: {item.author}</Text>
+                {(item.type === 'poem') &&
+                    <Text style={textStyles.subheading}>{item.poem}</Text>
+                }
+                {(item.type !== 'poem') &&
+                    <View>
+                        <Text style={textStyles.heading2purple}>Summary:</Text>
+                        <Text style={textStyles.subheading}>{item.summary}</Text>
+                    </View>
+                }
+                
+            </View>
+            <View style={styles.pageButtons}>
+                <View style={{flexDirection: 'row', flex: 1}}>
+                    <TouchableOpacity style={styles.circleButton}
+                        onPress={() => setLike((prevIcon) => (prevIcon === "heart-outline" ? "heart" : "heart-outline"))}>
+                        <Ionicons name={like} size={35} color={'white'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.circleButton}
+                        onPress={() => setFavorite((prevIcon) => (prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"))}>
+                        <Ionicons name={favorite} size={30} color={'white'}/>
+                    </TouchableOpacity>
+                </View>
+                <Buttons
+                    title='Read More'
+                    variant='purple'
+                    onPress={() => router.push('/home')}
+                />
+            </View>
         </View>
     );
 
@@ -114,12 +143,12 @@ const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: 'white',
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     textAlign: 'center',
     height: 610,
     width: 350,
     marginBottom: 20,
-    padding: 10,
+    position: 'relative',
   },
   lvlContainer: {
     backgroundColor: 'white',
@@ -134,7 +163,35 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: '20%',
+    height: '25%',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  circleButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: '#413F6F',
+    marginRight: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pageButtons: {
+    position: 'absolute',
+    bottom: 5,
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  mediaTag: {
+    width: 80,
+    height: 30,
+    backgroundColor: "#736F96",
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+    marginBottom: 5,
   },
 });
 

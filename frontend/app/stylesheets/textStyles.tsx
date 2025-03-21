@@ -17,7 +17,7 @@ export const textStyles = StyleSheet.create ({
         textAlign: 'center',
     },
     heading1: {
-        fontFamily: 'Lato Bold Italic',
+        fontFamily: 'Lato Bold',
         fontSize: 35,
         marginVertical: 5,
         color: 'white',
@@ -29,6 +29,12 @@ export const textStyles = StyleSheet.create ({
         fontSize: 25,
         marginVertical: 5,
         color: 'white',
+        textAlign: 'left',
+    },
+    heading2purple: {
+        fontFamily: 'Lato Bold',
+        fontSize: 24,
+        color: '#413F6F',
         textAlign: 'left',
     },
     subheading: {
