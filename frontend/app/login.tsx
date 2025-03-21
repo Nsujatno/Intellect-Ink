@@ -16,7 +16,8 @@ export default function Login() {
             'http://localhost:8000/api/user/signin',
             {email, password}
           );
-
+          localStorage.setItem("token", response.data.user.token)
+          console.log(localStorage.getItem("token"))
           router.push("/home")
 
         } catch (error) {
@@ -26,7 +27,7 @@ export default function Login() {
                 }
             }
         }
-}
+    }
 
   return (
     <View style={styles.container}>

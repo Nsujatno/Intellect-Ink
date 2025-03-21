@@ -4,10 +4,12 @@ import CheckBox from "./components/checkbox";
 import Buttons from "./components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import axios from 'axios';
 
 export default function CreateProfile() {
   const router = useRouter();
   const [medias, setMedias] = useState<string[]>([]);
+  const [name, setName] = useState("")
   const options = [
     { value: 'Poems', label: 'Poems' },
     { value: 'Articles', label: 'Articles' },
@@ -24,6 +26,35 @@ export default function CreateProfile() {
     if (count > 0)
       setCount(count - 5)
   }
+
+  const handleSubmit = async () => {
+    // console.log("medias: " + medias)
+    // console.log("count: " + count)
+    // console.log("name: " + name)
+
+    try{
+      const payload = {
+        name: name,
+        media: medias,
+        dailyReadingTime: count,
+        // notification
+      }
+      const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+      router.push("/home")
+    }
+    catch (error){
+      if (axios.isAxiosError(error)) {
+        if(error.response){
+            console.log('Error: ', error.response.data)
+        }
+      }
+    }
+}
 
   return (
     <ScrollView style={styles.container}>
@@ -43,7 +74,7 @@ export default function CreateProfile() {
 
         <View style={styles.leftContainer}>
           <Text style={textStyles.heading2}>Name</Text>
-          <TextInput style={styles.inputContainer} /*value={name} onChangeText={setName}*//>
+          <TextInput style={styles.inputContainer} value={name} onChangeText={setName}/>
          
           <Text style={[textStyles.heading1, {marginTop: 50}]}>Preferences</Text>
         
@@ -87,7 +118,7 @@ export default function CreateProfile() {
             <Buttons
             title='Next'
             variant='white'
-            onPress={() => router.push('/home')}
+            onPress={handleSubmit/*() => router.push('/home')*/}
           />
         </View>
       </View>
