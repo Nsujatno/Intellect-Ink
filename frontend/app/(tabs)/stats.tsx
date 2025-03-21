@@ -126,13 +126,16 @@ export default function Stats() {
               <Image
                 source={require('../../assets/images/stats_mini_box.png')}
                 style={styles.statsMiniBox}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Day Streak</Text>
               <Image
                 source={require('../../assets/images/stats_mini_box.png')}
                 style={styles.statsMiniBox}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Level </Text>
             </View>
             <Image
               source={require('../../assets/images/stats_mini_box.png')}
               style={styles.statsMiniBox}/>
+              <Text style={[textStyles.bodytext3, {marginTop: 60, right: 70}]}>Place</Text>
           </View>
         </View>
 
@@ -142,16 +145,10 @@ export default function Stats() {
         <DropDownButtons
             title=' Achievements '
             variant='purple'
-            options={[
-              { value: 'achievement1', label: 'First Achievement'}
-            ]}
         />
         <DropDownButtons
             title=' Leaderboard '
             variant='purple'
-            options={[
-              { value: 'achievement1', label: 'First Achievement'}
-            ]}
         />
         </View>
       </View>
@@ -219,7 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     width: '60%',
-    top: -20,
+    top: -8,
   },
   miniBoxWrapper: {
     flexDirection: 'column',
