@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, Linking } from "react-native";
 import SwitchSelector from 'react-native-switch-selector';
 import LinearGradient from 'react-native-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
@@ -51,7 +51,7 @@ export default function Home() {
         author: string;
         summary?: string;
         poem?: string;
-        link?: string;
+        link: string;
     };
 
     const Item = ({item} : {item: ItemProps}) => (
@@ -85,11 +85,11 @@ export default function Home() {
                         <Ionicons name={favorite} size={30} color={'white'}/>
                     </TouchableOpacity>
                 </View>
-                <Buttons
+                {item.link && <Buttons
                     title='Read More'
                     variant='purple'
-                    onPress={() => router.push('/home')}
-                />
+                    onPress={() => Linking.openURL(item.link)}
+                />}
             </View>
         </View>
     );
