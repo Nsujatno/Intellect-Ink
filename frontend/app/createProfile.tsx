@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-
 export default function CreateProfile() {
   const router = useRouter();
   const [medias, setMedias] = useState<string[]>([]);
