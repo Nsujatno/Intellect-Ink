@@ -21,7 +21,4 @@ exports.getArticle = async (req, res) => {
             error: error.message
           });
     }
-
-
-    // res.json({message: "hello backend"});
 }
