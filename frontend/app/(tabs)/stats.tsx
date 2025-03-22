@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import DropDownButtons from "../components/dropDownButtons";
+import Buttons from "../components/buttons";
 import { textStyles } from "../stylesheets/textStyles";
 
 export default function Stats() {
@@ -202,6 +203,12 @@ export default function Stats() {
             ]}
         />
         </View>
+
+        <Buttons // testing discussion page
+          title='Comment'
+          variant='purple'
+          onPress={() => router.push('/discussion')}
+        />
       </View>
     </ScrollView>
   );

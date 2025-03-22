@@ -45,3 +45,5 @@ export function useTimeTracker(category: string) {
 
   return { timeSpent, startTiming, stopTiming };
 }
+
+export default useTimeTracker;
