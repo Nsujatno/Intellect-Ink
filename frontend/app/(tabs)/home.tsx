@@ -72,63 +72,7 @@ export default function Home() {
         poem?: string;
         link: string;
     };
-  type ItemProps = {
-    id: string;
-    type: string;
-    image?: string;
-    title: string;
-    author: string;
-    summary?: string;
-    poem?: string;
-  };
-
-  const Item = ({ item }: { item: ItemProps }) => (
-    <View style={styles.contentContainer}>
-      {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-      <View style={{ padding: 10 }}>
-        <View style={styles.mediaTag}>
-          <Text style={{ color: "white" }}>{item.type}</Text>
-        </View>
-        <Text style={textStyles.heading2purple}>{item.title}</Text>
-        <Text style={textStyles.subheading}>By: {item.author}</Text>
-        {item.type === "poem" ? (
-          <Text style={textStyles.subheading}>{item.poem}</Text>
-        ) : (
-          <View>
-            <Text style={textStyles.heading2purple}>Summary:</Text>
-            <Text style={textStyles.subheading}>{item.summary}</Text>
-          </View>
-        )}
-      </View>
-      <View style={styles.pageButtons}>
-        <View style={{ flexDirection: "row", flex: 1 }}>
-          <TouchableOpacity
-            style={styles.circleButton}
-            onPress={() =>
-              setLike((prevIcon) => (prevIcon === "heart-outline" ? "heart" : "heart-outline"))
-            }
-          >
-            <Ionicons name={like} size={35} color={"white"} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.circleButton}
-            onPress={() =>
-              setFavorite((prevIcon) =>
-                prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"
-              )
-            }
-          >
-            <Ionicons name={favorite} size={30} color={"white"} />
-          </TouchableOpacity>
-        </View>
-        <Buttons
-          title="Read More"
-          variant="purple"
-          onPress={() => handleReadMore(item.type)} // Start timing based on type
-        />
-      </View>
-    </View>
-  );
+    
     const Item = ({item} : {item: ItemProps}) => (
         <View style={styles.contentContainer}>
             {item.image && <Image source={{uri: item.image}} style={styles.image}/>}
