@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const textStyles = StyleSheet.create ({
     logo: {
         fontFamily: 'Titan One',
-        fontSize: 50,
+        fontSize: 45,
         marginVertical: 5,
         color: 'white',
         textAlign: 'center',
@@ -33,7 +33,7 @@ export const textStyles = StyleSheet.create ({
     },
     heading2purple: {
         fontFamily: 'Lato Bold',
-        fontSize: 24,
+        fontSize: 22,
         color: '#413F6F',
         textAlign: 'left',
     },
@@ -42,6 +42,12 @@ export const textStyles = StyleSheet.create ({
         fontSize: 20,
         marginVertical: 5,
         color: '#504F4F',
+    },
+    subheadingWhite: {
+        fontFamily: 'Lato Regular',
+        fontSize: 20,
+        marginVertical: 5,
+        color: 'white',
     },
     subheading2: {
         fontFamily: 'Lato Italic',

@@ -42,6 +42,8 @@ const styles = StyleSheet.create ({
     },
     purpleContainer: {
         backgroundColor:'#413F6F',
+        height: 45,
+        paddingHorizontal: 20,
     },
     whiteContainer: {
         backgroundColor:'#FFFFFF',
