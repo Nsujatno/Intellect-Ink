@@ -99,6 +99,8 @@ export default function CreateProfile() {
                 mode="time"
                 is24Hour={true}
                 onChange={handleTimeChange}
+                themeVariant="light"
+                accentColor="#413F6F"
               />
             </View>
         )}

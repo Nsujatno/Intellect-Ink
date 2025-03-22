@@ -30,7 +30,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({options, checkedValues, onChange, st
                         onChange(updatedCheckedValues);
                     }}>
                         <MaterialIcons name={active ? "check-box" : "check-box-outline-blank" } color={'#413F6F'} size={24}/>
-                        <Text style={[textStyles.bodytext, {marginLeft:10}]}>{option.label}</Text>
+                        <Text style={[textStyles.subheading, {marginLeft:10}]}>{option.label}</Text>
                     </TouchableOpacity>
                 );
             })}
