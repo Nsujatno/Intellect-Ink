@@ -38,8 +38,8 @@ const styles = StyleSheet.create ({
     container: {
         height: 50,
         width: '100%',
-        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: 5,
         marginBottom: 10,
         paddingHorizontal: 40,
