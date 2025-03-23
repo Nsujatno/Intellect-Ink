@@ -38,8 +38,8 @@ export default function Home() {
   const [state, setState] = useState({ page: 0 });
   const [level, setLevel] = useState(0);
   const [percent, setPercent] = useState(50);
-  const [like, setLike] = useState("heart-outline");
-  const [favorite, setFavorite] = useState("bookmark-outline");
+  const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
+  const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
 
   // Time tracking for different categories
   const booksTracker = useTimeTracker("books");
@@ -55,7 +55,7 @@ export default function Home() {
         newsTracker.startTiming();
     }
 
-    router.push({ pathname: "/readMore", params: { itemId: item.id } });
+    router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } });
   };
 
     type ItemProps = {

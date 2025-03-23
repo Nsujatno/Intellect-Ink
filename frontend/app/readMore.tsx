@@ -6,7 +6,8 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function ReadMore() {
       const router = useRouter();
-      const { itemID } = useLocalSearchParams();
+      const { item } = useLocalSearchParams();
+      const parseItem = JSON.parse(item as string);
 
       return (
         <LinearGradient
@@ -16,10 +17,10 @@ export default function ReadMore() {
             <ScrollView style={styles.container}>
               <View style={styles.textContainer}>
                 <TouchableOpacity
-                    onPress={() => {router.push("/home")}}>
+                    onPress={() => {router.back()}}>
                     <Text style={textStyles.subheadingWhite}>{`< Back`}</Text>
                 </TouchableOpacity>
-                
+                <Text>{parseItem.title}</Text>
               </View>
             </ScrollView>
         </LinearGradient>
