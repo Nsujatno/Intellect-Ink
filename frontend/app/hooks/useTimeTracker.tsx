@@ -11,7 +11,7 @@ export function useTimeTracker(category: string) {
       try {
         const savedTime = await AsyncStorage.getItem(category);
         if (savedTime) {
-          setTimeSpent(parseInt(savedTime, 10)); // Load saved time
+          setTimeSpent(parseInt(savedTime, 10));
         }
       } catch (error) {
         console.error("Failed to load time from AsyncStorage:", error);
@@ -21,7 +21,6 @@ export function useTimeTracker(category: string) {
     loadTime();
   }, [category]);
 
-  // Start timing
   const startTiming = () => {
     startTimeRef.current = Date.now(); // Capture the start time
   };
@@ -33,7 +32,7 @@ export function useTimeTracker(category: string) {
       const updatedTime = timeSpent + elapsed;
 
       setTimeSpent(updatedTime); // Update state
-      startTimeRef.current = null; // Clear the reference
+      startTimeRef.current = null; // Clear
 
       // Save to AsyncStorage
       try {

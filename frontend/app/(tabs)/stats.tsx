@@ -9,7 +9,7 @@ import { textStyles } from "../stylesheets/textStyles";
 export default function Stats() {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(true); // State for loading status
+  const [loading, setLoading] = useState(true);
   const [timeSpentData, setTimeSpentData] = useState({
     books: 0,
     poems: 0,
@@ -36,7 +36,6 @@ export default function Stats() {
         const politicsTime = parseInt((await AsyncStorage.getItem("politics")) || "0", 10);
         const researchTime = parseInt((await AsyncStorage.getItem("research")) || "0", 10);
 
-        // Update state with the fetched times
         setTimeSpentData({
           books: booksTime / 60000, // Convert ms to minutes
           poems: poemsTime / 60000,
@@ -44,15 +43,15 @@ export default function Stats() {
           research: researchTime / 60000,
         });
 
-        // Update chart data (mock example: adding time to specific days)
+        // Update chart data (example: adding time to specific days)
         setChartData((prevData) =>
           prevData.map((data, index) => {
             return {
               ...data,
-              books: (booksTime / 60000) / 7, // Divide by 7 days for weekly averages
-              poems: (poemsTime / 60000) / 7,
-              politics: (politicsTime / 60000) / 7,
-              research: (researchTime / 60000) / 7,
+              books: (booksTime / 60000), // per day
+              poems: (poemsTime / 60000),
+              politics: (politicsTime / 60000),
+              research: (researchTime / 60000),
             };
           })
         );
@@ -67,7 +66,7 @@ export default function Stats() {
   }, []);
 
   if (loading) {
-    return <Text>Loading statistics...</Text>; // Display loading message
+    return <Text>Loading statistics...</Text>;
   }
 
   return (
@@ -89,7 +88,7 @@ export default function Stats() {
             xKey="day"
             yKeys={["books", "poems", "politics", "research"]}
             domainPadding={{ left: 50, right: 50, top: 30 }}
-            domain={{ y: [0, 100] }} // Adjust based on your max data
+            domain={{ y: [0, 100] }}
             axisOptions={{
               formatXLabel: (value) => value,
               formatYLabel: (value) => `${value} min`,
