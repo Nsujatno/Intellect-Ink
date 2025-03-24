@@ -1,17 +1,32 @@
-import { Text, View, TouchableOpacity, Animated, LayoutAnimation, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, Animated, LayoutAnimation, StyleSheet, Image, ScrollView } from "react-native";
 import React, { useRef, useState } from "react";
 import { textStyles } from "../stylesheets/textStyles";
-import {toggleAnimation} from "../animations/toggleAnimation";
+import { toggleAnimation } from "../animations/toggleAnimation";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CheckBox from "./checkbox";
+
+interface Achievement {
+    id: string;
+    title: string;
+    description: string;
+    icon: any;
+}
+
+interface Leaderboard {
+    id: string;
+    title: string;
+    icon: any;
+}
 
 interface ButtonProps {
     title: string;
     variant: 'purple' | 'white' | 'whiteOutline';
     options?: { value: string, label: string }[];
+    achievements?: Achievement[];
+    leaderboards?: Leaderboard[];
 }
 
-const dropDownButton: React.FC<ButtonProps> = ({ title, variant }) => {
+const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], options = []}) => {
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
     const [checkedValues, setCheckedValues] = useState<string[]>([]);
@@ -56,18 +71,34 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant }) => {
                     </Animated.View>
                 </View>
             </TouchableOpacity>
+
             {showContent && (
                 <View style={styles.body}>
+                    {achievements.map((achievement) => (
+                    <View key={achievement.id} style={styles.achievementBox}>
+                        <Image source={achievement.icon} style={styles.achievementIcon} />
+                        <View style={styles.achievementText}>
+                            <Text style={textStyles.heading2purple}>{achievement.title}</Text>
+                            <Text style={textStyles.bodytext3}>{achievement.description}</Text>
+                        </View>
+                    </View>
+                    ))}
+
+                    {leaderboards.map((entry, index) => (
+                        <View key={entry.id} style={styles.leaderboardBox}>
+                            <Text style={styles.rankNumber}>{index + 1}.</Text>
+                            <Image source={entry.icon} style={styles.leaderboardIcon} />
+                            <Text style={textStyles.bodytext4}>{entry.title}</Text>
+                        </View>
+                    ))}
+
                     <CheckBox
-                        options={[
-                            { value: 'option1', label: 'Option 1'},
-                            { value: 'option2', label: 'Option 2'},
-                            { value: 'option3', label: 'Option 3'},
-                        ]}
+                        options={options}
                         checkedValues={checkedValues}
                         onChange={handleCheckBoxChange}
                     />
-            </View>
+                    <View style={styles.spacing} />
+                </View>
             )}
         </View>
     )
@@ -101,6 +132,43 @@ const styles = StyleSheet.create ({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    achievementBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 10.
+    },
+    achievementIcon: {
+        width: 40,
+        height: 40,
+        marginRight: 10,
+    },
+    achievementText: {
+        flex: 1,
+    },
+    spacing: {
+        height: 100,
+    },
+    leaderboardBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#F5F5F5',
+        borderRadius: 8,
+        marginBottom: 10,  
+    },
+    rankNumber: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginRight: 10,
+    },
+    leaderboardIcon: {
+        width: 40,
+        height: 40,
+        marginRight: 10,
     }
 })
 
