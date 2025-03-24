@@ -9,6 +9,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 export default function Signup() {
     const router = useRouter();
 
+    const [error, setError] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -16,6 +17,7 @@ export default function Signup() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleSubmit = async () => {
+        setError("");
         if(password == confirmPassword) {
             try {
                 const response = await axios.post(
@@ -28,7 +30,7 @@ export default function Signup() {
               } catch (error) {
                   if (axios.isAxiosError(error)) {
                       if(error.response){
-                          console.log('Error: ', error.response.data)
+                          setError(error.response.data)
                       }
                   }
               }
@@ -43,12 +45,12 @@ export default function Signup() {
             catch (error) {
                 if (axios.isAxiosError(error)) {
                     if(error.response){
-                        console.log('Error: ', error.response.data)
+                        setError(error.response.data)
                     }
                 }
             }
         } else{
-            console.log("passwords don't match")
+            setError("Passwords don't match")
         }
         
     }
@@ -101,6 +103,7 @@ export default function Signup() {
                         </TouchableOpacity>
                     </View>
                 </View>
+            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null} // display error message if present
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>
