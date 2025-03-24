@@ -8,6 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function Profile() {
   const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
   const [medias, setMedias] = useState<string[]>([]);
   const options = [
     { value: 'Poems', label: 'Poems' },

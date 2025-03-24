@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 export default function Signup() {
     const router = useRouter();
@@ -10,6 +12,8 @@ export default function Signup() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleSubmit = async () => {
         if(password == confirmPassword) {
@@ -50,6 +54,7 @@ export default function Signup() {
     }
 
   return (
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
     <View style={styles.container}>
         <View style={styles.imageContainer}>
             <Image
@@ -65,9 +70,36 @@ export default function Signup() {
                     <Text style={textStyles.heading2}>Email</Text>
                     <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
                     <Text style={textStyles.heading2}>Password</Text>
-                    <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
+                    <View style={{position: 'relative'}}>
+                        <TextInput
+                            style={[styles.inputContainer,{paddingRight: 45}]}
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={showPassword}/>
+                        <TouchableOpacity
+                            onPress={()=>setShowPassword(!showPassword)}
+                            style={{position: 'absolute', right: 15, top: 15}}>
+                            {password.length<1?null:showPassword?
+                                <Ionicons name="eye-off-outline" size={24} color={'gray'} />
+                                : <Ionicons name="eye-outline" size={24} color={'gray'} />}
+                        </TouchableOpacity>
+                    </View>
+                    
                     <Text style={textStyles.heading2}>Confirm Password</Text>
-                    <TextInput style={styles.inputContainer} value={confirmPassword} onChangeText={setConfirmPassword}/>
+                    <View style={{position: 'relative'}}>
+                        <TextInput
+                            style={[styles.inputContainer,{paddingRight: 45}]}
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry={showConfirmPassword}/>
+                        <TouchableOpacity
+                            onPress={()=>setShowConfirmPassword(!showConfirmPassword)}
+                            style={{position: 'absolute', right: 15, top: 15}}>
+                            {confirmPassword.length<1?null:showConfirmPassword?
+                                <Ionicons name="eye-off-outline" size={24} color={'gray'} />
+                                : <Ionicons name="eye-outline" size={24} color={'gray'} />}
+                        </TouchableOpacity>
+                    </View>
                 </View>
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
@@ -82,7 +114,7 @@ export default function Signup() {
                 style={styles.image2}/>
         </View>
     </View>
-       
+    </ScrollView>
   );
 }
 

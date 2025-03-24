@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#736F96",
         justifyContent: "center",
         alignItems: "center",
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
       },
       contentContainer: {
         backgroundColor: "white",
