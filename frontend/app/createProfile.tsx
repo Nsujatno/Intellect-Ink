@@ -111,7 +111,7 @@ export default function CreateProfile() {
             variant='whiteOutline'
             onPress={() => router.push('/home')}
           />
-            <Buttons
+          <Buttons
             title='Next'
             variant='white'
             onPress={() => router.push('/home')}

@@ -34,7 +34,6 @@ export function useTimeTracker(category: string) {
       setTimeSpent(updatedTime); // Update state
       startTimeRef.current = null; // Clear
 
-      // Save to AsyncStorage
       try {
         await AsyncStorage.setItem(category, updatedTime.toString());
       } catch (error) {
