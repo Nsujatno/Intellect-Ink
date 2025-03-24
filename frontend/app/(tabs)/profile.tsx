@@ -1,7 +1,6 @@
-import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity, FlatList} from "react-native";
 import { textStyles } from "../stylesheets/textStyles";
 import CheckBox from "../components/checkbox";
-import Buttons from "../components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -17,6 +16,22 @@ export default function Profile() {
     { value: 'Politics', label: 'Politics' },
     { value: 'Research', label: 'Research' },
   ];
+  const favorites = [
+    { id: "1", title: "Item 1" },
+    { id: "2", title: "Item 2" },
+    { id: "3", title: "Item 3" },
+    { id: "4", title: "Item 4" },
+  ];
+  const Item = ({ item }: { item: ItemProps }) => (
+    <View style={styles.favorites}>
+    <Text style={textStyles.heading2purple}>{item.title}</Text>
+  </View>
+  );
+  type ItemProps = {
+    id: string,
+    title: string,
+    };
+
   const [dailyNotifications, setDailyNotifications] = useState(false);
   const [time, setTimeState] = useState(new Date());
   const handleTimeChange = (event: any, date: Date | undefined) => {
@@ -46,16 +61,40 @@ export default function Profile() {
 
       <View style={styles.textContainer}>
         
-        <Text style={textStyles.pageHeader}>Profile</Text>
-        <Image
-          source={require('../../assets/images/pfp.png')}
-          style={styles.pfpImg}/>
+        <Text style={textStyles.pageHeader}>{isEditing?"Edit Profile":"Profile"}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 60,}}>
+            <Image
+            source={require('../../assets/images/pfp.png')}
+            style={styles.pfpImg}/>
+            {isEditing? (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={()=>setIsEditing(!isEditing)}>
+                    <Text style={textStyles.subheading}>Save Changes</Text>
+                </TouchableOpacity>
+            ):(
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={()=>setIsEditing(!isEditing)}>
+                    <Text style={textStyles.subheading}>Edit Profile</Text>
+                </TouchableOpacity>
+            )}
+            
+        </View>
 
         <View style={styles.leftContainer}>
-          <Text style={textStyles.heading2}>Name</Text>
-          <TextInput style={styles.inputContainer} /*value={name} onChangeText={setName}*//>
-         
-          <Text style={[textStyles.heading1, {marginTop: 50}]}>Preferences</Text>
+            {isEditing? (
+                <View style={{marginTop: 20}}>
+                    <Text style={textStyles.heading2}>Change Name</Text>
+                    <TextInput style={styles.inputContainer} /*value={name} onChangeText={setName}*//>
+                </View>
+            ):(
+                <View style={{marginTop: 45, marginBottom: 40, alignSelf: 'center'}}>
+                    <Text style={textStyles.heading2}>Hello, Name</Text>
+                </View>
+            )}
+          
+          <Text style={[textStyles.heading1, {marginTop: 30}]}>Preferences</Text>
         
           <Text style={[textStyles.heading2, {marginVertical: 20}]}>Media</Text>
           <CheckBox
@@ -67,32 +106,45 @@ export default function Profile() {
         
         </View>
 
-        <View style={styles.goalContainer}>
-          <Text style={textStyles.subheading}>Set your daily time goal</Text>
+        {isEditing? (
+            <View style={styles.goalContainer}>
+            <Text style={textStyles.subheading}>Set your daily time goal</Text>
 
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity onPress={minus}>
+                <TouchableOpacity onPress={minus}>
                 <Text style={textStyles.pageHeader}>-</Text>
-              </TouchableOpacity>
-              <Text style={textStyles.pageHeader}> {count} </Text>
-              <TouchableOpacity onPress={plus}>
+                </TouchableOpacity>
+                <Text style={textStyles.pageHeader}> {count} </Text>
+                <TouchableOpacity onPress={plus}>
                 <Text style={textStyles.pageHeader}>+</Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
             </View>
 
-          <Text style={textStyles.subheading}>minutes/day</Text>
-        </View>
+            <Text style={textStyles.subheading}>minutes/day</Text>
+            </View>
+        ):(
+            <View style={styles.goalContainer}>
+            <Text style={textStyles.subheading}>Your daily time goal is</Text>
+                <Text style={textStyles.pageHeader}> {count} </Text>
+            <Text style={textStyles.subheading}>minutes/day</Text>
+            </View>
+        )}
 
         <Text style={[textStyles.heading2, {marginVertical: 20, marginTop: 50,}]}>Notifications</Text>
         <View style={styles.notifications}>
           <Text style={[textStyles.subheading]}>Daily Reminder</Text>
-          <Switch value={dailyNotifications}
+          {isEditing? (
+            <Switch value={dailyNotifications}
             onValueChange={() => setDailyNotifications((previousState) => !previousState)}
             trackColor={{false: "#E2E2E2", true: "#646EA3"}}
             thumbColor={dailyNotifications ? "#413F6F" : "white"}
           />
+          ):(
+            <Text style={textStyles.subheading}>{dailyNotifications?"ON":"OFF"}</Text>
+          )}
+          
         </View>
-        {dailyNotifications && (
+        {isEditing && dailyNotifications && (
             <View style={styles.notificationsExpanded}>
               <Text style={textStyles.subheading}>Set Time</Text>
               <DateTimePicker
@@ -105,6 +157,16 @@ export default function Profile() {
               />
             </View>
         )}
+        <Text style={[textStyles.heading1, {marginVertical: 20, marginTop: 50,}]}>Favorites</Text>
+        <View style={{width: 315}}>
+        <FlatList
+            data={favorites}
+            renderItem={({ item }) => <Item item={item} />}
+            horizontal={true}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+        />
+        </View>
       </View>
     </ScrollView>
   );
@@ -128,7 +190,6 @@ const styles = StyleSheet.create({
   pfpImg: {
       width: 112,
       height: 110,
-      marginTop: 60,
       alignSelf: 'center',
   },
   textContainer: {
@@ -138,6 +199,7 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
       alignSelf: 'flex-start',
+      width: '100%',
   },
   inputContainer: {
       backgroundColor: '#FFFFFF',
@@ -146,21 +208,20 @@ const styles = StyleSheet.create({
       elevation: 10,
       alignItems: 'center',
       height: 50,
-      width: 320,
       fontSize: 20,
       paddingHorizontal: 15,
       marginBottom: 15,
   },
   button: {
-      backgroundColor: '#413F6F',
+      backgroundColor: '#FFFFFF',
       borderRadius: 5,
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: 'center',
+      alignSelf: 'center',
       height: 50,
-      width: 200,
-      marginTop: 80,
-      marginBottom: 40,
+      width: 160,
+      marginLeft: 20,
   },
   goalContainer: {
     width: '100%',
@@ -195,5 +256,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 5,
     marginTop: -7,
+  },
+  favorites: {
+    backgroundColor: 'white',
+    padding: 10,
+    height: 100,
+    borderRadius: 5,
+    marginRight: 15,
   },
 });

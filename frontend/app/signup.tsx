@@ -103,7 +103,7 @@ export default function Signup() {
                         </TouchableOpacity>
                     </View>
                 </View>
-            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null} // display error message if present
+            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null}
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>
