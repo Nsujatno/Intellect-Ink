@@ -16,11 +16,16 @@ export default function Login() {
             'http://localhost:8000/api/user/signin',
             {email, password}
           );
-
+          localStorage.setItem("token", response.data.user.token)
+          console.log(localStorage.getItem("token"))
           router.push("/home")
 
         } catch (error) {
-            console.log('Error: ', error)
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
         }
     }
 

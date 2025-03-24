@@ -1,18 +1,30 @@
 const express = require('express')
+const axios = require('axios');
 require('dotenv').config();
 require('./db')
 const cors = require('cors');
 
 const userRouter = require('./routes/user')
+const guardianRouter = require('./routes/guardian')
+const articleRouter = require('./routes/article')
+const bookRouter = require('./routes/books')
+const newsRouter = require('./routes/news')
+const paperRouter = require('./routes/paper')
+const poemRouter = require('./routes/poem')
 
 const app = express()
 
 const PORT = process.env.PORT || 8000
 
 app.use(cors());
-app.use(express.json()) // This is used to take the data given and store it in the req.body which is why we can reference it later on
+app.use(express.json())
 app.use('/api/user', userRouter);
-
+app.use('/api', guardianRouter);
+app.use('/api/article', articleRouter);
+app.use('/api/book', bookRouter);
+app.use('/api/news', newsRouter);
+app.use('/api/paper', paperRouter);
+app.use('/api/poem', poemRouter);
 
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`)

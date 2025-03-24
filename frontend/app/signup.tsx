@@ -9,19 +9,44 @@ export default function Signup() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
 
     const handleSubmit = async () => {
-        try {
-          const response = await axios.post(
-            'http://localhost:8000/api/user/create',
-            {email, password}
-          );
-
-          router.push("/createProfile")
-
-        } catch (error) {
-            console.log('Error: ', error)
+        if(password == confirmPassword) {
+            try {
+                const response = await axios.post(
+                  'http://localhost:8000/api/user/create',
+                  {email, password}
+                );
+      
+                router.push("/createProfile")
+      
+              } catch (error) {
+                  if (axios.isAxiosError(error)) {
+                      if(error.response){
+                          console.log('Error: ', error.response.data)
+                      }
+                  }
+              }
+            
+            // auto log in user to get auth token
+            try {
+                const response = await axios.post("http://localhost:8000/api/user/signin", {email, password})
+                // console.log(response.data)
+                localStorage.setItem("token", response.data.user.token)
+                // console.log(localStorage.getItem("token"))
+            }
+            catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if(error.response){
+                        console.log('Error: ', error.response.data)
+                    }
+                }
+            }
+        } else{
+            console.log("passwords don't match")
         }
+        
     }
 
   return (
@@ -40,11 +65,11 @@ export default function Signup() {
                     <Text style={textStyles.heading2}>Email</Text>
                     <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
                     <Text style={textStyles.heading2}>Password</Text>
-                    <TextInput style={styles.inputContainer}/>
-                    <Text style={textStyles.heading2}>Confirm Password</Text>
                     <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
+                    <Text style={textStyles.heading2}>Confirm Password</Text>
+                    <TextInput style={styles.inputContainer} value={confirmPassword} onChangeText={setConfirmPassword}/>
                 </View>
-            <TouchableOpacity style={styles.button} onPress={() => router.push("/createProfile")}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>
             <Text style={textStyles.subheading}>Already a user?</Text>
