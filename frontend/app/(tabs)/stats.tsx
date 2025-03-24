@@ -203,12 +203,6 @@ export default function Stats() {
             ]}
         />
         </View>
-
-        <Buttons // testing discussion page
-          title='Comment'
-          variant='purple'
-          onPress={() => router.push('/discussion')}
-        />
       </View>
     </ScrollView>
   );
