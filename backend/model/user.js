@@ -23,6 +23,18 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
         required: true,
+    },
+    media: {
+        type: [String],
+        default: [],
+    },
+    dailyReadingTime: {
+        type: Number,
+        default: 0,
+    },
+    notification: {
+        type: Boolean,
+        default: false,
     }
 })
 
