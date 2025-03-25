@@ -1,6 +1,6 @@
 import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
 import { CartesianChart, StackedBar } from "victory-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import DropDownButtons from "../components/dropDownButtons";
@@ -51,53 +51,53 @@ export default function Stats() {
     research: 0,
   });
 
-  const [chartData, setChartData] = useState([
-    { day: "Sun", books: 0, poems: 0, politics: 0, research: 0 },
-    { day: "M", books: 0, poems: 0, politics: 0, research: 0 },
-    { day: "T", books: 0, poems: 0, politics: 0, research: 0 },
-    { day: "W", books: 0, poems: 0, politics: 0, research: 0 },
-    { day: "Th", books: 0, poems: 0, politics: 0, research: 0 },
-    { day: "F", books: 0, poems: 0, politics: 0, research: 0 },
-    { day: "S", books: 0, poems: 0, politics: 0, research: 0 },
-  ]);
+  // const [chartData, setChartData] = useState([
+  //   { day: "Sun", books: 0, poems: 0, politics: 0, research: 0 },
+  //   { day: "M", books: 0, poems: 0, politics: 0, research: 0 },
+  //   { day: "T", books: 0, poems: 0, politics: 0, research: 0 },
+  //   { day: "W", books: 0, poems: 0, politics: 0, research: 0 },
+  //   { day: "Th", books: 0, poems: 0, politics: 0, research: 0 },
+  //   { day: "F", books: 0, poems: 0, politics: 0, research: 0 },
+  //   { day: "S", books: 0, poems: 0, politics: 0, research: 0 },
+  // ]);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Fetch time spent on each category from AsyncStorage
-        const booksTime = parseInt((await AsyncStorage.getItem("books")) || "0", 10);
-        const poemsTime = parseInt((await AsyncStorage.getItem("poems")) || "0", 10);
-        const politicsTime = parseInt((await AsyncStorage.getItem("politics")) || "0", 10);
-        const researchTime = parseInt((await AsyncStorage.getItem("research")) || "0", 10);
+  // useEffect(() => {
+  //   const fetchStats = async () => {
+  //     try {
+  //       // Fetch time spent on each category from AsyncStorage
+  //       // const booksTime = parseInt((await AsyncStorage.getItem("books")) || "0", 10);
+  //       // const poemsTime = parseInt((await AsyncStorage.getItem("poems")) || "0", 10);
+  //       // const politicsTime = parseInt((await AsyncStorage.getItem("politics")) || "0", 10);
+  //       // const researchTime = parseInt((await AsyncStorage.getItem("research")) || "0", 10);
 
-        setTimeSpentData({
-          books: booksTime / 60000, // Convert ms to minutes
-          poems: poemsTime / 60000,
-          politics: politicsTime / 60000,
-          research: researchTime / 60000,
-        });
+  //       // setTimeSpentData({
+  //       //   books: booksTime / 60000, // Convert ms to minutes
+  //       //   poems: poemsTime / 60000,
+  //       //   politics: politicsTime / 60000,
+  //       //   research: researchTime / 60000,
+  //       // });
 
-        // Update chart data (example: adding time to specific days)
-        setChartData((prevData) =>
-          prevData.map((data, index) => {
-            return {
-              ...data,
-              books: (booksTime / 60000), // per day
-              poems: (poemsTime / 60000),
-              politics: (politicsTime / 60000),
-              research: (researchTime / 60000),
-            };
-          })
-        );
-      } catch (error) {
-        console.error("Error fetching statistics:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       // Update chart data (example: adding time to specific days)
+  //       // setChartData((prevData) =>
+  //       //   prevData.map((data, index) => {
+  //       //     return {
+  //       //       ...data,
+  //       //       books: (booksTime / 60000), // per day
+  //       //       poems: (poemsTime / 60000),
+  //       //       politics: (politicsTime / 60000),
+  //       //       research: (researchTime / 60000),
+  //       //     };
+  //       //   })
+  //       // );
+  //     } catch (error) {
+  //       console.error("Error fetching statistics:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchStats();
-  }, []);
+  //   fetchStats();
+  // }, []);
 
   if (loading) {
     return <Text>Loading statistics...</Text>;
@@ -117,7 +117,7 @@ export default function Stats() {
 
         {/* Bar Graph */}
         <View style={styles.chartContainer}>
-          <CartesianChart
+          {/* <CartesianChart
             data={chartData}
             xKey="day"
             yKeys={["books", "poems", "politics", "research"]}
@@ -152,8 +152,8 @@ export default function Stats() {
                   }}
                 />
               );
-            }}
-          </CartesianChart>
+            }} */}
+          {/* </CartesianChart> */}
         </View>
 
 

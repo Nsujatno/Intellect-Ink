@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     },
     textContainer: {
       marginTop: 70,
-      position: 'relative',
+      position: 'absolute',
       alignSelf: 'center',
       alignItems: 'center',
     },
     topicContainer: {
-      position: 'absolute',
+      position: 'relative',
       marginTop: 135,
       flexDirection: 'column',
       gap: 175,

@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     answerBox: {
         alignSelf: 'center',
         zIndex: 1,
-        width: '80%',
+        width: '86%',
         height: 300,
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        marginTop: 200,
+        marginTop: 183,
     },
     input: {
         width: '100%',
@@ -134,6 +134,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#646EA3',
         marginTop: 10,
-        left: 45,
+        left: 30,
     }
 })
