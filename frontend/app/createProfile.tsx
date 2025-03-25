@@ -5,6 +5,7 @@ import Buttons from "./components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreateProfile() {
   const router = useRouter();
@@ -39,10 +40,11 @@ export default function CreateProfile() {
         dailyReadingTime: count,
         // notification
       }
+      const token = await AsyncStorage.getItem('token');
       const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${token}`
         }
       })
       router.push("/home")
