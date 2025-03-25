@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
     const router = useRouter();
@@ -16,8 +17,10 @@ export default function Login() {
             'http://localhost:8000/api/user/signin',
             {email, password}
           );
-          localStorage.setItem("token", response.data.user.token)
-          console.log(localStorage.getItem("token"))
+        //   localStorage.setItem("token", response.data.user.token)
+          AsyncStorage.setItem("token", String(response.data.user.token))
+        //   console.log(localStorage.getItem("token"))
+          console.log(AsyncStorage.getItem("token"))
           router.push("/home")
 
         } catch (error) {

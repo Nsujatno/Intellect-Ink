@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 
@@ -38,8 +39,12 @@ export default function Signup() {
             // auto log in user to get auth token
             try {
                 const response = await axios.post("http://localhost:8000/api/user/signin", {email, password})
-                // console.log(response.data)
-                localStorage.setItem("token", response.data.user.token)
+                console.log(response.data)
+                // localStorage.setItem("token", response.data.user.token)
+                AsyncStorage.setItem("token", String(response.data.user.token))
+                const token = await AsyncStorage.getItem('token');
+                // console.log('Token:', token);
+                // console.log(AsyncStorage.getItem("token"))
                 // console.log(localStorage.getItem("token"))
             }
             catch (error) {

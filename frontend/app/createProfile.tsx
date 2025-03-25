@@ -5,10 +5,25 @@ import Buttons from "./components/buttons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function CreateProfile() {
+  const selectPhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+  
   const router = useRouter();
+  const [image, setImage] = useState("");
   const [medias, setMedias] = useState<string[]>([]);
   const [name, setName] = useState("")
   const options = [
@@ -48,10 +63,11 @@ export default function CreateProfile() {
         dailyReadingTime: count,
         // notification
       }
+      const token = await AsyncStorage.getItem('token');
       const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${token}`
         }
       })
       router.push("/home")
@@ -77,10 +93,12 @@ export default function CreateProfile() {
       <View style={styles.textContainer}>
         
         <Text style={textStyles.pageHeader}>Create Profile</Text>
-        <Image
-          source={require('../assets/images/pfp.png')}
-          style={styles.pfpImg}/>
-
+        <TouchableOpacity onPress={selectPhoto}>
+          <Image
+            source={image ? { uri: image } : require('../assets/images/pfp.png')}
+            style={styles.pfpImg}/>
+        </TouchableOpacity>
+        
         <View style={styles.leftContainer}>
           <Text style={textStyles.heading2}>Name</Text>
           <TextInput style={styles.inputContainer} value={name} onChangeText={setName}/>
@@ -170,10 +188,13 @@ const styles = StyleSheet.create({
       aspectRatio: 0.275,
   },
   pfpImg: {
-      width: 112,
+      width: 110,
       height: 110,
       marginTop: 60,
       alignSelf: 'center',
+      borderRadius: 55,
+      borderColor: '#646EA3',
+      borderWidth: 5,
   },
   textContainer: {
       position: "absolute",
