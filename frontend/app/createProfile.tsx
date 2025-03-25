@@ -1,4 +1,4 @@
-import { Text, ScrollView, View, Button, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import { textStyles } from "./stylesheets/textStyles";
 import CheckBox from "./components/checkbox";
 import Buttons from "./components/buttons";
@@ -6,9 +6,24 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function CreateProfile() {
+  const selectPhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+  
   const router = useRouter();
+  const [image, setImage] = useState("");
   const [medias, setMedias] = useState<string[]>([]);
   const [name, setName] = useState("")
   const options = [
@@ -18,6 +33,14 @@ export default function CreateProfile() {
     { value: 'Politics', label: 'Politics' },
     { value: 'Research', label: 'Research' },
   ];
+  const [dailyNotifications, setDailyNotifications] = useState(false);
+  const [time, setTimeState] = useState(new Date());
+  const handleTimeChange = (event: any, date: Date | undefined) => {
+    const { type } = event;
+    if (type === 'set' && date) {
+      setTimeState(date);
+    }
+  };
 
   const [count,setCount]=useState(0)
   const plus = ()=>{
@@ -70,10 +93,12 @@ export default function CreateProfile() {
       <View style={styles.textContainer}>
         
         <Text style={textStyles.pageHeader}>Create Profile</Text>
-        <Image
-          source={require('../assets/images/pfp.png')}
-          style={styles.pfpImg}/>
-
+        <TouchableOpacity onPress={selectPhoto}>
+          <Image
+            source={image ? { uri: image } : require('../assets/images/pfp.png')}
+            style={styles.pfpImg}/>
+        </TouchableOpacity>
+        
         <View style={styles.leftContainer}>
           <Text style={textStyles.heading2}>Name</Text>
           <TextInput style={styles.inputContainer} value={name} onChangeText={setName}/>
@@ -108,16 +133,34 @@ export default function CreateProfile() {
 
         <Text style={[textStyles.heading2, {marginVertical: 20, marginTop: 50,}]}>Notifications</Text>
         <View style={styles.notifications}>
-          <Text style={[textStyles.subheading, {alignSelf:'flex-start', margin: 20,}]}>Daily Reminder</Text>
+          <Text style={[textStyles.subheading]}>Daily Reminder</Text>
+          <Switch value={dailyNotifications}
+            onValueChange={() => setDailyNotifications((previousState) => !previousState)}
+            trackColor={{false: "#E2E2E2", true: "#646EA3"}}
+            thumbColor={dailyNotifications ? "#413F6F" : "white"}
+          />
         </View>
+        {dailyNotifications && (
+            <View style={styles.notificationsExpanded}>
+              <Text style={textStyles.subheading}>Set Time</Text>
+              <DateTimePicker
+                value={time}
+                mode="time"
+                is24Hour={true}
+                onChange={handleTimeChange}
+                themeVariant="light"
+                accentColor="#413F6F"
+              />
+            </View>
+        )}
 
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 50}}>
           <Buttons
             title='Skip'
             variant='whiteOutline'
             onPress={() => router.push('/home')}
           />
-            <Buttons
+          <Buttons
             title='Next'
             variant='white'
             onPress={handleSubmit/*() => router.push('/home')*/}
@@ -145,10 +188,13 @@ const styles = StyleSheet.create({
       aspectRatio: 0.275,
   },
   pfpImg: {
-      width: 112,
+      width: 110,
       height: 110,
       marginTop: 60,
       alignSelf: 'center',
+      borderRadius: 55,
+      borderColor: '#646EA3',
+      borderWidth: 5,
   },
   textContainer: {
       position: "absolute",
@@ -195,9 +241,24 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor:'#FFFFFF',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: -50,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
     alignSelf: 'center',
     borderRadius: 5,
-    marginBottom: 50,
+  },
+  notificationsExpanded: {
+    width: '100%',
+    height: 50,
+    backgroundColor:'#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: -50,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    borderRadius: 5,
+    marginTop: -7,
   },
 });

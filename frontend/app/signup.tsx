@@ -1,18 +1,24 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 export default function Signup() {
     const router = useRouter();
 
+    const [error, setError] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleSubmit = async () => {
+        setError("");
         if(password == confirmPassword) {
             try {
                 const response = await axios.post(
@@ -25,7 +31,7 @@ export default function Signup() {
               } catch (error) {
                   if (axios.isAxiosError(error)) {
                       if(error.response){
-                          console.log('Error: ', error.response.data)
+                          setError(error.response.data)
                       }
                   }
               }
@@ -44,17 +50,18 @@ export default function Signup() {
             catch (error) {
                 if (axios.isAxiosError(error)) {
                     if(error.response){
-                        console.log('Error: ', error.response.data)
+                        setError(error.response.data)
                     }
                 }
             }
         } else{
-            console.log("passwords don't match")
+            setError("Passwords don't match")
         }
         
     }
 
   return (
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
     <View style={styles.container}>
         <View style={styles.imageContainer}>
             <Image
@@ -70,10 +77,38 @@ export default function Signup() {
                     <Text style={textStyles.heading2}>Email</Text>
                     <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
                     <Text style={textStyles.heading2}>Password</Text>
-                    <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
+                    <View style={{position: 'relative'}}>
+                        <TextInput
+                            style={[styles.inputContainer,{paddingRight: 45}]}
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={showPassword}/>
+                        <TouchableOpacity
+                            onPress={()=>setShowPassword(!showPassword)}
+                            style={{position: 'absolute', right: 15, top: 15}}>
+                            {password.length<1?null:showPassword?
+                                <Ionicons name="eye-off-outline" size={24} color={'gray'} />
+                                : <Ionicons name="eye-outline" size={24} color={'gray'} />}
+                        </TouchableOpacity>
+                    </View>
+                    
                     <Text style={textStyles.heading2}>Confirm Password</Text>
-                    <TextInput style={styles.inputContainer} value={confirmPassword} onChangeText={setConfirmPassword}/>
+                    <View style={{position: 'relative'}}>
+                        <TextInput
+                            style={[styles.inputContainer,{paddingRight: 45}]}
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry={showConfirmPassword}/>
+                        <TouchableOpacity
+                            onPress={()=>setShowConfirmPassword(!showConfirmPassword)}
+                            style={{position: 'absolute', right: 15, top: 15}}>
+                            {confirmPassword.length<1?null:showConfirmPassword?
+                                <Ionicons name="eye-off-outline" size={24} color={'gray'} />
+                                : <Ionicons name="eye-outline" size={24} color={'gray'} />}
+                        </TouchableOpacity>
+                    </View>
                 </View>
+            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null}
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>
@@ -87,7 +122,7 @@ export default function Signup() {
                 style={styles.image2}/>
         </View>
     </View>
-       
+    </ScrollView>
   );
 }
 

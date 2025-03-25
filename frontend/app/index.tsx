@@ -16,22 +16,14 @@ export default function Index() {
               source={require('../assets/images/logoCircled.png')}
               style={styles.image}/>
            
-          {/* <TouchableOpacity style={styles.button} onPress={() => router.push("/login")}>
-              <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push("/signup")}>
-            <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
-          </TouchableOpacity> */}
-          
           <Buttons
             title=' Login '
-            variant='whiteOutline'
+            variant='whiteOutlineBig'
             onPress={() => router.push('/login')}
           />
             <Buttons
             title='Sign up'
-            variant='white'
+            variant='whiteBig'
             onPress={() => router.push('/signup')}
           />
         </View>
@@ -58,15 +50,4 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     position: 'absolute',
   },
-//   button: {
-//     backgroundColor: '#D9D9D9',
-//     borderRadius: 5,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     textAlign: 'center',
-//     height: 50,
-//     width: 200,
-//     marginTop: 10,
-//     marginBottom: 10,
-// },
 });
