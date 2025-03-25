@@ -11,9 +11,14 @@ export default function topicQuestion1() {
         <ScrollView style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image
-                    source={require('../assets/images/discussionanswer_bg.png')}
+                    source={require('../assets/images/discussion_viewbg.png')}
                     style={styles.imagebg}
                 />
+            </View>
+
+            <View style={styles.textContainer}>
+                <Text style={[textStyles.pageHeader, {right: 40}]}>Topic Question 1</Text>
+                <Text style={[textStyles.subheading2, {fontSize: 25, right: 85, color: '#646EA3'}]}>View Discussion</Text>
             </View>
         </ScrollView>
     )}
@@ -26,13 +31,13 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         width: '100%',
         height: undefined,
-        marginTop: 180,
-        aspectRatio: 0.855,
+        marginTop: 200,
+        aspectRatio: 0.524,
     },    
     imageContainer: {
         width: '100%',
         position: 'absolute',
-        marginTop: 350,
+        alignItems: 'center',
     },
     textContainer: {
         position: 'absolute',

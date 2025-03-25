@@ -61,7 +61,7 @@ export default function topicQuestion1() {
                     <Buttons
                         title='Comment'
                         variant='purple'
-                        onPress={() => router.push('/discussion')}
+                        onPress={() => router.push('/quest1view')}
                     />
                 </View>
 
