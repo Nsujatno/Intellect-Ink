@@ -1,3 +1,4 @@
+
 import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity, FlatList} from "react-native";
 import { textStyles } from "../stylesheets/textStyles";
 import CheckBox from "../components/checkbox";

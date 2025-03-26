@@ -1,47 +1,13 @@
 import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
 import { CartesianChart, StackedBar } from "victory-native";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import DropDownButtons from "../components/dropDownButtons";
-import Buttons from "../components/buttons";
 import { textStyles } from "../stylesheets/textStyles";
 
 export default function Stats() {
   const router = useRouter();
-
-  const achievementsData = [
-    {
-      id: '1',
-      title: 'Title',
-      description: 'Description',
-      icon: require('../../assets/images/stats_badge.png')
-    },
-    {
-      id: '2',
-      title: 'Title',
-      description: 'Description',
-      icon: require('../../assets/images/stats_badge.png')
-    }
-  ]
-
-  const leaderboardData = [
-    {
-      id: '1',
-      title: 'Name',
-      icon: require('../../assets/images/pfp.png')
-    },
-    {
-      id: '2',
-      title: 'Name',
-      icon: require('../../assets/images/pfp.png')
-    },
-    {
-      id: '3',
-      title: 'Name',
-      icon: require('../../assets/images/pfp.png')
-    }
-  ]
 
   const [loading, setLoading] = useState(true);
   const [timeSpentData, setTimeSpentData] = useState({
@@ -51,53 +17,53 @@ export default function Stats() {
     research: 0,
   });
 
-  // const [chartData, setChartData] = useState([
-  //   { day: "Sun", books: 0, poems: 0, politics: 0, research: 0 },
-  //   { day: "M", books: 0, poems: 0, politics: 0, research: 0 },
-  //   { day: "T", books: 0, poems: 0, politics: 0, research: 0 },
-  //   { day: "W", books: 0, poems: 0, politics: 0, research: 0 },
-  //   { day: "Th", books: 0, poems: 0, politics: 0, research: 0 },
-  //   { day: "F", books: 0, poems: 0, politics: 0, research: 0 },
-  //   { day: "S", books: 0, poems: 0, politics: 0, research: 0 },
-  // ]);
+  const [chartData, setChartData] = useState([
+    { day: "Sun", books: 0, poems: 0, politics: 0, research: 0 },
+    { day: "M", books: 0, poems: 0, politics: 0, research: 0 },
+    { day: "T", books: 0, poems: 0, politics: 0, research: 0 },
+    { day: "W", books: 0, poems: 0, politics: 0, research: 0 },
+    { day: "Th", books: 0, poems: 0, politics: 0, research: 0 },
+    { day: "F", books: 0, poems: 0, politics: 0, research: 0 },
+    { day: "S", books: 0, poems: 0, politics: 0, research: 0 },
+  ]);
 
-  // useEffect(() => {
-  //   const fetchStats = async () => {
-  //     try {
-  //       // Fetch time spent on each category from AsyncStorage
-  //       // const booksTime = parseInt((await AsyncStorage.getItem("books")) || "0", 10);
-  //       // const poemsTime = parseInt((await AsyncStorage.getItem("poems")) || "0", 10);
-  //       // const politicsTime = parseInt((await AsyncStorage.getItem("politics")) || "0", 10);
-  //       // const researchTime = parseInt((await AsyncStorage.getItem("research")) || "0", 10);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Fetch time spent on each category from AsyncStorage
+        const booksTime = parseInt((await AsyncStorage.getItem("books")) || "0", 10);
+        const poemsTime = parseInt((await AsyncStorage.getItem("poems")) || "0", 10);
+        const politicsTime = parseInt((await AsyncStorage.getItem("politics")) || "0", 10);
+        const researchTime = parseInt((await AsyncStorage.getItem("research")) || "0", 10);
 
-  //       // setTimeSpentData({
-  //       //   books: booksTime / 60000, // Convert ms to minutes
-  //       //   poems: poemsTime / 60000,
-  //       //   politics: politicsTime / 60000,
-  //       //   research: researchTime / 60000,
-  //       // });
+        setTimeSpentData({
+          books: booksTime / 60000, // Convert ms to minutes
+          poems: poemsTime / 60000,
+          politics: politicsTime / 60000,
+          research: researchTime / 60000,
+        });
 
-  //       // Update chart data (example: adding time to specific days)
-  //       // setChartData((prevData) =>
-  //       //   prevData.map((data, index) => {
-  //       //     return {
-  //       //       ...data,
-  //       //       books: (booksTime / 60000), // per day
-  //       //       poems: (poemsTime / 60000),
-  //       //       politics: (politicsTime / 60000),
-  //       //       research: (researchTime / 60000),
-  //       //     };
-  //       //   })
-  //       // );
-  //     } catch (error) {
-  //       console.error("Error fetching statistics:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+        // Update chart data (example: adding time to specific days)
+        setChartData((prevData) =>
+          prevData.map((data, index) => {
+            return {
+              ...data,
+              books: (booksTime / 60000), // per day
+              poems: (poemsTime / 60000),
+              politics: (politicsTime / 60000),
+              research: (researchTime / 60000),
+            };
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching statistics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchStats();
-  // }, []);
+    fetchStats();
+  }, []);
 
   if (loading) {
     return <Text>Loading statistics...</Text>;
@@ -117,7 +83,7 @@ export default function Stats() {
 
         {/* Bar Graph */}
         <View style={styles.chartContainer}>
-          {/* <CartesianChart
+          <CartesianChart
             data={chartData}
             xKey="day"
             yKeys={["books", "poems", "politics", "research"]}
@@ -152,10 +118,9 @@ export default function Stats() {
                   }}
                 />
               );
-            }} */}
-          {/* </CartesianChart> */}
+            }}
+          </CartesianChart>
         </View>
-
 
         {/* Time Spent Per Category */}
         <Text style={[textStyles.heading1, {marginTop: 130, alignSelf: 'center'}]}>Time Spent</Text>
@@ -167,10 +132,6 @@ export default function Stats() {
           />
           {/* View Todays Data */}
           <View style={styles.todaysDataContainer}>
-            <Image
-              source={require('../../assets/images/stats_colorCats.png')}
-              style={styles.colorCatsContainer}
-            />
           <View style={styles.categoryRow}>
             <Text style={textStyles.bodytext2}>Books</Text>
             <Text style={textStyles.bodytext2}>
@@ -198,32 +159,28 @@ export default function Stats() {
         </View>
         </View>
 
-
          {/* Statistics Overall Box */}
-        <Text style={[textStyles.heading1, {marginTop: -25, marginBottom: 30, alignSelf: 'center'}]}>Statistics</Text>
+         <Text style={[textStyles.heading1, {marginTop: -25, marginBottom: 30, alignSelf: 'center'}]}>Statistics</Text>
         <View style={styles.overallStatsContainer}>
           <Image
             source={require('../../assets/images/stats_box1.png')}
             style={styles.statsBoxPlacement2}
           />
           <View style={[styles.miniBoxContainer]}>
-            <View style={styles.miniBoxWrapper}>
-              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
-              <Image source={require('../../assets/images/stats_streak.png')} style={styles.miniIcon}/>
-              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Day Streak</Text>
+            <View style={[styles.miniBoxWrapper]}>
+              <Image
+                source={require('../../assets/images/stats_mini_box.png')}
+                style={styles.statsMiniBox}/>
+                <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Day Streak</Text>
+              <Image
+                source={require('../../assets/images/stats_mini_box.png')}
+                style={styles.statsMiniBox}/>
+                <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Level </Text>
             </View>
-
-            <View style={styles.miniBoxWrapper}>
-              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
-              <Image source={require('../../assets/images/stats_rank.png')} style={styles.miniIcon}/>
-              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Level #</Text>
-            </View>
-
-            <View style={styles.thirdBoxWrapper}>
-              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
-              <Image source={require('../../assets/images/stats_trophy.png')} style={styles.miniIcon}/>
-              <Text style={[textStyles.bodytext3, {marginTop: -60}]}># Place</Text>
-            </View>
+            <Image
+              source={require('../../assets/images/stats_mini_box.png')}
+              style={styles.statsMiniBox}/>
+              <Text style={[textStyles.bodytext3, {marginTop: 60, right: 70}]}>Place</Text>
           </View>
         </View>
 
@@ -233,12 +190,16 @@ export default function Stats() {
         <DropDownButtons
             title=' Achievements '
             variant='purple'
-            achievements={achievementsData}
+            options={[
+              { value: 'achievement1', label: 'First Achievement'}
+            ]}
         />
         <DropDownButtons
             title=' Leaderboard '
             variant='purple'
-            leaderboards={leaderboardData}
+            options={[
+              { value: 'achievement1', label: 'First Achievement'}
+            ]}
         />
         </View>
       </View>
@@ -253,7 +214,7 @@ const styles = StyleSheet.create({
   imagebg: { // Background Image
     resizeMode: 'cover',
     width: '100%',
-    height: '100%',
+    height: undefined,
     aspectRatio: 0.275,
   },
   imageContainer: {
@@ -303,45 +264,23 @@ const styles = StyleSheet.create({
   miniBoxContainer: {
     position: "absolute",
     flexDirection: "row",
-    flexWrap: 'wrap',
-    justifyContent: "center",
-    width: '65%', // adds spacing between two boxes first row
-    top: -10,
+    justifyContent: "space-evenly",
+    width: '60%',
+    top: -20,
   },
   miniBoxWrapper: {
-    flexDirection: "column", // icon above text
+    flexDirection: "column",
     alignItems: "center",
-    width: '50%', // two boxes first row
-  },
-  thirdBoxWrapper: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '50%',
-    alignSelf: 'flex-start', // under first box
-    marginLeft: -150,
   },
   statsMiniBox: {
     width: 140,
     height: 120,
     resizeMode: "contain",
-    marginBottom: 5,
-  },
-  miniIcon: {
-    position: 'absolute',
-    top: 35,
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
-  },
-  colorCatsContainer: {
-    position: 'absolute',
-    top: 30,
-    left: -20
   },
   todaysDataContainer: { // Data for Statistics Category Time Spent Box
-    position: "absolute",
+    position: "absolute", // overlay image
     top: 25,
-    left: 50,
+    left: 50, // adjust once color boxes & times are added
     right: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -350,11 +289,8 @@ const styles = StyleSheet.create({
   categoryRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: '87%',
-    top: -4,
-    left: -5,
-    paddingVertical: -3,
+    width: '55%',
+    top: -7,
+    paddingVertical: 0.5,
   },
 });
-
-
