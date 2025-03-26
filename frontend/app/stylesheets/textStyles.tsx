@@ -86,6 +86,12 @@ export const textStyles = StyleSheet.create ({
         fontSize: 20,
         marginVertical: 5,
         color: '#FFFFFF',
+    },
+    bodytext5: {
+        fontFamily: 'Lato Italic',
+        fontSize: 16,
+        marginVertical: 16,
+        color: '#252323',
     }
 });
 

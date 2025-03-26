@@ -7,6 +7,40 @@ import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
 
 export default function Stats() {
+
+  const achievementsData = [
+    {
+      id: '1',
+      title: 'Title',
+      description: 'Description',
+      icon: require('../../assets/images/stats_badge.png')
+    },
+    {
+      id: '2',
+      title: 'Title',
+      description: 'Description',
+      icon: require('../../assets/images/stats_badge.png')
+    }
+  ]
+
+  const leaderboardData = [
+    {
+      id: '1',
+      title: 'Name',
+      icon: require('../../assets/images/pfp.png')
+    },
+    {
+      id: '2',
+      title: 'Name',
+      icon: require('../../assets/images/pfp.png')
+    },
+    {
+      id: '3',
+      title: 'Name',
+      icon: require('../../assets/images/pfp.png')
+    }
+  ]
+
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -132,6 +166,10 @@ export default function Stats() {
           />
           {/* View Todays Data */}
           <View style={styles.todaysDataContainer}>
+            <Image
+              source={require('../../assets/images/stats_colorCats.png')}
+              style={styles.colorCatsContainer}
+            />
           <View style={styles.categoryRow}>
             <Text style={textStyles.bodytext2}>Books</Text>
             <Text style={textStyles.bodytext2}>
@@ -160,27 +198,30 @@ export default function Stats() {
         </View>
 
          {/* Statistics Overall Box */}
-         <Text style={[textStyles.heading1, {marginTop: -25, marginBottom: 30, alignSelf: 'center'}]}>Statistics</Text>
+        <Text style={[textStyles.heading1, {marginTop: -25, marginBottom: 30, alignSelf: 'center'}]}>Statistics</Text>
         <View style={styles.overallStatsContainer}>
           <Image
             source={require('../../assets/images/stats_box1.png')}
             style={styles.statsBoxPlacement2}
           />
           <View style={[styles.miniBoxContainer]}>
-            <View style={[styles.miniBoxWrapper]}>
-              <Image
-                source={require('../../assets/images/stats_mini_box.png')}
-                style={styles.statsMiniBox}/>
-                <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Day Streak</Text>
-              <Image
-                source={require('../../assets/images/stats_mini_box.png')}
-                style={styles.statsMiniBox}/>
-                <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Level </Text>
+          <View style={styles.miniBoxWrapper}>
+              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
+              <Image source={require('../../assets/images/stats_streak.png')} style={styles.miniIcon}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Day Streak</Text>
             </View>
-            <Image
-              source={require('../../assets/images/stats_mini_box.png')}
-              style={styles.statsMiniBox}/>
-              <Text style={[textStyles.bodytext3, {marginTop: 60, right: 70}]}>Place</Text>
+
+            <View style={styles.miniBoxWrapper}>
+              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
+              <Image source={require('../../assets/images/stats_rank.png')} style={styles.miniIcon}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Level #</Text>
+            </View>
+
+            <View style={styles.thirdBoxWrapper}>
+              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
+              <Image source={require('../../assets/images/stats_trophy.png')} style={styles.miniIcon}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}># Place</Text>
+          </View>
           </View>
         </View>
 
@@ -190,16 +231,12 @@ export default function Stats() {
         <DropDownButtons
             title=' Achievements '
             variant='purple'
-            options={[
-              { value: 'achievement1', label: 'First Achievement'}
-            ]}
+            achievements={achievementsData}
         />
         <DropDownButtons
             title=' Leaderboard '
             variant='purple'
-            options={[
-              { value: 'achievement1', label: 'First Achievement'}
-            ]}
+            leaderboards={leaderboardData}
         />
         </View>
       </View>
@@ -214,7 +251,7 @@ const styles = StyleSheet.create({
   imagebg: { // Background Image
     resizeMode: 'cover',
     width: '100%',
-    height: undefined,
+    height: '100%',
     aspectRatio: 0.275,
   },
   imageContainer: {
@@ -264,18 +301,40 @@ const styles = StyleSheet.create({
   miniBoxContainer: {
     position: "absolute",
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    width: '60%',
-    top: -20,
+    flexWrap: 'wrap',
+    justifyContent: "center",
+    width: '65%', // adds spacing between two boxes first row
+    top: -10,
   },
   miniBoxWrapper: {
-    flexDirection: "column",
+    flexDirection: "column", // icon above text
     alignItems: "center",
+    width: '50%', // two boxes first row
+  },
+  thirdBoxWrapper: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '50%',
+    alignSelf: 'flex-start', // under first box
+    marginLeft: -150,
   },
   statsMiniBox: {
     width: 140,
     height: 120,
     resizeMode: "contain",
+    marginBottom: 5,
+  },
+  miniIcon: {
+    position: 'absolute',
+    top: 35,
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+  },
+  colorCatsContainer: {
+    position: 'absolute',
+    top: 30,
+    left: -20
   },
   todaysDataContainer: { // Data for Statistics Category Time Spent Box
     position: "absolute", // overlay image
@@ -289,8 +348,9 @@ const styles = StyleSheet.create({
   categoryRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: '55%',
-    top: -7,
-    paddingVertical: 0.5,
+    width: '87%',
+    top: -4,
+    left: -5,
+    paddingVertical: -3,
   },
 });

@@ -36,7 +36,7 @@ export default function Discussion() {
                 <Buttons
                   title='Comment'
                   variant='purple'
-                  onPress={() => router.push('/home')}
+                  onPress={() => router.push('/topicQuestion1')}
                 />
               </View>
               <View style={styles.boxContainer}>
@@ -62,18 +62,18 @@ const styles = StyleSheet.create({
       aspectRatio: 0.6317,
     },
     imageContainer: {
-      width: '100%',
       position: 'absolute',
+      width: '100%',
       marginTop: 350,
     },
     textContainer: {
       marginTop: 70,
-      position: 'absolute',
+      position: 'relative',
       alignSelf: 'center',
       alignItems: 'center',
     },
     topicContainer: {
-      position: 'relative',
+      position: 'absolute',
       marginTop: 135,
       flexDirection: 'column',
       gap: 175,

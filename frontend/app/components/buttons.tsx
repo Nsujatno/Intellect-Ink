@@ -4,7 +4,7 @@ import React from 'react';
 
 interface ButtonProps {
     title: string;
-    variant: 'purple' | 'white' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
+    variant: 'purple' | 'white' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig' | 'gray';
     onPress: () => void;
 }
 
@@ -15,6 +15,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
             style={[styles.container,
             variant === 'purple' ? styles.purpleContainer : null,
             variant === 'white' ? styles.whiteContainer : null,
+            variant == 'gray' ? styles.grayContainer : null,
             variant === 'whiteBig' ? styles.whiteContainerBig : null,
             variant === 'whiteOutline' ? styles.outlineContainer : null,
             variant === 'whiteOutlineBig' ? styles.outlineContainerBig : null, ]}
@@ -24,6 +25,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                 style={[ textStyles.subheading,
                     variant === 'purple' ? {color: 'white'} : null,
                     variant === 'white' ? {color: '#413F6F'} : null,
+                    variant == 'gray' ? {color: '#413F6F'} : null,
                     variant === 'whiteBig' ? {color: '#413F6F', fontSize: 25} : null,
                     variant === 'whiteOutline' ? {color: 'white'} : null,
                     variant === 'whiteOutlineBig' ? {color: 'white', fontSize: 25} : null, ]}>
@@ -51,6 +53,9 @@ const styles = StyleSheet.create ({
     },
     whiteContainer: {
         backgroundColor:'#FFFFFF',
+    },
+    grayContainer: {
+        backgroundColor: '#D9D9D9',
     },
     outlineContainer: {
         backgroundColor:'transparent',

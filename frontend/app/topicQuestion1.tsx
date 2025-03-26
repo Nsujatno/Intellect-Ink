@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
         width: '100%',
         position: 'absolute',
         marginTop: 350,
+        pointerEvents: 'none',
     },
     textContainer: {
         position: 'absolute',
@@ -96,15 +97,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonContainer: {
-        position: 'absolute',
-        marginTop: 520,
+        alignSelf: 'flex-end',
+        marginTop: 20,
         right: 40,
-        zIndex: 1,
+        zIndex: 2,
       },
     answerBox: {
         alignSelf: 'center',
         zIndex: 1,
-        width: '86%',
+        width: '80%',
         height: 300,
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
@@ -134,6 +135,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#646EA3',
         marginTop: 10,
-        left: 30,
+        left: 45,
     }
 })
