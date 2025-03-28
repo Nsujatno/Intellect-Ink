@@ -25,9 +25,19 @@ const bookSchema = new mongoose.Schema({
 
 const Book = mongoose.model("Book", bookSchema);
 
+
+router.get("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  const results = await Book.find({ description: new RegExp(keyword, "i") });
+  // console.log(results);
+  res.json(results)
+})
+
+
 // Fetch books and save to DB, avoiding duplicates
 router.get("/data", async (req, res) => {
-  const API_URL = `https://www.googleapis.com/books/v1/volumes?q=technology&key=${GOOGLE_BOOKS_API_KEY}`;
+  const API_URL = `https://www.googleapis.com/books/v1/volumes?q=harry+potter&key=${GOOGLE_BOOKS_API_KEY}`;
 
   try {
     console.log("📚 Fetching books from:", API_URL);

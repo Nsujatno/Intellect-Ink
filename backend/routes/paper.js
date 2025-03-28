@@ -21,6 +21,15 @@ const researchPaperSchema = new mongoose.Schema({
 
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 
+router.get("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  const results = await ResearchPaper.find({ abstract: new RegExp(keyword, "i") });
+  // console.log(results);
+  res.json(results)
+})
+
+
 // Fetch research papers from CORE API
 router.get("/data", async (req, res) => {
   try {

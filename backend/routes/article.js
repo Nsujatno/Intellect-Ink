@@ -23,6 +23,13 @@ const Article = mongoose.model("Article", articleSchema);
 
 const API_KEY = process.env.NYT_API_KEY;
 
+router.get("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  const results = await Article.find({ description: new RegExp(keyword, "i") });
+  // console.log(results);
+  res.json(results)
+})
 
 router.get("/data", async (req, res) => {
   let randomMedia = "technology"

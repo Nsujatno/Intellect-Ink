@@ -11,6 +11,14 @@ const poemSchema = new mongoose.Schema({
 
 const Poem = mongoose.model("Poem", poemSchema);
 
+router.get("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  const results = await Poem.find({ lines: new RegExp(keyword, "i") });
+  // console.log(results);
+  res.json(results)
+})
+
 const AUTHOR_NAME = "William Shakespeare";
 const API_URL = `https://poetrydb.org/author/${encodeURIComponent(AUTHOR_NAME)}`;
 

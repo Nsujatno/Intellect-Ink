@@ -28,7 +28,16 @@ const newsSchema = new mongoose.Schema({
 
 const News = mongoose.model("News", newsSchema);
 
-const API_URL = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`;
+const API_URL = `https://newsapi.org/v2/everything?q=science&pageSize=10&apiKey=${API_KEY}`;
+
+router.get("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  const results = await News.find({ description: new RegExp(keyword, "i") });
+  // console.log(results);
+  res.json(results)
+})
+
 
 router.get("/data", async (req, res) => {
   try {
