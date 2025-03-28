@@ -61,7 +61,8 @@ export default function CreateProfile() {
         name: name,
         media: medias,
         dailyReadingTime: count,
-        // notification
+        notification: dailyNotifications,
+        notificationTime: time,
       }
       const token = await AsyncStorage.getItem('token');
       const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {

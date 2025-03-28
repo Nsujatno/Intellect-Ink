@@ -2,11 +2,16 @@ import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, Touchable
 import { textStyles } from "../stylesheets/textStyles";
 import CheckBox from "../components/checkbox";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function Profile() {
+
   const router = useRouter();
+  const [name, setName] = useState("name")
   const [isEditing, setIsEditing] = useState(false);
   const [medias, setMedias] = useState<string[]>([]);
   const options = [
@@ -42,13 +47,76 @@ export default function Profile() {
   };
 
   const [count,setCount]=useState(0)
-  const plus = ()=>{
-    setCount(count + 5)
+    const plus = ()=>{
+      setCount(count + 5)
+    }
+    const minus = ()=>{
+      if (count > 0)
+        setCount(count - 5)
+    }
+  
+
+  const handleSubmit = async () => {
+    // console.log("handling submit");
+    setIsEditing(!isEditing)
+    try{
+      const payload = {
+        name: name,
+        media: medias,
+        dailyReadingTime: count,
+        notification: dailyNotifications,
+        // notificationTime: time,
+      }
+      // if(name){
+      //   console.log(name + medias + count + dailyNotifications)
+      // }
+      
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
+      
+    }
+    catch (error){
+      if (axios.isAxiosError(error)) {
+        if(error.response){
+            console.log('Error: ', error.response.data)
+        }
+      }
+    }
   }
-  const minus = ()=>{
-    if (count > 0)
-      setCount(count - 5)
-  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) return;
+
+        const response = await axios.get("http://localhost:8000/api/user/get-profile", {
+          headers: {
+            "Content-Type": "application/json",
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        // setProfile(response.data);
+        setCount(response.data.dailyReadingTime)
+        setName(response.data.name)
+        setMedias(response.data.media)
+        setDailyNotifications(response.data.notification)
+        // setTimeState(response.data.notificationTime)
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -69,7 +137,7 @@ export default function Profile() {
             {isEditing? (
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={()=>setIsEditing(!isEditing)}>
+                    onPress={handleSubmit/*()=>setIsEditing(!isEditing)*/}>
                     <Text style={textStyles.subheading}>Save Changes</Text>
                 </TouchableOpacity>
             ):(
@@ -86,11 +154,11 @@ export default function Profile() {
             {isEditing? (
                 <View style={{marginTop: 20}}>
                     <Text style={textStyles.heading2}>Change Name</Text>
-                    <TextInput style={styles.inputContainer} /*value={name} onChangeText={setName}*//>
+                    <TextInput style={styles.inputContainer} value={name} onChangeText={setName}/>
                 </View>
             ):(
                 <View style={{marginTop: 45, marginBottom: 40, alignSelf: 'center'}}>
-                    <Text style={textStyles.heading2}>Hello, Name</Text>
+                    <Text style={textStyles.heading2}>Hello, {name}</Text>
                 </View>
             )}
           
@@ -100,7 +168,7 @@ export default function Profile() {
           <CheckBox
             options={options}
             checkedValues={medias}
-            onChange={(updatedValues) => setMedias(updatedValues)}
+            onChange={isEditing ? (updatedValues) => setMedias(updatedValues) : () => {}}
           />
           <Text style={[textStyles.heading2, {marginVertical: 20, marginTop: 50,}]}>Daily Goal</Text>
         
@@ -110,7 +178,7 @@ export default function Profile() {
             <View style={styles.goalContainer}>
             <Text style={textStyles.subheading}>Set your daily time goal</Text>
 
-            <View style={{flexDirection: 'row'}}>
+            {<View style={{flexDirection: 'row'}}>
                 <TouchableOpacity onPress={minus}>
                 <Text style={textStyles.pageHeader}>-</Text>
                 </TouchableOpacity>
@@ -118,7 +186,7 @@ export default function Profile() {
                 <TouchableOpacity onPress={plus}>
                 <Text style={textStyles.pageHeader}>+</Text>
                 </TouchableOpacity>
-            </View>
+            </View>}
 
             <Text style={textStyles.subheading}>minutes/day</Text>
             </View>
