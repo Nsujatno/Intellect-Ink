@@ -26,10 +26,17 @@ const bookSchema = new mongoose.Schema({
 const Book = mongoose.model("Book", bookSchema);
 
 
-router.get("/search", async (req, res) => {
+router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
-  const results = await Book.find({ description: new RegExp(keyword, "i") });
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await Book.find({
+    $or: [
+      { title: regex },
+      { description: regex }
+    ]
+  });
   // console.log(results);
   res.json(results)
 })

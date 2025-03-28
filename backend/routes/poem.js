@@ -11,10 +11,17 @@ const poemSchema = new mongoose.Schema({
 
 const Poem = mongoose.model("Poem", poemSchema);
 
-router.get("/search", async (req, res) => {
+router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
-  const results = await Poem.find({ lines: new RegExp(keyword, "i") });
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await Poem.find({
+    $or: [
+      { title: regex },
+      { lines: regex }
+    ]
+  });
   // console.log(results);
   res.json(results)
 })

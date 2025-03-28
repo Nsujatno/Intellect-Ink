@@ -21,10 +21,17 @@ const researchPaperSchema = new mongoose.Schema({
 
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 
-router.get("/search", async (req, res) => {
+router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
-  const results = await ResearchPaper.find({ abstract: new RegExp(keyword, "i") });
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await ResearchPaper.find({
+    $or: [
+      { title: regex },
+      { description: regex }
+    ]
+  });
   // console.log(results);
   res.json(results)
 })
