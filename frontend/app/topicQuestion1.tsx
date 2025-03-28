@@ -98,10 +98,10 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignSelf: 'flex-end',
-        marginTop: 20,
+        marginTop: -10,
         right: 40,
         zIndex: 2,
-      },
+    },
     answerBox: {
         alignSelf: 'center',
         zIndex: 1,

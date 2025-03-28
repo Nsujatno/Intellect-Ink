@@ -1,49 +1,53 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useTimeTracker(category: string) {
-  const [timeSpent, setTimeSpent] = useState<number>(0);
-  const startTimeRef = useRef<number | null>(null); // Tracks when timing starts
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [totalTime, setTotalTime] = useState(0);
 
-  // Load saved time when category changes
-  useEffect(() => {
-    const loadTime = async () => {
-      try {
-        const savedTime = await AsyncStorage.getItem(category);
-        if (savedTime) {
-          setTimeSpent(parseInt(savedTime, 10));
-        }
-      } catch (error) {
-        console.error("Failed to load time from AsyncStorage:", error);
-      }
-    };
-
-    loadTime();
-  }, [category]);
-
-  const startTiming = () => {
-    startTimeRef.current = Date.now(); // Capture the start time
-  };
-
-  // Stop timing and save data
-  const stopTiming = async () => {
-    if (startTimeRef.current) {
-      const elapsed = Date.now() - startTimeRef.current;
-      const updatedTime = timeSpent + elapsed;
-
-      setTimeSpent(updatedTime); // Update state
-      startTimeRef.current = null; // Clear
-
-      // Save to AsyncStorage
-      try {
-        await AsyncStorage.setItem(category, updatedTime.toString());
-      } catch (error) {
-        console.error("Failed to save time to AsyncStorage:", error);
-      }
+  const storeTimeSpent = async (category: string, timeSpent: number) => {
+    try {
+      await AsyncStorage.setItem(category, timeSpent.toString());
+    } catch (error) {
+      // console.error("Failed to save time to AsyncStorage:", error);
     }
   };
 
-  return { timeSpent, startTiming, stopTiming };
+  const loadSavedTime = async () => {
+    try {
+      const savedTime = await AsyncStorage.getItem(category);
+      if (savedTime) {
+        setTotalTime(parseInt(savedTime, 10));
+      }
+    } catch (error) {
+    }
+  };
+
+  useEffect(() => {
+    loadSavedTime();
+  }, [category]);
+
+  const startTiming = () => {
+    if (!startTime) {
+      setStartTime(Date.now());
+    }
+  };
+
+  const stopTiming = () => {
+    if (startTime) {
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000); // seconds
+      setTotalTime((prev) => prev + timeSpent);
+      setStartTime(null);
+
+      storeTimeSpent(category, totalTime + timeSpent);
+    }
+  };
+
+  useEffect(() => {
+    return () => stopTiming();
+  }, []);
+
+  return { startTiming, stopTiming, totalTime };
 }
 
 export default useTimeTracker;

@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
+import { Text, View, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -16,6 +16,11 @@ export default function Discussion() {
               </View>
         
               <View style={styles.textContainer}>
+                {/* <TouchableOpacity
+                    style={{alignSelf: 'flex-start', marginBottom: 20}}
+                    onPress={() => {router.back()}}>
+                    <Text style={textStyles.subheadingWhite}>{`< Back`}</Text>
+                </TouchableOpacity> */}
                 <Text style={[textStyles.pageHeader, {right: 100}]}>Discussions</Text>
                 <View style={styles.topicContainer}>
                   <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Topic Question 1</Text>

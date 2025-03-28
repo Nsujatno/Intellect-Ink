@@ -82,10 +82,10 @@ export default function Stats() {
           prevData.map((data, index) => {
             return {
               ...data,
-              books: (booksTime / 60000), // per day
-              poems: (poemsTime / 60000),
-              politics: (politicsTime / 60000),
-              research: (researchTime / 60000),
+              books: booksTime ? booksTime / 60000 : 0, // per day
+              poems: poemsTime ? poemsTime / 60000 : 0,
+              politics: politicsTime ? politicsTime / 60000 : 0,
+              research: researchTime ? researchTime / 60000 : 0,
             };
           })
         );

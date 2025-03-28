@@ -5,7 +5,7 @@ import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-export default function topicQuestion1() {
+export default function viewReplies() {
     const router = useRouter();
     const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
     const [replies, setReplies] = useState([
@@ -27,14 +27,14 @@ export default function topicQuestion1() {
                 <>
                     <View style={styles.imageContainer}>
                         <Image
-                            source={require('../assets/images/discussion_viewbg.png')}
+                            source={require('../assets/images/reply_view.png')}
                             style={styles.imagebg}
                         />
                     </View>
 
                     <View style={styles.textContainer}>
                         <Text style={[textStyles.pageHeader, {right: 40}]}>Topic Question 1</Text>
-                        <Text style={[textStyles.subheading2, {fontSize: 25, right: 85, color: '#646EA3'}]}>View Discussion</Text>
+                        <Text style={[textStyles.subheading2, {fontSize: 25, right: 85, color: '#646EA3'}]}>View Replies</Text>
                     </View>
                 </>
             }
@@ -59,6 +59,11 @@ export default function topicQuestion1() {
                             variant="gray"
                             onPress={() => router.push("/replyDiscussion")}
                         />
+                        <Buttons
+                            title="Replies"
+                            variant="purple"
+                            onPress={() => router.push("/replyDiscussion")}
+                        />
                     </View>
                     <TouchableOpacity
                         onPress={() =>
@@ -80,8 +85,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         width: '100%',
         height: undefined,
-        marginTop: 200,
-        aspectRatio: 0.524,
+        aspectRatio: 0.4615,
     },
     imageContainer: {
         position: 'absolute',
@@ -125,6 +129,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     replyButtonContainer: {
+        flexDirection: 'row',
         marginTop: 10,
         right: 50,
         width: 70,
