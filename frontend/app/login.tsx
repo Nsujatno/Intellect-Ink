@@ -51,7 +51,7 @@ export default function Login() {
                 <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
             </View>
             
-            <TouchableOpacity style={styles.button} onPress={handleSubmit/*() => router.push("/home")*/}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 
