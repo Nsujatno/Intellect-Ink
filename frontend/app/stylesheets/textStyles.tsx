@@ -80,6 +80,12 @@ export const textStyles = StyleSheet.create ({
         fontSize: 16,
         marginVertical: 5,
         color: '#413F6F',
+    },
+    bodytext4: {
+        fontFamily: 'Lato Bold Italic',
+        fontSize: 20,
+        marginVertical: 5,
+        color: '#FFFFFF',
     }
 });
 
