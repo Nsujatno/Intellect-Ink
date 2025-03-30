@@ -35,6 +35,9 @@ const userSchema = new mongoose.Schema({
     notification: {
         type: Boolean,
         default: false,
+    },
+    notificationTime: {
+        type: Date,
     }
 })
 
