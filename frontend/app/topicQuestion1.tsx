@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, StyleSheet, TextInput, Alert } from "react-native";
+import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -40,6 +40,11 @@ export default function topicQuestion1() {
                     style={styles.imagebg}
                 />
             </View>
+            <TouchableOpacity
+                style={{alignSelf: 'flex-start', marginTop: 50, left: 20}}
+                onPress={() => {router.back()}}>
+                <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
+            </TouchableOpacity>
 
                 <View style={styles.answerBox}>
                     <TextInput
@@ -76,12 +81,13 @@ export default function topicQuestion1() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: 70,
     },
     imagebg: {
         resizeMode: 'cover',
         width: '100%',
         height: undefined,
-        marginTop: 180,
+        marginTop: 200,
         aspectRatio: 0.855,
     },    
     imageContainer: {

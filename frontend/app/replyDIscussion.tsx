@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignSelf: 'flex-end',
         marginTop: -10,
+        width: 100,
+        height: 50,
         right: 40,
         zIndex: 2,
       },

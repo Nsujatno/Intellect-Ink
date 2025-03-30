@@ -227,17 +227,17 @@ export default function Stats() {
 
 
         {/* Achievement & Leaderboard Buttons */}
-        <View style={{flexDirection: 'column', marginTop: 130, width: 300, height: 60}}>
-        <DropDownButtons
+        <View style={{flexDirection: 'column', marginTop: 130, width: 300, height: 150}}>
+          <DropDownButtons
             title=' Achievements '
             variant='purple'
             achievements={achievementsData}
-        />
-        <DropDownButtons
+            />
+          <DropDownButtons
             title=' Leaderboard '
             variant='purple'
             leaderboards={leaderboardData}
-        />
+          />
         </View>
       </View>
     </ScrollView>
