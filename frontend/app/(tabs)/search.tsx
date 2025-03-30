@@ -174,12 +174,14 @@ export default function Search() {
                         <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
                         <DropDownButtons
                             title='Quiz'
-                            variant='white'
+                            variant='whiteOutline'
+                            categories={["Go to today's quiz", "See past results"]}
                             gradientColors={['#103A70', '#485EEA']} 
                         />
                         <DropDownButtons
                             title='Favorites'
-                            variant='white'
+                            variant='whiteOutline'
+                            categories={["See all favorites"]}
                             gradientColors={['#042C71', '#6D90EB']} 
                         />
                     </View>

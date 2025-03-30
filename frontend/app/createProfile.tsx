@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       borderRadius: 55,
       borderColor: '#646EA3',
-      borderWidth: 5,
+      borderWidth: 4,
   },
   textContainer: {
       position: "absolute",

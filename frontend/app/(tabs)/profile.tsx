@@ -6,10 +6,21 @@ import { useEffect, useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Profile() {
-
+  const [image, setImage] = useState("");
+  const selectPhoto = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    };
   const router = useRouter();
   const [name, setName] = useState("name")
   const [isEditing, setIsEditing] = useState(false);
@@ -131,9 +142,17 @@ export default function Profile() {
         
         <Text style={textStyles.pageHeader}>{isEditing?"Edit Profile":"Profile"}</Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 60,}}>
-            <Image
-            source={require('../../assets/images/pfp.png')}
-            style={styles.pfpImg}/>
+            {isEditing? (
+              <TouchableOpacity onPress={selectPhoto}>
+                <Image
+                  source={image ? { uri: image } : require('../../assets/images/pfp.png')}
+                  style={styles.pfpImg}/>
+              </TouchableOpacity>
+            ):(
+              <Image
+                source={image ? { uri: image } : require('../../assets/images/pfp.png')}
+                style={styles.pfpImg}/>
+            )}
             {isEditing? (
                 <TouchableOpacity
                     style={styles.button}
@@ -256,10 +275,13 @@ const styles = StyleSheet.create({
       aspectRatio: 0.275,
   },
   pfpImg: {
-      width: 112,
-      height: 110,
-      alignSelf: 'center',
-  },
+    width: 110,
+    height: 110,
+    alignSelf: 'center',
+    borderRadius: 55,
+    borderColor: '#646EA3',
+    borderWidth: 4,
+},
   textContainer: {
       position: "absolute",
       top: 50,

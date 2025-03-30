@@ -115,7 +115,11 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                     ))}
 
                     {categories.map((category, index) => (
-                        <TouchableOpacity key={index} style={styles.categoryBox}>
+                        <TouchableOpacity key={index} style={[styles.categoryBox,
+                            variant == 'purple' ? styles.purpleContainer : null,
+                            variant == 'white' ? styles.whiteContainer : null,
+                            variant == 'whiteOutline' ? styles.outlineContainer: null,
+                        ]}>
                             <Text style={textStyles.subheadingWhite}>{category}</Text>
                             <MaterialIcons name={'keyboard-arrow-right'}color='white' size={30}/>
                         </TouchableOpacity>
@@ -143,9 +147,7 @@ const styles = StyleSheet.create ({
         backgroundColor: '#888FB8',
     },
     outlineContainer: {
-        backgroundColor: 'transparent',
-        borderColor: 'white',
-        borderWidth: 4,
+        backgroundColor: '#8FB5E3',
     },
     body: {
         paddingVertical: '0%',
