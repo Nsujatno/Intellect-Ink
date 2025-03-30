@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
 import { toggleAnimation } from "../animations/toggleAnimation";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import CheckBox from "./checkbox";
 
 interface Achievement {
     id: string;
@@ -19,16 +18,21 @@ interface Leaderboard {
     icon: any;
 }
 
+interface Categories {
+    id: string;
+    title: string;
+}
+
 interface ButtonProps {
     title: string;
     variant: 'purple' | 'white' | 'whiteOutline';
-    gradientColors?: string[];
-    options?: { value: string, label: string }[];
+    gradientColors?: readonly [string, string, ...string[]];
+    categories?: string[];
     achievements?: Achievement[];
     leaderboards?: Leaderboard[];
 }
 
-const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], options = []}) => {
+const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors=['#413F6F', '#413F6F']}) => {
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
     const [checkedValues, setCheckedValues] = useState<string[]>([]);
@@ -59,28 +63,36 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
             variant == 'white' ? styles.whiteContainer : null,
             variant == 'whiteOutline' ? styles.outlineContainer: null,
         ]}>
-            {/* {gradientColors ? (
+            {gradientColors ? (
                 <LinearGradient
                     colors={gradientColors}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    style={styles.gradientHeader}
-            > */}
+                    // style={styles.gradientHeader}
+            >
             <TouchableOpacity onPress={() => toggleListItem()}>
                 <View style={styles.titleContainer}>
                     <Text
-                        style={[
-                            variant == 'purple' ? { color: '#FFFFFF' }: null,
-                            variant == 'white' ? { color: '#413F6F' }: null,
-                            variant == 'whiteOutline' ? { color: '#FFFFFF'}: null,
-                        ]}
+                        style={textStyles.subheadingWhite}
                     >{title}</Text>
                     <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
-                        <MaterialIcons name={'keyboard-arrow-right'} size={30}/>
+                        <MaterialIcons name={'keyboard-arrow-right'}color='white' size={30}/>
                     </Animated.View>
                 </View>
             </TouchableOpacity>
-            {/* </LinearGradient> */}
+            </LinearGradient>):
+            (
+            <TouchableOpacity onPress={() => toggleListItem()}>
+                <View style={styles.titleContainer}>
+                    <Text
+                        style={textStyles.subheadingWhite}
+                    >{title}</Text>
+                    <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
+                        <MaterialIcons name={'keyboard-arrow-right'} color='white' size={30}/>
+                    </Animated.View>
+                </View>
+            </TouchableOpacity>
+            )}
 
             {showContent && (
                 <View style={styles.body}>
@@ -102,11 +114,13 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                         </View>
                     ))}
 
-                    <CheckBox
-                        options={options}
-                        checkedValues={checkedValues}
-                        onChange={handleCheckBoxChange}
-                    />
+                    {categories.map((category, index) => (
+                        <TouchableOpacity key={index} style={styles.categoryBox}>
+                            <Text style={textStyles.subheadingWhite}>{category}</Text>
+                            <MaterialIcons name={'keyboard-arrow-right'}color='white' size={30}/>
+                        </TouchableOpacity>
+                    ))}
+
                     <View style={styles.spacing} />
                 </View>
             )}
@@ -117,17 +131,16 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
 const styles = StyleSheet.create ({
     container: {
         width: '100%',
-        padding: '2%',
-        borderRadius: 12,
         backgroundColor: '#FFFFFF',
-        marginBottom: '2%',
+        marginBottom: '3%',
         overflow: 'hidden',
+        //borderRadius: 5,
     },
     purpleContainer: {
         backgroundColor: '#413F6F',
     },
     whiteContainer: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#888FB8',
     },
     outlineContainer: {
         backgroundColor: 'transparent',
@@ -135,13 +148,14 @@ const styles = StyleSheet.create ({
         borderWidth: 4,
     },
     body: {
-        paddingHorizontal: '2%',
-        paddingVertical: '3%',
+        paddingVertical: '0%',
     },
     titleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        height: 50,
     },
     achievementBox: {
         flexDirection: 'row',
@@ -149,7 +163,8 @@ const styles = StyleSheet.create ({
         backgroundColor: '#FFFFFF',
         padding: 10,
         borderRadius: 8,
-        marginBottom: 10.
+        marginBottom: 10,
+        marginHorizontal: '4%', 
     },
     achievementIcon: {
         width: 40,
@@ -168,7 +183,8 @@ const styles = StyleSheet.create ({
         padding: 10,
         backgroundColor: '#F5F5F5',
         borderRadius: 8,
-        marginBottom: 10,  
+        marginBottom: 10,
+        marginHorizontal: '4%', 
     },
     rankNumber: {
         fontSize: 18,
@@ -179,7 +195,17 @@ const styles = StyleSheet.create ({
         width: 40,
         height: 40,
         marginRight: 10,
-    }
+    },
+    categoryBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#888FB8',
+        borderColor: 'white',
+        borderWidth: 1,
+        height: 50,
+        paddingHorizontal: 20,
+    },
 })
 
 export default dropDownButton;

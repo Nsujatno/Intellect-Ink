@@ -1,4 +1,4 @@
-import { Text, View, FlatList, SafeAreaView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
+import { Text, View, FlatList, ScrollView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
 import { useState } from "react";
 import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
@@ -32,6 +32,7 @@ export default function Search() {
           poem: "Once upon a midnight dreary, While I pondered, weak and weary...",
         },
       ];
+
     const [searchQuery, setSearchQuery] = useState("");
     const handleSearch = (query: string) => {
         setSearchQuery(query);
@@ -62,7 +63,7 @@ export default function Search() {
   );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.container}>
             <TextInput
                 style={styles.inputContainer}
                 placeholder="Search"
@@ -86,20 +87,60 @@ export default function Search() {
                         />
                     </LinearGradient>
                 ) : (
-                    <View>
-                        <Text>hello</Text>
+                    <View style={styles.categoriesContainer}>
+                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
+                        <DropDownButtons
+                            title='Books'
+                            variant='white'
+                            categories={["Horror", "Romance", "Mystery"]}
+                            gradientColors={['#5C3E8F', '#2D1A4E']} 
+                        />
+                        <DropDownButtons
+                            title='News'
+                            variant='white'
+                            categories={[]}
+                            gradientColors={['#615796', '#3B3461']} 
+                        />
+                        <DropDownButtons
+                            title='Poems'
+                            variant='white'
+                            categories={[]}
+                            gradientColors={['#514F82', '#22205F']} 
+                        />
+                        <DropDownButtons
+                            title='Politics'
+                            variant='white'
+                            categories={[]}
+                            gradientColors={['#3F497B', '#646EA3']} 
+                        />
+                        <DropDownButtons
+                            title='Research'
+                            variant='white'
+                            categories={[]}
+                            gradientColors={['#514F82', '#7347AD']} 
+                        />
+                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
+                        <DropDownButtons
+                            title='Quiz'
+                            variant='white'
+                            gradientColors={['#103A70', '#485EEA']} 
+                        />
+                        <DropDownButtons
+                            title='Favorites'
+                            variant='white'
+                            gradientColors={['#042C71', '#6D90EB']} 
+                        />
                     </View>
                 )
             }
 
-        </SafeAreaView>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
         marginTop: 80,
         marginHorizontal: 20,
     },
@@ -142,5 +183,9 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 3.84,
+    },
+    categoriesContainer: {
+        width: '100%',
+        
     },
 });
