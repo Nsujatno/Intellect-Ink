@@ -1,5 +1,6 @@
 import { Text, View, FlatList, ScrollView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
 import { useState } from "react";
+import axios from 'axios'
 import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
@@ -34,8 +35,59 @@ export default function Search() {
       ];
 
     const [searchQuery, setSearchQuery] = useState("");
-    const handleSearch = (query: string) => {
+    const handleSearch = async (query: string) => {
         setSearchQuery(query);
+        console.log(query);
+
+        try{
+            const response = await axios.post("http://localhost:8000/api/article/search", {keyword: query});
+            for(let i = 0; i < response.data.length; i++){
+                console.log(response.data[i])
+            }
+        }catch(error){
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
+        }
+        try{
+            const response = await axios.post("http://localhost:8000/api/book/search", {keyword: query});
+            for(let i = 0; i < response.data.length; i++){
+                console.log(response.data[i])
+            }
+        }catch(error){
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
+        }
+        try{
+            const response = await axios.post("http://localhost:8000/api/news/search", {keyword: query});
+            for(let i = 0; i < response.data.length; i++){
+                console.log(response.data[i])
+            }
+        }catch(error){
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
+        }
+        try{
+            const response = await axios.post("http://localhost:8000/api/poem/search", {keyword: query});
+            for(let i = 0; i < response.data.length; i++){
+                console.log(response.data[i])
+            }
+        }catch(error){
+            if (axios.isAxiosError(error)) {
+                if(error.response){
+                    console.log('Error: ', error.response.data)
+                }
+            }
+        }
+
     }
     type ItemProps = {
         id: string,
