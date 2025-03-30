@@ -5,9 +5,9 @@ import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-export default function topicQuestion1() {
+export default function TopicQuestion1() {
     const router = useRouter();
-    const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
+    
     const [replies, setReplies] = useState([
         {
             id: '1',
@@ -17,58 +17,106 @@ export default function topicQuestion1() {
         {
             id: '2',
             name: 'Name',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-        }
+            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        },
     ]);
-    
+
+    const [likes, setLikes] = useState(
+        replies.reduce((acc, reply) => {
+            acc[reply.id] = { icon: "heart-outline", count: 0 };
+            return acc;
+        }, {})
+    );
+
+    const [expanded, setExpanded] = useState({});
+
+    const handleLikeToggle = (id) => {
+        setLikes((prevLikes) => {
+            const currentLike = prevLikes[id];
+            const newIcon = currentLike.icon === "heart-outline" ? "heart" : "heart-outline";
+            const newCount = newIcon === "heart" ? currentLike.count + 1 : currentLike.count - 1;
+            return {
+                ...prevLikes,
+                [id]: { icon: newIcon, count: newCount }
+            };
+        });
+    };
+
+    const toggleExpanded = (id) => {
+        setExpanded((prevState) => ({
+            ...prevState,
+            [id]: !prevState[id],
+        }));
+    };
+
+    const maxLength = 200;
+
     return (
-        <FlatList
-            ListHeaderComponent={
-                <>
-                    <View style={styles.imageContainer}>
-                        <Image
-                            source={require('../assets/images/discussion_viewbg.png')}
-                            style={styles.imagebg}
-                        />
-                    </View>
-
-                    <View style={styles.textContainer}>
-                        <Text style={[textStyles.pageHeader, {right: 40}]}>Topic Question 1</Text>
-                        <Text style={[textStyles.subheading2, {fontSize: 25, right: 85, color: '#646EA3'}]}>View Discussion</Text>
-                    </View>
-                </>
-            }
-            data={replies}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-            <View style={styles.replyContainer}>
-                <View style={styles.indivReplyContainer}>
-                    <View style={styles.profileSection}>
-                        <Image
-                            source={require('../assets/images/pfp.png')}
-                            style={styles.profileImage}
-                        />
-                        <Text style={styles.nameText}>{item.name}</Text>
-                    </View>
-                    <Text style={textStyles.bodytext5}>{item.text}</Text>
-                </View>
-
-                    <View style={styles.replyButtonContainer}>
-                        <Buttons
-                            title="Reply"
-                            variant="gray"
-                            onPress={() => router.push("/replyDiscussion")}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={() =>
-                            setLike((prevIcon) => (prevIcon === "heart-outline" ? "heart" : "heart-outline"))
-                        }
-                    ><Ionicons name={like} size={30} color={"white"} />
-                    </TouchableOpacity>
+        <View style={styles.container}>
+            <View style={styles.imageContainer}>
+                <Image
+                    source={require('../assets/images/discussion_viewbg.png')}
+                    style={styles.imagebg}
+                />
             </View>
-            )}
-        />
+
+            <TouchableOpacity
+                style={{ alignSelf: 'flex-start', marginTop: 50, marginBottom: -20, left: 20 }}
+                onPress={() => { router.back() }}
+            >
+                <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
+            </TouchableOpacity>
+
+            <View style={styles.textContainer}>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 25, right: 85, color: '#646EA3' }]}>View Discussion</Text>
+            </View>
+
+            <FlatList
+                data={replies}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <View style={styles.replyContainer}>
+                        <View style={styles.indivReplyContainer}>
+                            <View style={styles.profileSection}>
+                                <Image
+                                    source={require('../assets/images/pfp.png')}
+                                    style={styles.profileImage}
+                                />
+                                <Text style={styles.nameText}>{item.name}</Text>
+                            </View>
+
+                            <Text style={textStyles.bodytext5}>
+                                {expanded[item.id] ? item.text : `${item.text.slice(0, maxLength)}...`}
+                            </Text>
+
+                            <TouchableOpacity onPress={() => toggleExpanded(item.id)}>
+                                <Text style={styles.viewMoreText}>
+                                    {expanded[item.id] ? "View Less" : "View More"}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.replyButtonContainer}>
+                            <Buttons
+                                title="Reply"
+                                variant="gray2"
+                                onPress={() => router.push("/replyDiscussion")}
+                            />
+                        </View>
+
+                        <View style={styles.heartContainer}>
+                            <TouchableOpacity onPress={() => handleLikeToggle(item.id)}>
+                                <Ionicons name={likes[item.id].icon} size={30} color={"white"} />
+                            </TouchableOpacity>
+                            <Text style={styles.likeCountText}>{likes[item.id].count} Likes</Text>
+                        </View>
+                    </View>
+                )}
+                initialNumToRender={5}
+                maxToRenderPerBatch={10}
+            />
+        </View>
     );
 }
 
@@ -80,7 +128,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         width: '100%',
         height: undefined,
-        marginTop: 200,
+        marginTop: 235,
         aspectRatio: 0.524,
     },
     imageContainer: {
@@ -90,12 +138,12 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         alignItems: 'center',
-        marginTop: 70,
+        marginTop: 50,
+        marginBottom: 60,
     },
     replyContainer: {
         position: 'relative',
-        marginTop: 70,
-        marginBottom: 10,
+        marginBottom: 20,
         flexDirection: 'column',
     },
     indivReplyContainer: {
@@ -126,15 +174,23 @@ const styles = StyleSheet.create({
     },
     replyButtonContainer: {
         marginTop: 10,
-        right: 50,
-        width: 70,
-        height: 10,
-        left: 70,
+        marginLeft: 120,
     },
     heartContainer: {
-        width: 7,
-        height: 4,
-        left: 30,
+        flexDirection: 'row',
+        alignItems: 'center',
+        top: -40,
+        left: 25,
+    },
+    likeCountText: {
+        marginLeft: 5,
+        fontSize: 14,
+        color: 'white',
+    },
+    viewMoreText: {
+        color: '#321383',
+        marginTop: 5,
+        fontSize: 14,
     },
     buttonContainer: {
         marginBottom: 20,

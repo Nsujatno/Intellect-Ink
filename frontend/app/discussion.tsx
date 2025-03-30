@@ -21,7 +21,10 @@ export default function Discussion() {
           <Text style={[textStyles.subheading2, styles.topicDescription]}>{item.description}</Text>
         </View>
         <View style={styles.buttonWrapper}>
-          <Buttons title="Answer" variant="purple" onPress={() => router.push(`/topicQuestion${item.id}`)} />
+          <Buttons 
+            title="Answer" 
+            variant="purple2" 
+            onPress={() => router.push(`/topicQuestion${item.id}`)} />
         </View>
       </View>
     </View>

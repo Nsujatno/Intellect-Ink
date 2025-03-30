@@ -98,7 +98,7 @@ export const textStyles = StyleSheet.create ({
         fontSize: 16,
         marginVertical: 16,
         color: '#252323',
-    }
+    },
 });
 
 export default textStyles;
