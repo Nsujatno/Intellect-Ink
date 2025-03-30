@@ -3,33 +3,37 @@ import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
+import axios from "axios";
 
 export default function topicQuestion1() {
     const router = useRouter();
     const [inputText, setInputText] = useState("");
-    const maxChars = 1250;
+    const maxChars = 1400;
     const isButtonDisabled = inputText.trim() == "";
 
-    // for storing user input?
+    // for storing user input
     // const handleComment = async () => {
     //     if (inputText.trim() == "") {
     //         Alert.alert("Enter your thoughts before submitting");
     //         return;
-    //     }  
+    //     } else if (inputText.trim().length < 200) {
+    //         Alert.alert("Please enter at least 200 characters.")
+    //         return;
+    //     }
         
     //     try {
-    //         const response = await fetch('', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': '',
-    //             },
-    //             body: JSON.stringify({ text: inputText }),
+    //         const response = await axios.post("", {
+    //             text: inputText,
     //         });
 
-    //         if (response.ok) {
+    //         if (response.status === 200) {
     //             setInputText("");
+    //             router.push('/quest1view');
+    //         } else {
+    //             Alert.alert("There was an error submitting your comment. Please try again.");
     //         }
     //     } catch (error) {
+    //         console.error("Error submitting comment:", error);
     //     }
     // }; 
     
@@ -74,6 +78,8 @@ export default function topicQuestion1() {
                     onPress={() => {
                         if (inputText.trim() === "") {
                             Alert.alert("Please enter your thoughts before submitting.");
+                        } else if (inputText.trim().length < 200) {
+                            Alert.alert("Please enter at least 200 characters")
                         } else {
                             router.push('/quest1view');
                         }

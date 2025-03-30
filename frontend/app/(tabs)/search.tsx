@@ -2,6 +2,7 @@ import { Text, View, FlatList, SafeAreaView, TextInput, StyleSheet, TouchableOpa
 import { useState } from "react";
 import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Search() {
     const testSubjects = [
@@ -71,16 +72,26 @@ export default function Search() {
                 onChangeText={(query) => handleSearch(query)}>
             </TextInput>
             
-            <View style={styles.flatlistContainer}>
-                <FlatList
-                    data={testSubjects}
-                    renderItem={({ item }) => <Item item={item} />}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={true}
-                    horizontal={false}
-                />
-            </View>
-            
+            { searchQuery.trim() !=="" ? (
+                    <LinearGradient
+                        colors={["#4F3F7F", "#615796", "#646EA3"]}
+                        style={styles.flatlistContainer}
+                    >
+                        <FlatList
+                            data={testSubjects}
+                            renderItem={({ item }) => <Item item={item} />}
+                            keyExtractor={(item) => item.id}
+                            showsVerticalScrollIndicator={true}
+                            horizontal={false}
+                        />
+                    </LinearGradient>
+                ) : (
+                    <View>
+                        <Text>hello</Text>
+                    </View>
+                )
+            }
+
         </SafeAreaView>
     );
 }
@@ -95,7 +106,6 @@ const styles = StyleSheet.create({
     inputContainer: {
         backgroundColor: '#FFFFFF',
         flexDirection: 'row',
-        borderWidth: 2,
         borderRadius: 5,
         borderColor: '#E9E9E9',
         elevation: 10,
@@ -128,5 +138,9 @@ const styles = StyleSheet.create({
         height: 630,
         borderRadius: 5,
         padding: 15,
+        shadowColor: "#000",
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
     },
 });

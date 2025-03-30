@@ -1,13 +1,16 @@
 import { Text, View, Image, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import axios from "axios";
 
-export default function TopicQuestion1() {
+export default function Question1View() {
     const router = useRouter();
-    
+    const maxLength = 200;
+    const [expanded, setExpanded] = useState([]);
+
     const [replies, setReplies] = useState([
         {
             id: '1',
@@ -21,35 +24,63 @@ export default function TopicQuestion1() {
         },
     ]);
 
-    const [likes, setLikes] = useState(
-        replies.reduce((acc, reply) => {
-            acc[reply.id] = { icon: "heart-outline", count: 0 };
-            return acc;
-        }, {})
-    );
+    // const [replies, setReplies] = useState([]);
+    const [likes, setLikes] = useState([]);
 
-    const [expanded, setExpanded] = useState({});
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const response = await axios.get(""); // api link
+                setReplies(response.data);
 
-    const handleLikeToggle = (id) => {
+                const initialLikes = response.data.reduce((acc, reply) => {
+                    acc[reply._id] = { 
+                        icon: "heart-outline", 
+                        count: reply.likesCount || 0}; // initialize with existing likes stored from previous sessions or 0
+                    return acc;
+                }, {});
+                setLikes(initialLikes);
+            } catch (error) {
+                console.error("Error fetching comments:", error)
+            }
+        };
+
+        fetchComments();
+    }, [])
+
+    // const [likes, setLikes] = useState(
+    //     replies.reduce((acc, reply) => {
+    //         acc[reply.id] = { icon: "heart-outline", count: 0 };
+    //         return acc;
+    //     }, {})
+    // );
+
+    // const toggleExpanded = (id) => {
+    //     setExpanded((prevState) => ({
+    //         ...prevState,
+    //         [id]: !prevState[id],
+    //     }));
+    // };
+
+    const handleLikeToggle = async (id) => {
         setLikes((prevLikes) => {
-            const currentLike = prevLikes[id];
-            const newIcon = currentLike.icon === "heart-outline" ? "heart" : "heart-outline";
-            const newCount = newIcon === "heart" ? currentLike.count + 1 : currentLike.count - 1;
+            const currentLike = prevLikes[id]; // current like state
+            const newIcon = currentLike.icon === "heart-outline" ? "heart" : "heart-outline"; // toggle icon
+            const newCount = newIcon === "heart" ? currentLike.count + 1 : currentLike.count - 1; // adjust count
             return {
                 ...prevLikes,
-                [id]: { icon: newIcon, count: newCount }
+                [id]: { icon: newIcon, count: newCount } // update
             };
         });
-    };
 
-    const toggleExpanded = (id) => {
-        setExpanded((prevState) => ({
-            ...prevState,
-            [id]: !prevState[id],
-        }));
+        // request sent to backend
+        const increment = likes[id]?.icon === "heart-outline" ? 1 : -1;
+        try {
+            await axios.post(`/api/like/${id}`, { increment });
+        } catch (error) {
+            console.error("Error fetching:", error)
+        }
     };
-
-    const maxLength = 200;
 
     return (
         <View style={styles.container}>
@@ -74,7 +105,7 @@ export default function TopicQuestion1() {
 
             <FlatList
                 data={replies}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <View style={styles.replyContainer}>
                         <View style={styles.indivReplyContainer}>
@@ -87,12 +118,12 @@ export default function TopicQuestion1() {
                             </View>
 
                             <Text style={textStyles.bodytext5}>
-                                {expanded[item.id] ? item.text : `${item.text.slice(0, maxLength)}...`}
+                                {expanded[item._id] ? item.text : `${item.text.slice(0, maxLength)}...`}
                             </Text>
 
-                            <TouchableOpacity onPress={() => toggleExpanded(item.id)}>
+                            <TouchableOpacity onPress={() => toggleExpanded(item._id)}>
                                 <Text style={styles.viewMoreText}>
-                                    {expanded[item.id] ? "View Less" : "View More"}
+                                    {expanded[item._id] ? "View Less" : "View More"}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -106,10 +137,10 @@ export default function TopicQuestion1() {
                         </View>
 
                         <View style={styles.heartContainer}>
-                            <TouchableOpacity onPress={() => handleLikeToggle(item.id)}>
-                                <Ionicons name={likes[item.id].icon} size={30} color={"white"} />
+                            <TouchableOpacity onPress={() => handleLikeToggle(item._id)}>
+                                <Ionicons name={likes[item._id]?.icon || "heart-outline"} size={30} color={"white"} />
                             </TouchableOpacity>
-                            <Text style={styles.likeCountText}>{likes[item.id].count} Likes</Text>
+                            <Text style={styles.likeCountText}>{likes[item._id]?.count || 0} Likes</Text>
                         </View>
                     </View>
                 )}
