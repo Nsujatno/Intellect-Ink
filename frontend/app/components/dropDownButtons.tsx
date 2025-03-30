@@ -21,7 +21,7 @@ interface Leaderboard {
 
 interface ButtonProps {
     title: string;
-    variant: 'purple' | 'white' | 'whiteOutline';
+    variant: 'purple' | 'purple2' | 'white' | 'whiteOutline';
     gradientColors?: string[];
     options?: { value: string, label: string }[];
     achievements?: Achievement[];
@@ -56,6 +56,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
     return (
         <View style={[styles.container,
             variant == 'purple' ? styles.purpleContainer : null,
+            variant == 'purple2' ? styles.purple2Container : null,
             variant == 'white' ? styles.whiteContainer : null,
             variant == 'whiteOutline' ? styles.outlineContainer: null,
         ]}>
@@ -71,12 +72,13 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                     <Text
                         style={[
                             variant == 'purple' ? { color: '#FFFFFF' }: null,
+                            variant == 'purple2' ? { color: '#FFFFFF', fontSize: 25} : null,
                             variant == 'white' ? { color: '#413F6F' }: null,
                             variant == 'whiteOutline' ? { color: '#FFFFFF'}: null,
                         ]}
                     >{title}</Text>
                     <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
-                        <MaterialIcons name={'keyboard-arrow-right'} size={30}/>
+                        <MaterialIcons name={'keyboard-arrow-right'} size={30} color="white"/>
                     </Animated.View>
                 </View>
             </TouchableOpacity>
@@ -102,12 +104,13 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                         </View>
                     ))}
 
-                    <CheckBox
+                    {/* <CheckBox
                         options={options}
                         checkedValues={checkedValues}
                         onChange={handleCheckBoxChange}
-                    />
+                    /> */}
                     <View style={styles.spacing} />
+                    
                 </View>
             )}
         </View>
@@ -122,9 +125,15 @@ const styles = StyleSheet.create ({
         backgroundColor: '#FFFFFF',
         marginBottom: '2%',
         overflow: 'hidden',
+        paddingVertical: 10,
     },
     purpleContainer: {
         backgroundColor: '#413F6F',
+        height: 200,
+    },
+    purple2Container: {
+        backgroundColor: '#413F6F',
+        paddingVertical: 10,
     },
     whiteContainer: {
         backgroundColor: '#FFFFFF',
@@ -135,8 +144,8 @@ const styles = StyleSheet.create ({
         borderWidth: 4,
     },
     body: {
-        paddingHorizontal: '2%',
-        paddingVertical: '3%',
+        paddingHorizontal: '5%',
+        paddingVertical: '7%',
     },
     titleContainer: {
         flexDirection: 'row',
@@ -145,18 +154,23 @@ const styles = StyleSheet.create ({
     },
     achievementBox: {
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
         padding: 10,
         borderRadius: 8,
-        marginBottom: 10.
+        marginBottom: 10,
     },
     achievementIcon: {
+        justifyContent: 'center',
+        alignItems: 'center',
         width: 40,
         height: 40,
         marginRight: 10,
     },
     achievementText: {
+        justifyContent: 'center',
+        alignItems: 'center',
         flex: 1,
     },
     spacing: {
@@ -164,6 +178,7 @@ const styles = StyleSheet.create ({
     },
     leaderboardBox: {
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         padding: 10,
         backgroundColor: '#F5F5F5',
@@ -171,6 +186,7 @@ const styles = StyleSheet.create ({
         marginBottom: 10,  
     },
     rankNumber: {
+        color: '#413F6F',
         fontSize: 18,
         fontWeight: 'bold',
         marginRight: 10,

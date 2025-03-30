@@ -4,7 +4,7 @@ import React from 'react';
 
 interface ButtonProps {
     title: string;
-    variant: 'purple' | 'purple2' | 'white' | 'gray' | 'gray2' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
+    variant: 'purple' | 'purple2' | 'purple3' | 'white' | 'gray' | 'gray2' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
     onPress: () => void;
 }
 
@@ -15,6 +15,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
             style={[styles.container,
             variant === 'purple' ? styles.purpleContainer : null,
             variant === 'purple2' ? styles.purple2Container : null,
+            variant === 'purple3' ? styles.purple3Container : null,
             variant === 'white' ? styles.whiteContainer : null,
             variant == 'gray' ? styles.grayContainer : null,
             variant == 'gray2' ? styles.gray2Container : null,
@@ -27,6 +28,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                 style={[ textStyles.subheading,
                     variant === 'purple' ? {color: 'white'} : null,
                     variant === 'purple2' ? {color: 'white', fontSize: 18} : null,
+                    variant === 'purple3' ? {color: 'white', fontSize: 16} : null,
                     variant === 'white' ? {color: '#413F6F'} : null,
                     variant == 'gray' ? {color: '#413F6F'} : null,
                     variant === 'gray2' ? {color: '#413F6F', fontSize: 16} : null,
@@ -59,6 +61,12 @@ const styles = StyleSheet.create ({
         backgroundColor:'#413F6F',
         width: 120,
         height: 40,
+        paddingHorizontal: 20,
+    },
+    purple3Container: {
+        backgroundColor:'#413F6F',
+        width: 95,
+        height: 30,
         paddingHorizontal: 20,
     },
     whiteContainer: {

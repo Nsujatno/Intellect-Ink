@@ -134,6 +134,11 @@ export default function Question1View() {
                                 variant="gray2"
                                 onPress={() => router.push("/replyDiscussion")}
                             />
+                            <Buttons
+                                title="Replies"
+                                variant="purple3"
+                                onPress={() => router.push("/replyDiscussion")}
+                            />
                         </View>
 
                         <View style={styles.heartContainer}>
@@ -204,6 +209,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     replyButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        gap: 15,
         marginTop: 10,
         marginLeft: 120,
     },
