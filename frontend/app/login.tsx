@@ -4,14 +4,17 @@ import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Login() {
     const router = useRouter();
-
+    const [error, setError] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async () => {
+        setError("");
         try {
           const response = await axios.post(
             'http://localhost:8000/api/user/signin',
@@ -26,7 +29,7 @@ export default function Login() {
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 if(error.response){
-                    console.log('Error: ', error.response.data)
+                    setError(error.response.data)
                 }
             }
         }
@@ -48,9 +51,21 @@ export default function Login() {
                 <Text style={textStyles.heading2}>Email</Text>
                 <TextInput style={styles.inputContainer} value={email} onChangeText={setEmail}/>
                 <Text style={textStyles.heading2}>Password</Text>
-                <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
+                <View style={{position: 'relative'}}>
+                    <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword} secureTextEntry={showPassword}/>
+                    <TouchableOpacity
+                        onPress={()=>setShowPassword(!showPassword)}
+                        style={{position: 'absolute', right: 15, top: 15}}>
+                        {password.length<1?null:showPassword?
+                            <Ionicons name="eye-off-outline" size={24} color={'gray'} />
+                            : <Ionicons name="eye-outline" size={24} color={'gray'} />}
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity>
+                    <Text style={[textStyles.subheading,{color:"white"}]}>Forgot Password?</Text>
+                </TouchableOpacity>
             </View>
-            
+            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null}
             <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
@@ -60,7 +75,7 @@ export default function Login() {
         </View>
 
         <View style={styles.imageContainer2}>
-            <Image
+        <Image
                 source={require('../assets/images/OctopusLogo.png')}
                 style={styles.image2}/>
         </View>
@@ -73,7 +88,6 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "center",
         alignItems: "center",
-
     },
     imageContainer: {
         width: '100%',
@@ -123,13 +137,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'relative',
     },
     image2: {
-        width: 170,
+        width: 200,
         resizeMode: 'contain',
         position: 'absolute',
-        top: 580,
-        left: 65,
+        top: 675,
+        left: 53,
     },
   });

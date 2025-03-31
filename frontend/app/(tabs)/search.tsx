@@ -1,11 +1,13 @@
 import { Text, View, FlatList, ScrollView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
-import { useState } from "react";
+import { useState} from "react";
+import { useRouter } from "expo-router";
 import axios from 'axios'
 import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Search() {
+    const router = useRouter();
     const testSubjects = [
         {
           id: "1",
@@ -115,7 +117,7 @@ export default function Search() {
   );
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <TextInput
                 style={styles.inputContainer}
                 placeholder="Search"
@@ -184,6 +186,13 @@ export default function Search() {
                             categories={["See all favorites"]}
                             gradientColors={['#042C71', '#6D90EB']} 
                         />
+                        <TouchableOpacity
+                            onPress={() => router.push('/quiz')}
+                        >
+                            <Text>
+                                Go to quiz
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 )
             }

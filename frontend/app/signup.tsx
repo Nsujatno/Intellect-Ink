@@ -6,7 +6,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-
 export default function Signup() {
     const router = useRouter();
 
@@ -183,10 +182,10 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     image2: {
-        width: 170,
+        width: 200,
         resizeMode: 'contain',
         position: 'absolute',
-         top: 580,
-        left: 65,
+        top: 675,
+        left: 53,
     },
   });
