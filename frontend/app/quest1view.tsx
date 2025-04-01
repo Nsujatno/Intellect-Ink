@@ -6,7 +6,7 @@ import Buttons from "./components/buttons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 
-export default function Question1View() {
+export default function question1View() {
     const router = useRouter();
     const maxLength = 200;
     const [expanded, setExpanded] = useState([]);
@@ -25,7 +25,7 @@ export default function Question1View() {
     ]);
 
     // const [replies, setReplies] = useState([]);
-    const [likes, setLikes] = useState([]);
+    // const [likes, setLikes] = useState([]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -33,13 +33,13 @@ export default function Question1View() {
                 const response = await axios.get(""); // api link
                 setReplies(response.data);
 
-                const initialLikes = response.data.reduce((acc, reply) => {
-                    acc[reply._id] = { 
-                        icon: "heart-outline", 
-                        count: reply.likesCount || 0}; // initialize with existing likes stored from previous sessions or 0
-                    return acc;
-                }, {});
-                setLikes(initialLikes);
+                // const initialLikes = response.data.reduce((acc, reply) => {
+                //     acc[reply._id] = { 
+                //         icon: "heart-outline", 
+                //         count: reply.likesCount || 0}; // initialize with existing likes stored from previous sessions or 0
+                //     return acc;
+                // }, {});
+                // setLikes(initialLikes);
             } catch (error) {
                 console.error("Error fetching comments:", error)
             }
@@ -62,25 +62,25 @@ export default function Question1View() {
     //     }));
     // };
 
-    const handleLikeToggle = async (id) => {
-        setLikes((prevLikes) => {
-            const currentLike = prevLikes[id]; // current like state
-            const newIcon = currentLike.icon === "heart-outline" ? "heart" : "heart-outline"; // toggle icon
-            const newCount = newIcon === "heart" ? currentLike.count + 1 : currentLike.count - 1; // adjust count
-            return {
-                ...prevLikes,
-                [id]: { icon: newIcon, count: newCount } // update
-            };
-        });
+    // const handleLikeToggle = async (id) => {
+    //     setLikes((prevLikes) => {
+    //         const currentLike = prevLikes[id]; // current like state
+    //         const newIcon = currentLike.icon === "heart-outline" ? "heart" : "heart-outline"; // toggle icon
+    //         const newCount = newIcon === "heart" ? currentLike.count + 1 : currentLike.count - 1; // adjust count
+    //         return {
+    //             ...prevLikes,
+    //             [id]: { icon: newIcon, count: newCount } // update
+    //         };
+    //     });
 
-        // request sent to backend
-        const increment = likes[id]?.icon === "heart-outline" ? 1 : -1;
-        try {
-            await axios.post(`/api/like/${id}`, { increment });
-        } catch (error) {
-            console.error("Error fetching:", error)
-        }
-    };
+    //     // request sent to backend
+    //     const increment = likes[id]?.icon === "heart-outline" ? 1 : -1;
+    //     try {
+    //         await axios.post(`/api/like/${id}`, { increment });
+    //     } catch (error) {
+    //         console.error("Error fetching:", error)
+    //     }
+    // };
 
     return (
         <View style={styles.container}>
@@ -135,18 +135,18 @@ export default function Question1View() {
                                 onPress={() => router.push("/replyDiscussion")}
                             />
                             <Buttons
-                                title="Replies"
+                                title="More Replies"
                                 variant="purple3"
-                                onPress={() => router.push("/replyDiscussion")}
+                                onPress={() => router.push("/viewReplies")}
                             />
                         </View>
 
-                        <View style={styles.heartContainer}>
+                        {/* <View style={styles.heartContainer}>
                             <TouchableOpacity onPress={() => handleLikeToggle(item._id)}>
                                 <Ionicons name={likes[item._id]?.icon || "heart-outline"} size={30} color={"white"} />
                             </TouchableOpacity>
                             <Text style={styles.likeCountText}>{likes[item._id]?.count || 0} Likes</Text>
-                        </View>
+                        </View> */}
                     </View>
                 )}
                 initialNumToRender={5}
@@ -213,19 +213,19 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         gap: 15,
         marginTop: 10,
-        marginLeft: 120,
+        marginLeft: 25,
     },
-    heartContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        top: -40,
-        left: 25,
-    },
-    likeCountText: {
-        marginLeft: 5,
-        fontSize: 14,
-        color: 'white',
-    },
+    // heartContainer: {
+    //     flexDirection: 'row',
+    //     alignItems: 'center',
+    //     top: -40,
+    //     left: 25,
+    // },
+    // likeCountText: {
+    //     marginLeft: 5,
+    //     fontSize: 14,
+    //     color: 'white',
+    // },
     viewMoreText: {
         color: '#321383',
         marginTop: 5,

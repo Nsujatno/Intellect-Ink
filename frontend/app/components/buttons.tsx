@@ -65,7 +65,7 @@ const styles = StyleSheet.create ({
     },
     purple3Container: {
         backgroundColor:'#413F6F',
-        width: 95,
+        width: 135,
         height: 30,
         paddingHorizontal: 20,
     },

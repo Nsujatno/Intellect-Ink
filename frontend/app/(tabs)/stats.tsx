@@ -78,7 +78,6 @@ export default function Stats() {
   //   { day: "Sat", books: 20, poems: 30, politics: 50, research: 35 },
   // ];
 
-
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -139,12 +138,13 @@ export default function Stats() {
             data={chartData}
             xKey="day"
             yKeys={["books", "poems", "politics", "research"]}
-            domainPadding={{ left: 50, right: 50, top: 20 }}
-            domain={{
-              y: [0, Math.max(...chartData.flatMap(({ books, poems, politics, research }) =>
-                [books, poems, politics, research])) + 10],
-            }}
+            domainPadding={{ left: 50, right: 50, top: 30 }}
+            domain={{ y: [0, 100] }}
             axisOptions={{
+              formatXLabel: (value) => value,
+              formatYLabel: (value) => `${value} min`,
+              lineColor: "#000",
+              labelColor: "#000",
               style: {
                 axis: { stroke: "#000", strokeWidth: 2 },
                 ticks: { stroke: "#000", size: 5 },
@@ -153,30 +153,39 @@ export default function Stats() {
               tickFormat: (tick) => tick,
             }}
           >
-            {({ points, chartBounds }) => (
-              <StackedBar
-                chartBounds={chartBounds}
-                points={[
-                  points.books,
-                  points.poems,
-                  points.politics,
-                  points.research,
-                ]}
-                colors={["#4E86E9", "#0A0B78", "#5A5CF6", "#3335CF"]}
-              />
-            )}
+            {({ points, chartBounds }) => {
+              return (
+                <StackedBar
+                  chartBounds={chartBounds}
+                  points={[
+                    points.books,
+                    points.poems,
+                    points.politics,
+                    points.research,
+                  ]}
+                  colors={["#4E86E9", "#0A0B78", "#5A5CF6", "#3335CF"]}
+                  // barOptions={({ isBottom, isTop }) => {
+                  //   return {
+                  //     roundedCorners: isTop
+                  //       ? { topLeft: 10, topRight: 10 }
+                  //       : isBottom
+                  //       ? { bottomLeft: 10, bottomRight: 10 }
+                  //       : undefined,
+                  //   };
+                  // }}
+                />
+              );
+            }}
           </CartesianChart>
-
-
         </View>
 
         {/* Time Spent Per Category */}
-        <Text style={[textStyles.heading1, { marginTop: 130, alignSelf: 'center' }]}>Time Spent</Text>
+        <Text style={[textStyles.heading1, {marginTop: 130, alignSelf: 'center'}]}>Time Spent</Text>
         <Text style={textStyles.subheading2}>Per Category</Text>
         <View style={styles.timeSpentContainer}>
           <Image
-            source={require('../../assets/images/stats_box1.png')}
-            style={styles.statsBoxPlacement1}
+              source={require('../../assets/images/stats_box1.png')}
+              style={styles.statsBoxPlacement1}
           />
           {/* View Todays Data */}
           <View style={styles.todaysDataContainer}>
@@ -184,69 +193,69 @@ export default function Stats() {
               source={require('../../assets/images/stats_colorCats.png')}
               style={styles.colorCatsContainer}
             />
-            <View style={styles.categoryRow}>
-              <Text style={textStyles.bodytext2}>Books</Text>
-              <Text style={textStyles.bodytext2}>
-                {timeSpentData.books.toFixed(2)} min
-              </Text>
-            </View>
-            <View style={styles.categoryRow}>
-              <Text style={textStyles.bodytext2}>Poems</Text>
-              <Text style={textStyles.bodytext2}>
-                {timeSpentData.poems.toFixed(2)} min
-              </Text>
-            </View>
-            <View style={styles.categoryRow}>
-              <Text style={textStyles.bodytext2}>Politics</Text>
-              <Text style={textStyles.bodytext2}>
-                {timeSpentData.politics.toFixed(2)} min
-              </Text>
-            </View>
-            <View style={styles.categoryRow}>
-              <Text style={textStyles.bodytext2}>Research</Text>
-              <Text style={textStyles.bodytext2}>
-                {timeSpentData.research.toFixed(2)} min
-              </Text>
-            </View>
+          <View style={styles.categoryRow}>
+            <Text style={textStyles.bodytext2}>Books</Text>
+            <Text style={textStyles.bodytext2}>
+              {timeSpentData.books.toFixed(2)} min
+            </Text>
+          </View>
+          <View style={styles.categoryRow}>
+            <Text style={textStyles.bodytext2}>Poems</Text>
+            <Text style={textStyles.bodytext2}>
+              {timeSpentData.poems.toFixed(2)} min
+            </Text>
+          </View>
+          <View style={styles.categoryRow}>
+            <Text style={textStyles.bodytext2}>Politics</Text>
+            <Text style={textStyles.bodytext2}>
+              {timeSpentData.politics.toFixed(2)} min
+            </Text>
+          </View>
+          <View style={styles.categoryRow}>
+            <Text style={textStyles.bodytext2}>Research</Text>
+            <Text style={textStyles.bodytext2}>
+              {timeSpentData.research.toFixed(2)} min
+            </Text>
           </View>
         </View>
+        </View>
 
-        {/* Statistics Overall Box */}
-        <Text style={[textStyles.heading1, { marginTop: -25, marginBottom: 30, alignSelf: 'center' }]}>Statistics</Text>
+         {/* Statistics Overall Box */}
+        <Text style={[textStyles.heading1, {marginTop: -25, marginBottom: 30, alignSelf: 'center'}]}>Statistics</Text>
         <View style={styles.overallStatsContainer}>
           <Image
             source={require('../../assets/images/stats_box1.png')}
             style={styles.statsBoxPlacement2}
           />
           <View style={[styles.miniBoxContainer]}>
-            <View style={styles.miniBoxWrapper}>
-              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox} />
-              <Image source={require('../../assets/images/stats_streak.png')} style={styles.miniIcon} />
-              <Text style={[textStyles.bodytext3, { marginTop: -60 }]}>Day Streak</Text>
+          <View style={styles.miniBoxWrapper}>
+              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
+              <Image source={require('../../assets/images/stats_streak.png')} style={styles.miniIcon}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Day Streak</Text>
             </View>
 
             <View style={styles.miniBoxWrapper}>
-              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox} />
-              <Image source={require('../../assets/images/stats_rank.png')} style={styles.miniIcon} />
-              <Text style={[textStyles.bodytext3, { marginTop: -60 }]}>Level #</Text>
+              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
+              <Image source={require('../../assets/images/stats_rank.png')} style={styles.miniIcon}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}>Level #</Text>
             </View>
 
             <View style={styles.thirdBoxWrapper}>
-              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox} />
-              <Image source={require('../../assets/images/stats_trophy.png')} style={styles.miniIcon} />
-              <Text style={[textStyles.bodytext3, { marginTop: -60 }]}># Place</Text>
-            </View>
+              <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox}/>
+              <Image source={require('../../assets/images/stats_trophy.png')} style={styles.miniIcon}/>
+              <Text style={[textStyles.bodytext3, {marginTop: -60}]}># Place</Text>
+          </View>
           </View>
         </View>
 
 
         {/* Achievement & Leaderboard Buttons */}
-        <View style={{ flexDirection: 'column', gap: 20, marginTop: 130, width: 300, height: 200 }}>
+        <View style={{flexDirection: 'column', marginTop: 130, width: 300, height: 200}}>
           <DropDownButtons
             title=' Achievements '
             variant='purple2'
             achievements={achievementsData}
-          />
+            />
           <DropDownButtons
             title=' Leaderboard '
             variant='purple2'
@@ -287,7 +296,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    width: 350,
+    width: 340,
     height: 300,
     top: 70,
   },
