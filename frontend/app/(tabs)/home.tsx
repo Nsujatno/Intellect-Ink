@@ -15,7 +15,7 @@ const testSubjects = [
     title: "Harry Potter and the Chamber of Secrets",
     author: "JK Rowling",
     link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',
-    summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.",
+    summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answersHarry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answersHarry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers",
   },
   {
     id: "2",
@@ -82,9 +82,11 @@ export default function Home() {
         <Text style={textStyles.heading2purple}>{item.title}</Text>
         <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>
         {item.type === "poem" ? (
-          <Text style={textStyles.subheading}>{item.poem}</Text>
+          <View style={{height: 220, overflow: 'hidden'}}>
+            <Text style={textStyles.subheading}>{item.poem}</Text>
+          </View>
         ) : (
-          <View>
+          <View style={{height: 220, overflow: 'hidden'}}>
             <Text style={textStyles.heading2purple}>Summary:</Text>
             <Text style={textStyles.subheading}>{item.summary}</Text>
           </View>

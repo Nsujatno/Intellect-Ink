@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
 import { toggleAnimation } from "../animations/toggleAnimation";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from "expo-router";
 
 interface Achievement {
     id: string;
@@ -56,6 +57,8 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
     const handleCheckBoxChange = (values: string[]) => {
         setCheckedValues(values);
     }
+
+    const router = useRouter();
 
     return (
         <View style={[styles.container,
@@ -119,7 +122,15 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                             variant == 'purple' ? styles.purpleContainer : null,
                             variant == 'white' ? styles.whiteContainer : null,
                             variant == 'whiteOutline' ? styles.outlineContainer: null,
-                        ]}>
+                        ]}
+                        onPress={() => {
+                            if (category === "Go to today's quiz") {
+                              router.push('/quiz');
+                            } else {
+                              router.push({ pathname: '/search', params: { query: category } });
+                            }
+                          }}
+                        >
                             <Text style={textStyles.subheadingWhite}>{category}</Text>
                             <MaterialIcons name={'keyboard-arrow-right'}color='white' size={30}/>
                         </TouchableOpacity>

@@ -186,13 +186,6 @@ export default function Search() {
                             categories={["See all favorites"]}
                             gradientColors={['#042C71', '#6D90EB']} 
                         />
-                        <TouchableOpacity
-                            onPress={() => router.push('/quiz')}
-                        >
-                            <Text>
-                                Go to quiz
-                            </Text>
-                        </TouchableOpacity>
                     </View>
                 )
             }
