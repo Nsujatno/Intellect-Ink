@@ -284,3 +284,4 @@
     <li><b>Nathan Sujatno</b></li>
 </ul>
 
+![image](https://drive.google.com/uc?export=view&id=1wTc35fOO5Rad3pl9Yp8AZMnlwDGCacPZ)
