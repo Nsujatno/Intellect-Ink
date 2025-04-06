@@ -75,13 +75,18 @@ export default function Stats() {
     const minutes = totalMinutes % 60;
 
     // formatting - shows hours and minutes
-    if (hours > 0 && minutes > 0) {
-      return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} min${minutes !== 1 ? 's' : ''}`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours !== 1 ? 's' : ''}`;
-    } else {
-      return `${minutes} min${minutes !== 1 ? 's' : ''}`;
+    // if (hours > 0 && minutes > 0) {
+    //   return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} min${minutes !== 1 ? 's' : ''}`;
+    // } else if (hours > 0) {
+    //   return `${hours} hour${hours !== 1 ? 's' : ''}`;
+    // } else {
+    //   return `${minutes} min${minutes !== 1 ? 's' : ''}`;
+    // }
+    if (hours === 0) {
+      return `${minutes}m`;
     }
+
+    return `${hours}h ${minutes}m`;
   };
 
   // test data
@@ -164,12 +169,14 @@ export default function Stats() {
               labelPosition: 'outset',
               formatXLabel: (value) => value,
               formatYLabel: (value) => {
-                if (value >= 60) {
-                  const hours = Math.floor(value / 60);
-                  const mins = value % 60;
-                  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+                const hours = Math.floor(value / 60);
+                const mins = value % 60;
+                
+                // Show only minutes if hours is 0
+                if (hours === 0) {
+                  return `${mins}m`;
                 }
-                return `${value}m`;
+                return `${hours}h ${mins}m`;
               },
               axisSide: { x: 'bottom', y: 'left' },
               tickCount: { x: 7, y: 5 },
@@ -188,7 +195,7 @@ export default function Stats() {
               <StackedBar
                 chartBounds={chartBounds}
                 points={[points.book, points.poem, points.news]}
-                colors={["#4E86E9", "#0A0B78", "#5A5CF6"]}
+                colors={["#4E86E9", "#0A0B78", "#5A5CF6"]} // #3335CF #93AAFD
                 barOptions={({ isBottom, isTop }) => ({
                   roundedCorners: isTop
                     ? { topLeft: 10, topRight: 10 }
@@ -200,7 +207,7 @@ export default function Stats() {
         </View>
 
         {/* Time Spent Per Category */}
-        <Text style={[textStyles.heading1, { marginTop: 130, alignSelf: 'center' }]}>Time Spent</Text>
+        <Text style={[textStyles.heading1, { marginTop: 60, alignSelf: 'center' }]}>Time Spent</Text>
         <Text style={textStyles.subheading2}>Per Category</Text>
         <View style={styles.timeSpentContainer}>
           <Image
@@ -223,6 +230,12 @@ export default function Stats() {
               <Text style={textStyles.bodytext2}>Poems</Text>
               <Text style={textStyles.bodytext2}>
                 {formatTime(timeSpentData.poem)}
+              </Text>
+            </View>
+            <View style={styles.categoryRow}>
+              <Text style={textStyles.bodytext2}>News</Text>
+              <Text style={textStyles.bodytext2}>
+                {formatTime(timeSpentData.news)}
               </Text>
             </View>
             <View style={styles.categoryRow}>
@@ -382,8 +395,8 @@ const styles = StyleSheet.create({
   },
   todaysDataContainer: { // Data for Statistics Category Time Spent Box
     position: "absolute",
-    top: 25,
-    left: 50, // adjust
+    top: 5,
+    left: 50,
     right: 0,
     justifyContent: 'center',
     alignItems: 'center',
