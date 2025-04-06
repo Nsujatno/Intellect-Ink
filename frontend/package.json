@@ -54,7 +54,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "victory-axis": "^37.3.6",
-    "victory-native": "^41.16.1"
+    "victory-native": "^41.16.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

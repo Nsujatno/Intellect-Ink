@@ -3,29 +3,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useTimeTracker(category: string) {
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [totalTime, setTotalTime] = useState(0);
 
-  const storeTimeSpent = async (category: string, timeSpent: number) => {
+  const storeTimeSpent = async (timeToAdd: number) => {
     try {
-      await AsyncStorage.setItem(category, timeSpent.toString());
-    } catch (error) {
-      // console.error("Failed to save time to AsyncStorage:", error);
-    }
-  };
-
-  const loadSavedTime = async () => {
-    try {
+      // get existing time and add new time
       const savedTime = await AsyncStorage.getItem(category);
-      if (savedTime) {
-        setTotalTime(parseInt(savedTime, 10));
-      }
+      const currentTime = savedTime ? parseInt(savedTime, 10) : 0;
+      const newTotalTime = currentTime + timeToAdd;
+      
+      await AsyncStorage.setItem(category, newTotalTime.toString());
     } catch (error) {
+      console.error("Failed to save time:", error);
     }
   };
-
-  useEffect(() => {
-    loadSavedTime();
-  }, [category]);
 
   const startTiming = () => {
     if (!startTime) {
@@ -33,21 +23,23 @@ export function useTimeTracker(category: string) {
     }
   };
 
-  const stopTiming = () => {
+  const stopTiming = async () => {
     if (startTime) {
-      const timeSpent = Math.floor((Date.now() - startTime) / 1000); // seconds
-      setTotalTime((prev) => prev + timeSpent);
+      const timeSpentMs = Date.now() - startTime;
+      await storeTimeSpent(timeSpentMs); // store in milliseconds
       setStartTime(null);
-
-      storeTimeSpent(category, totalTime + timeSpent);
     }
   };
 
   useEffect(() => {
-    return () => stopTiming();
-  }, []);
+    return () => {
+      if (startTime) {
+        stopTiming();
+      }
+    };
+  }, [startTime]); // rerun if startTime changes
 
-  return { startTiming, stopTiming, totalTime };
+  return { startTiming, stopTiming };
 }
 
 export default useTimeTracker;

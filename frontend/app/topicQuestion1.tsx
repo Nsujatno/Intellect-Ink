@@ -11,7 +11,7 @@ export default function topicQuestion1() {
     const maxChars = 1400;
     const isButtonDisabled = inputText.trim() == "";
 
-    // for storing user input
+    // for storing user input - work in progress
     // const handleComment = async () => {
     //     if (inputText.trim() == "") {
     //         Alert.alert("Enter your thoughts before submitting");

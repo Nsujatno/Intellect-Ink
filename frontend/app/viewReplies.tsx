@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 
 export default function Question1View() {
@@ -25,22 +24,12 @@ export default function Question1View() {
     ]);
 
     // const [replies, setReplies] = useState([]);
-    // const [likes, setLikes] = useState([]);
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
                 const response = await axios.get(""); // api link
                 setReplies(response.data);
-
-                // const initialLikes = response.data.reduce((acc, reply) => {
-                //     acc[reply._id] = {
-                //         icon: "heart-outline",
-                //         count: reply.likesCount || 0
-                //     }; // initialize with existing likes stored from previous sessions or 0
-                //     return acc;
-                // }, {});
-                // setLikes(initialLikes);
             } catch (error) {
                 console.error("Error fetching comments:", error)
             }
@@ -49,38 +38,11 @@ export default function Question1View() {
         fetchComments();
     }, [])
 
-    // const [likes, setLikes] = useState(
-    //     replies.reduce((acc, reply) => {
-    //         acc[reply.id] = { icon: "heart-outline", count: 0 };
-    //         return acc;
-    //     }, {})
-    // );
-
     // const toggleExpanded = (id) => {
     //     setExpanded((prevState) => ({
     //         ...prevState,
     //         [id]: !prevState[id],
     //     }));
-    // };
-
-    // const handleLikeToggle = async (id) => {
-    //     setLikes((prevLikes) => {
-    //         const currentLike = prevLikes[id]; // current like state
-    //         const newIcon = currentLike.icon === "heart-outline" ? "heart" : "heart-outline"; // toggle icon
-    //         const newCount = newIcon === "heart" ? currentLike.count + 1 : currentLike.count - 1; // adjust count
-    //         return {
-    //             ...prevLikes,
-    //             [id]: { icon: newIcon, count: newCount } // update
-    //         };
-    //     });
-
-    //     // request sent to backend
-    //     const increment = likes[id]?.icon === "heart-outline" ? 1 : -1;
-    //     try {
-    //         await axios.post(`/api/like/${id}`, { increment });
-    //     } catch (error) {
-    //         console.error("Error fetching:", error)
-    //     }
     // };
 
     return (
@@ -152,13 +114,6 @@ export default function Question1View() {
                                 style={styles.lineImage}
                             />
                         )} */}
-
-                        {/* <View style={styles.heartContainer}>
-                            <TouchableOpacity onPress={() => handleLikeToggle(item._id)}>
-                                <Ionicons name={likes[item._id]?.icon || "heart-outline"} size={30} color={"white"} />
-                            </TouchableOpacity>
-                            <Text style={styles.likeCountText}>{likes[item._id]?.count || 0} Likes</Text>
-                        </View> */}
                     </View>
                 )}
                 initialNumToRender={5}
@@ -227,17 +182,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginLeft: 25,
     },
-    // heartContainer: {
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    //     top: -40,
-    //     left: 25,
-    // },
-    // likeCountText: {
-    //     marginLeft: 5,
-    //     fontSize: 14,
-    //     color: 'white',
-    // },
     viewMoreText: {
         color: '#321383',
         marginTop: 5,

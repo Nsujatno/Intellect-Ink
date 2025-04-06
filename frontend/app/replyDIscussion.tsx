@@ -1,42 +1,36 @@
 import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
-import React, { useState } from "react";
-import { useRouter } from "expo-router";
+import React, { useEffect, useState, useCallback } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
-import axios from "axios";
 
-export default function replyDiscussion() {
+export default function ReplyDiscussion() {
     const router = useRouter();
+    const params = useLocalSearchParams();
     const [inputText, setInputText] = useState("");
+    const [replyingTo, setReplyingTo] = useState(null);
     const maxChars = 1400;
-    const isButtonDisabled = inputText.trim() == "";
 
-    // for storing user input
-    // const handleComment = async () => {
-    //     if (inputText.trim() == "") {
-    //         Alert.alert("Enter your thoughts before submitting");
-    //         return;
-    //     } else if (inputText.trim().length < 200) {
-    //         Alert.alert("Please enter at least 200 characters.")
-    //         return;
-    //     }
-        
-    //     try {
-    //         const response = await axios.post("", {
-    //             text: inputText,
-    //         });
+    useEffect(() => {
+        if (params.replyId && (!replyingTo || replyingTo.id !== params.replyId)) {
+            setReplyingTo({
+                id: params.replyId,
+                name: params.replyName,
+                text: params.replyText
+            });
+        }
+    }, [params.replyId, params.replyName, params.replyText]);
 
-    //         if (response.status === 200) {
-    //             setInputText("");
-    //             router.push('/quest1view');
-    //         } else {
-    //             Alert.alert("There was an error submitting your comment. Please try again.");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error submitting comment:", error);
-    //     }
-    // }; 
-    
+    const handleSubmit = useCallback(() => {
+        if (inputText.trim() === "") {
+            Alert.alert("Please enter your thoughts before submitting.");
+        } else if (inputText.trim().length < 200) {
+            Alert.alert("Please enter at least 200 characters");
+        } else {
+            router.push('/viewReplies');
+        }
+    }, [inputText, router]);
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.imageContainer}>
@@ -45,52 +39,63 @@ export default function replyDiscussion() {
                     style={styles.imagebg}
                 />
             </View>
+            
             <TouchableOpacity
-                style={{alignSelf: 'flex-start', marginTop: 50, marginBottom: -20, left: 20}}
-                onPress={() => {router.back()}}>
+                style={styles.backButton}
+                onPress={() => router.back()}
+            >
                 <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
+            
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, {right: 40}]}>Topic Question 1</Text>
-                <Text style={[textStyles.subheading2, {fontSize: 25, right: 140, color: '#646EA3'}]}>Reply</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 25, right: 140, color: '#646EA3' }]}>Reply</Text>
             </View>
 
-                <View style={styles.answerBox}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder=""
-                        multiline
-                        maxLength={maxChars}
-                        value={inputText}
-                        onChangeText={(text) => setInputText(text)}
-                    />
-                    {!inputText && (
-                        <Text style={styles.placeholder}>Your thoughts here...</Text>
-                    )}
+            {/* Reply Preview - Styled like topicQuestion1 */}
+            {replyingTo && (
+                <View style={styles.replyContainer}>
+                    <View style={styles.indivReplyContainer}>
+                        <View style={styles.profileSection}>
+                            <Image
+                                source={require('../assets/images/pfp.png')}
+                                style={styles.profileImage}
+                            />
+                            <Text style={styles.nameText}>{replyingTo.name}</Text>
+                        </View>
+                        <Text style={styles.replyText}>{replyingTo.text}</Text>
+                    </View>
                 </View>
-                <Text style={styles.charCount}>
-                        {`${inputText.length} / ${maxChars} characters`}
-                </Text>
-                <View style={styles.buttonContainer}>
+            )}
+
+            <View style={styles.answerBox}>
+                <TextInput
+                    style={styles.input}
+                    placeholder=""
+                    multiline
+                    maxLength={maxChars}
+                    value={inputText}
+                    onChangeText={setInputText}
+                />
+                {!inputText && (
+                    <Text style={styles.placeholder}>Your thoughts here...</Text>
+                )}
+            </View>
+            
+            <Text style={styles.charCount}>
+                {`${inputText.length} / ${maxChars} characters`}
+            </Text>
+            
+            <View style={styles.buttonContainer}>
                 <Buttons
                     title='Comment'
                     variant='purple2'
-                    onPress={() => {
-                        if (inputText.trim() === "") {
-                            Alert.alert("Please enter your thoughts before submitting.");
-                        } else if (inputText.trim().length < 200) {
-                            Alert.alert("Please enter at least 200 characters")
-                        } else {
-                            router.push('/viewReplies');
-                        }
-                    }}
-                    // disabled={isButtonDisabled}
-                    // style={isButtonDisabled ? styles.disabledButton : styles.enabledButton}
-                    />
-                </View>
-            
+                    onPress={handleSubmit}
+                />
+            </View>
         </ScrollView>
-    )}
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -109,24 +114,53 @@ const styles = StyleSheet.create({
         marginTop: 350,
         pointerEvents: 'none',
     },
+    backButton: {
+        alignSelf: 'flex-start', 
+        marginTop: 50, 
+        marginBottom: -20, 
+        left: 20,
+    },
     textContainer: {
         position: 'absolute',
         marginTop: 100,
         alignSelf: 'center',
         alignItems: 'center',
     },
-    buttonContainer: {
-        alignSelf: 'flex-end',
-        marginTop: -10,
-        right: 40,
-        zIndex: 2,
+    replyContainer: {
+        position: 'relative',
+        marginBottom: 20,
+        marginTop: 170, // match topicQuestion1 layout
     },
-    // enabledButton: {
-    //     backgroundColor: '#7F56D9',
-    // },
-    // disabledButton: {
-    //     backgroundColor: '#D1D1D1',
-    // },
+    indivReplyContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        padding: 15,
+        marginVertical: 5,
+        marginHorizontal: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+    },
+    profileSection: {
+        flexDirection: 'row',
+        alignItems: "center",
+        marginBottom: 5,
+    },
+    profileImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        marginRight: 10,
+    },
+    nameText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    replyText: {
+        fontSize: 14,
+        color: '#504F4F',
+    },
     answerBox: {
         alignSelf: 'center',
         zIndex: 1,
@@ -139,7 +173,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        marginTop: 170,
+        marginTop: 20,
     },
     input: {
         width: '100%',
@@ -161,5 +195,11 @@ const styles = StyleSheet.create({
         color: '#646EA3',
         marginTop: 10,
         left: 45,
-    }
-})
+    },
+    buttonContainer: {
+        alignSelf: 'flex-end',
+        marginTop: -10,
+        right: 40,
+        zIndex: 2,
+    },
+});
