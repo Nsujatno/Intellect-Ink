@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
+import { Text, View, Image, ScrollView, Modal, TouchableWithoutFeedback, StyleSheet } from "react-native";
 import { CartesianChart, StackedBar } from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
@@ -73,15 +73,6 @@ export default function Stats() {
     const totalMinutes = Math.floor(milliseconds / 60000);
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-
-    // formatting - shows hours and minutes
-    // if (hours > 0 && minutes > 0) {
-    //   return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} min${minutes !== 1 ? 's' : ''}`;
-    // } else if (hours > 0) {
-    //   return `${hours} hour${hours !== 1 ? 's' : ''}`;
-    // } else {
-    //   return `${minutes} min${minutes !== 1 ? 's' : ''}`;
-    // }
     if (hours === 0) {
       return `${minutes}m`;
     }
@@ -114,8 +105,8 @@ export default function Stats() {
           book: booksTime,
           poem: poemsTime,
           news: newsTime,
-          // politics: politicsTime / 60000,
-          // research: researchTime / 60000,
+          // politics: politicsTime,
+          // research: researchTime,
         });
 
         // adding time to specific days
@@ -171,8 +162,6 @@ export default function Stats() {
               formatYLabel: (value) => {
                 const hours = Math.floor(value / 60);
                 const mins = value % 60;
-                
-                // Show only minutes if hours is 0
                 if (hours === 0) {
                   return `${mins}m`;
                 }

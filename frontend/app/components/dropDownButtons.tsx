@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
 import { toggleAnimation } from "../animations/toggleAnimation";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import CheckBox from "./checkbox";
 
 interface Achievement {
     id: string;
@@ -85,43 +84,47 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
             {/* </LinearGradient> */}
 
             {showContent && (
-                <View style={styles.body}>
-                    {achievements.map((achievement) => (
-                    <View key={achievement.id} style={styles.achievementBox}>
-                        <Image source={achievement.icon} style={styles.achievementIcon} />
-                        <View style={styles.achievementText}>
-                            <Text style={textStyles.heading2purple}>{achievement.title}</Text>
-                            <Text style={textStyles.bodytext3}>{achievement.description}</Text>
-                        </View>
+                <View style={styles.bodyBackground}>
+                    <View style={styles.body}>
+                        {achievements.length > 0 && (
+                            <ScrollView>
+                                {achievements.map((achievement) => (
+                                <View key={achievement.id} style={styles.achievementBox}>
+                                    <Image source={achievement.icon} style={styles.achievementIcon} />
+                                    <View style={styles.achievementText}>
+                                        <Text style={[textStyles.heading2purple, styles.centeredText]}>{achievement.title}</Text>
+                                        <Text style={[textStyles.bodytext3, styles.centeredText]}>{achievement.description}</Text>
+                                    </View>
+                                </View>
+                                ))}
+                                <TouchableOpacity style={styles.viewMoreButton}>
+                                    <Text style={styles.viewMoreText}>View More</Text>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        )}
+
+                        {leaderboards.length > 0 && (
+                            <ScrollView>
+                                {leaderboards.map((entry, index) => (
+                                    <View key={entry.id} style={styles.leaderboardBox}>
+                                        <Text style={styles.rankNumber}>{index + 1}.</Text>
+                                        <Image source={entry.icon} style={styles.leaderboardIcon} />
+                                        <Text style={[textStyles.bodytext4, styles.centeredText]}>{entry.title}</Text>
+                                    </View>
+                                ))}
+                            </ScrollView>
+                        )}
                     </View>
-                    ))}
-
-                    {leaderboards.map((entry, index) => (
-                        <View key={entry.id} style={styles.leaderboardBox}>
-                            <Text style={styles.rankNumber}>{index + 1}.</Text>
-                            <Image source={entry.icon} style={styles.leaderboardIcon} />
-                            <Text style={textStyles.bodytext4}>{entry.title}</Text>
-                        </View>
-                    ))}
-
-                    {/* <CheckBox
-                        options={options}
-                        checkedValues={checkedValues}
-                        onChange={handleCheckBoxChange}
-                    /> */}
-                    <View style={styles.spacing} />
-                    
                 </View>
             )}
         </View>
     )
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
     container: {
         width: '100%',
         padding: '2%',
-        borderRadius: 12,
         backgroundColor: '#FFFFFF',
         marginBottom: '2%',
         overflow: 'hidden',
@@ -143,23 +146,38 @@ const styles = StyleSheet.create ({
         borderColor: 'white',
         borderWidth: 4,
     },
+    bodyBackground: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 0,
+    },
     body: {
         paddingHorizontal: '5%',
         paddingVertical: '7%',
+        borderRadius: 0,
     },
     titleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
+    titleText: {
+        textAlign: 'center',
+        flex: 1,
+    },
     achievementBox: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
         padding: 10,
-        borderRadius: 8,
         marginBottom: 10,
+        borderRadius: 0,
+    },
+    achievementText: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: -40,
     },
     achievementIcon: {
         justifyContent: 'center',
@@ -168,13 +186,8 @@ const styles = StyleSheet.create ({
         height: 40,
         marginRight: 10,
     },
-    achievementText: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-    },
-    spacing: {
-        height: 100,
+    centeredText: {
+        textAlign: 'center',
     },
     leaderboardBox: {
         flexDirection: 'row',
@@ -182,8 +195,19 @@ const styles = StyleSheet.create ({
         alignItems: 'center',
         padding: 10,
         backgroundColor: '#F5F5F5',
-        borderRadius: 8,
-        marginBottom: 10,  
+        marginBottom: 10,
+        borderRadius: 0,
+    },
+    leaderboardText: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: -50,
+    },
+    leaderboardIcon: {
+        width: 40,
+        height: 40,
+        marginRight: 10,
     },
     rankNumber: {
         color: '#413F6F',
@@ -191,10 +215,16 @@ const styles = StyleSheet.create ({
         fontWeight: 'bold',
         marginRight: 10,
     },
-    leaderboardIcon: {
-        width: 40,
-        height: 40,
-        marginRight: 10,
+    viewMoreButton: {
+        backgroundColor: '#413F6F',
+        padding: 15,
+        borderRadius: 0,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    viewMoreText: {
+        color: 'white',
+        fontWeight: 'bold',
     }
 })
 
