@@ -5,6 +5,7 @@ import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { ngrokPath, isExpoMode } from "./utils";
 
 export default function Login() {
     const router = useRouter();
@@ -17,7 +18,7 @@ export default function Login() {
         setError("");
         try {
           const response = await axios.post(
-            'http://localhost:8000/api/user/signin',
+            `${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/signin`,
             {email, password}
           );
         //   localStorage.setItem("token", response.data.user.token)

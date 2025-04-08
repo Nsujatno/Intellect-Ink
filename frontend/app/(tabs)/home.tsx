@@ -6,34 +6,21 @@ import Buttons from "../components/buttons";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import axios from 'axios'
+import { transform } from "@babel/core";
+import { ngrokPath, isExpoMode } from "../utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const testSubjects = [
-  {
-    id: "1",
-    type: "book",
-    image: "https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg",
-    title: "Harry Potter and the Chamber of Secrets",
-    author: "JK Rowling",
-    link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',
-    summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answersHarry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answersHarry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers",
-  },
-  {
-    id: "2",
-    type: "news",
-    image: "",
-    title: "Chuck E. Cheese wants to be the Costco of family fun",
-    author: "Savannah Sellers and Alexandra Byrne",
-    link: 'https://www.nbcnews.com/business/consumer/chuck-e-cheese-wants-costco-family-fun-rcna195652',
-    summary: "Chuck E. Cheese wants you to stop by as frequently as you pick up groceries, and it’s selling subscription plans to sweeten the pitch.",
-  },
-  {
-    id: "3",
-    type: "poem",
-    title: "The Raven",
-    author: "Edgar Allan Poe",
-    poem: "Once upon a midnight dreary, While I pondered, weak and weary...",
-  },
-];
+interface SubjectItem {
+  id: string;
+  type: string;
+  image?: string;
+  title: string;
+  author: string;
+  link?: string;
+  summary?: string;
+  poem?: string;
+}
 
 export default function Home() {
   const router = useRouter();
@@ -47,6 +34,9 @@ export default function Home() {
   const booksTracker = useTimeTracker("books");
   const poemsTracker = useTimeTracker("poem");
   const newsTracker = useTimeTracker("news");
+
+  const [forYouItems, setForYouItems] = useState<SubjectItem[]>([]);
+  const [exploreItems, setExploreItems] = useState<SubjectItem[]>([]);
 
   const handleReadMore = (item: ItemProps) => {
     if (item.type === "book") {
@@ -85,11 +75,11 @@ export default function Home() {
         <Text style={textStyles.heading2purple}>{item.title}</Text>
         {item.author && <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>}
         {item.type === "poem" ? (
-          <View style={{height: 220, overflow: 'hidden'}}>
+          <View style={{height: 200, overflow: 'hidden'}}>
             <Text style={textStyles.subheading}>{item.poem}</Text>
           </View>
         ) : (
-          <View style={{height: 220, overflow: 'hidden'}}>
+          <View style={{height: 200, overflow: 'hidden'}}>
             <Text style={textStyles.heading2purple}>Summary:</Text>
             <Text style={textStyles.subheading}>{item.summary}</Text>
           </View>
@@ -125,6 +115,183 @@ export default function Home() {
     </View>
   );
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const token = await AsyncStorage.getItem('token');
+        if (!token) return;
+        const profileResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`, {
+          headers: {
+            "Content-Type": "application/json",
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        let media: string[] = profileResponse.data.media;
+        console.log("user media is: " + media)
+        
+        
+        // Fetch and process explore content
+        const exploreItemsArr: SubjectItem[] = [];
+        const forYouItemsArr: SubjectItem[] = [];
+
+        //article
+        try{
+          const response = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/shuffle`);
+
+          for(let i = 0; i < response.data.length; i++){
+            response.data[i].author = response.data[i].author.substr(3);
+            const transformedData = {
+              id: response.data[i]._id,
+              type: "article",
+              image: `https://static01.nyt.com/${response.data[i].urlToImage}` || "",
+              title: response.data[i].title,
+              author: response.data[i].author,
+              link: response.data[i].url,
+              summary: response.data[i].description,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+            // console.log(response.data[i])
+          }
+        } catch(error){
+          console.log(error);
+        }
+        
+
+        // books
+        try{
+          
+          const bookResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/book/shuffle`);
+
+          for(let i = 0; i < bookResponse.data.length; i++){
+            if(bookResponse.data[i].author.length == 0){
+              bookResponse.data[i].author = bookResponse.data[i].publisher
+            }
+            else{
+              bookResponse.data[i].author = bookResponse.data[i].author[0]
+            }
+            const transformedData = {
+              id: bookResponse.data[i]._id,
+              type: "book",
+              image: bookResponse.data[i].thumbnail || "",
+              title: bookResponse.data[i].title,
+              author: bookResponse.data[i].author,
+              link: bookResponse.data[i].previewLink,
+              summary: bookResponse.data[i].description,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error);
+        }
+        
+
+
+        // news
+        try{
+          const newsResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/news/shuffle`);
+          for(let i = 0; i < newsResponse.data.length; i++){
+            const transformedData = {
+              id: newsResponse.data[i]._id,
+              type: "news",
+              image: newsResponse.data[i].urlToImage || "",
+              title: newsResponse.data[i].title,
+              author: newsResponse.data[i].author,
+              link: newsResponse.data[i].url,
+              summary: newsResponse.data[i].description,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+        
+
+
+        //poem
+        try{
+          const poemResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/poem/shuffle`);
+          for(let i = 0; i < poemResponse.data.length; i++){
+            let poem = "";
+            for(let j = 0; j < poemResponse.data[i].lines.length; j++){
+              poem = poem + poemResponse.data[i].lines[j] + "\n"
+            }
+            const transformedData = {
+              id: poemResponse.data[i]._id,
+              type: "poem",
+              title: poemResponse.data[i].title,
+              author: poemResponse.data[i].author,
+              poem: poem,
+            }
+            
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+
+        //research paper
+        try{
+          const paperResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/paper/shuffle`);
+          for(let i = 0; i < paperResponse.data.length; i++){
+            let author = "";
+            if(paperResponse.data[i].author[0] == "Unknown Author") author = "";
+            const transformedData = {
+              id: paperResponse.data[i]._id,
+              type: "paper",
+              title: paperResponse.data[i].title,
+              author: author,
+              summary: paperResponse.data[i].abstract,
+              link: paperResponse.data[i].url,
+            }
+            
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+        
+        for (let i = exploreItemsArr.length - 1; i >= 0; i--) {
+          if (media.includes(exploreItemsArr[i].type)) {
+            forYouItemsArr.push(exploreItemsArr[i]);
+            exploreItemsArr.splice(i, 1);
+          }
+        }
+
+        // randomizes explore page
+        const randomizedExplore = [...exploreItemsArr];
+        for (let i = randomizedExplore.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomizedExplore[i], randomizedExplore[j]] = [randomizedExplore[j], randomizedExplore[i]];
+        }
+        // randomizes for you page
+        const randomizedForYou = [...forYouItemsArr];
+        for (let i = randomizedForYou.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomizedForYou[i], randomizedForYou[j]] = [randomizedForYou[j], randomizedForYou[i]];
+        }
+        setExploreItems(randomizedExplore);
+        setForYouItems(randomizedForYou)
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <ImageBackground
         source={require('../../assets/images/Homebg.png')}
@@ -147,15 +314,25 @@ export default function Home() {
                 { label: "Explore", value: 1 },
                 ]}
             />
-
-            <FlatList
-                data={testSubjects}
-                renderItem={({ item }) => <Item item={item} />}
-                keyExtractor={(item) => item.id}
-                pagingEnabled={true}
-                showsVerticalScrollIndicator={false}
-                horizontal={false}
+            {state.page === 0 ? (
+              <FlatList
+              data={forYouItems}
+              renderItem={({ item }) => <Item item={item} />}
+              keyExtractor={(item) => item.id}
+              pagingEnabled={true}
+              showsVerticalScrollIndicator={false}
+              horizontal={false}
             />
+          ) : (
+            <FlatList
+              data={exploreItems}
+              renderItem={({ item }) => <Item item={item} />}
+              keyExtractor={(item) => item.id}
+              pagingEnabled={true}
+              showsVerticalScrollIndicator={false}
+              horizontal={false}
+            />
+            )}
             <View style={styles.lvlContainer}>
                 <View style={styles.lvlBar}>
                     <View style={[styles.lvlFill, {width: `${percent}%`}]}>

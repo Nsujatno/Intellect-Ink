@@ -23,6 +23,11 @@ const Article = mongoose.model("Article", articleSchema);
 
 const API_KEY = process.env.NYT_API_KEY;
 
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await Article.aggregate([{ $sample: { size: await Article.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword

@@ -7,6 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
+import { ngrokPath, isExpoMode } from "../utils";
 
 export default function Profile() {
   const [image, setImage] = useState("");
@@ -26,11 +27,11 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [medias, setMedias] = useState<string[]>([]);
   const options = [
-    { value: 'Poems', label: 'Poems' },
-    { value: 'Articles', label: 'Articles' },
-    { value: 'Books', label: 'Books' },
-    { value: 'Politics', label: 'Politics' },
-    { value: 'Research', label: 'Research' },
+    { value: 'poem', label: 'poem' },
+    { value: 'article', label: 'article' },
+    { value: 'book', label: 'book' },
+    { value: 'news', label: 'news' },
+    { value: 'paper', label: 'paper' },
   ];
   const favorites = [
     { id: "1", title: "Item 1" },
@@ -83,7 +84,7 @@ export default function Profile() {
       // }
       
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
+      const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-profile`, payload, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
@@ -106,7 +107,7 @@ export default function Profile() {
         const token = await AsyncStorage.getItem('token');
         if (!token) return;
 
-        const response = await axios.get("http://localhost:8000/api/user/get-profile", {
+        const response = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`, {
           headers: {
             "Content-Type": "application/json",
             'ngrok-skip-browser-warning': 'skip-browser-warning',
