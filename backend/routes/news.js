@@ -30,6 +30,11 @@ const News = mongoose.model("News", newsSchema);
 
 const API_URL = `https://newsapi.org/v2/everything?q=science&pageSize=10&apiKey=${API_KEY}`;
 
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await News.aggregate([{ $sample: { size: await News.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword

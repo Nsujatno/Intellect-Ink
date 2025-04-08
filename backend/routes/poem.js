@@ -11,6 +11,11 @@ const poemSchema = new mongoose.Schema({
 
 const Poem = mongoose.model("Poem", poemSchema);
 
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await Poem.aggregate([{ $sample: { size: await Poem.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
