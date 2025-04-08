@@ -24,7 +24,7 @@ export default function Discussion() {
           <Buttons 
             title="Answer" 
             variant="purple2" 
-            onPress={() => router.push(`/topicQuestion${item.id}`)} />
+            onPress={() => router.push(`/topicQuestion${item.id}`)} /> {/* directing to other topic questions? */}
         </View>
       </View>
     </View>

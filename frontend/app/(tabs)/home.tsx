@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, Linking, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, ImageBackground } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 import { textStyles } from "../stylesheets/textStyles";
 import Buttons from "../components/buttons";

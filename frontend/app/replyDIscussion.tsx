@@ -4,6 +4,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 
+// fix to show above input box comment being replied to
 export default function ReplyDiscussion() {
     const router = useRouter();
     const params = useLocalSearchParams();
@@ -52,7 +53,6 @@ export default function ReplyDiscussion() {
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 140, color: '#646EA3' }]}>Reply</Text>
             </View>
 
-            {/* Reply Preview - Styled like topicQuestion1 */}
             {replyingTo && (
                 <View style={styles.replyContainer}>
                     <View style={styles.indivReplyContainer}>

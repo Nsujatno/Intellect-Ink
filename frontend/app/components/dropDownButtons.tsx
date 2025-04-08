@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { textStyles } from "../stylesheets/textStyles";
 import { toggleAnimation } from "../animations/toggleAnimation";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from "expo-router";
 
 interface Achievement {
     id: string;
@@ -30,6 +31,7 @@ interface ButtonProps {
 const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], options = []}) => {
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
+    const router = useRouter();
     const [checkedValues, setCheckedValues] = useState<string[]>([]);
 
     const toggleListItem = () => {
@@ -59,13 +61,6 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
             variant == 'white' ? styles.whiteContainer : null,
             variant == 'whiteOutline' ? styles.outlineContainer: null,
         ]}>
-            {/* {gradientColors ? (
-                <LinearGradient
-                    colors={gradientColors}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.gradientHeader}
-            > */}
             <TouchableOpacity onPress={() => toggleListItem()}>
                 <View style={styles.titleContainer}>
                     <Text
@@ -81,7 +76,6 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                     </Animated.View>
                 </View>
             </TouchableOpacity>
-            {/* </LinearGradient> */}
 
             {showContent && (
                 <View style={styles.bodyBackground}>
@@ -97,7 +91,9 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                                     </View>
                                 </View>
                                 ))}
-                                <TouchableOpacity style={styles.viewMoreButton}>
+                                <TouchableOpacity
+                                    style={styles.viewMoreButton} 
+                                    onPress={() => router.push("/achievements")}>
                                     <Text style={styles.viewMoreText}>View More</Text>
                                 </TouchableOpacity>
                             </ScrollView>
