@@ -1,10 +1,11 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { textStyles } from "../stylesheets/textStyles";
 import React from 'react';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface ButtonProps {
     title: string;
-    variant: 'purple' | 'white' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
+    variant: 'purple' | 'purple2' | 'purple3' | 'white' | 'gray' | 'gray2' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
     onPress: () => void;
 }
 
@@ -14,7 +15,11 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
            <TouchableOpacity
             style={[styles.container,
             variant === 'purple' ? styles.purpleContainer : null,
+            variant === 'purple2' ? styles.purple2Container : null,
+            variant === 'purple3' ? styles.purple3Container : null,
             variant === 'white' ? styles.whiteContainer : null,
+            variant == 'gray' ? styles.grayContainer : null,
+            variant == 'gray2' ? styles.gray2Container : null,
             variant === 'whiteBig' ? styles.whiteContainerBig : null,
             variant === 'whiteOutline' ? styles.outlineContainer : null,
             variant === 'whiteOutlineBig' ? styles.outlineContainerBig : null, ]}
@@ -23,12 +28,17 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                 <Text
                 style={[ textStyles.subheading,
                     variant === 'purple' ? {color: 'white'} : null,
+                    variant === 'purple2' ? {color: 'white', fontSize: 18} : null,
+                    variant === 'purple3' ? {color: 'white', fontSize: 16} : null,
                     variant === 'white' ? {color: '#413F6F'} : null,
+                    variant == 'gray' ? {color: '#413F6F'} : null,
+                    variant === 'gray2' ? {color: '#413F6F', fontSize: 16} : null,
                     variant === 'whiteBig' ? {color: '#413F6F', fontSize: 25} : null,
                     variant === 'whiteOutline' ? {color: 'white'} : null,
                     variant === 'whiteOutlineBig' ? {color: 'white', fontSize: 25} : null, ]}>
                     {title }
                 </Text>
+                {/* <MaterialIcons name={'keyboard-arrow-right'} size={30} color="white"/> <-- fix for stats*/}
            </TouchableOpacity>
         </View>
     )
@@ -46,11 +56,33 @@ const styles = StyleSheet.create ({
     },
     purpleContainer: {
         backgroundColor:'#413F6F',
-        height: 45,
+        height: 40,
+        paddingHorizontal: 20,
+    },
+    purple2Container: {
+        backgroundColor:'#413F6F',
+        width: 120,
+        height: 40,
+        paddingHorizontal: 20,
+    },
+    purple3Container: {
+        backgroundColor:'#413F6F',
+        width: 135,
+        height: 30,
         paddingHorizontal: 20,
     },
     whiteContainer: {
         backgroundColor:'#FFFFFF',
+    },
+    grayContainer: {
+        backgroundColor: '#D9D9D9',
+        paddingHorizontal: 20,
+    },
+    gray2Container: {
+        backgroundColor: '#D9D9D9',
+        width: 80,
+        height: 30,
+        paddingHorizontal: 20,
     },
     outlineContainer: {
         backgroundColor:'transparent',

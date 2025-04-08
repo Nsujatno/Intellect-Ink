@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
     const router = useRouter();
@@ -18,9 +18,9 @@ export default function Login() {
             {email, password}
           );
         //   localStorage.setItem("token", response.data.user.token)
-          AsyncStorage.setItem("token", String(response.data.user.token))
+        //   AsyncStorage.setItem("token", String(response.data.user.token))
         //   console.log(localStorage.getItem("token"))
-          console.log(AsyncStorage.getItem("token"))
+        //   console.log(AsyncStorage.getItem("token"))
           router.push("/home")
 
         } catch (error) {
@@ -51,7 +51,7 @@ export default function Login() {
                 <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
             </View>
             
-            <TouchableOpacity style={styles.button} onPress={handleSubmit/*() => router.push("/home")*/}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 

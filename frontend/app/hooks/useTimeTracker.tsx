@@ -1,47 +1,45 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useTimeTracker(category: string) {
-  const [timeSpent, setTimeSpent] = useState<number>(0);
-  const startTimeRef = useRef<number | null>(null); // Tracks when timing starts
+  const [startTime, setStartTime] = useState<number | null>(null);
 
-  // Load saved time when category changes
-  useEffect(() => {
-    const loadTime = async () => {
-      try {
-        const savedTime = await AsyncStorage.getItem(category);
-        if (savedTime) {
-          setTimeSpent(parseInt(savedTime, 10));
-        }
-      } catch (error) {
-        console.error("Failed to load time from AsyncStorage:", error);
-      }
-    };
-
-    loadTime();
-  }, [category]);
-
-  const startTiming = () => {
-    startTimeRef.current = Date.now(); // Capture the start time
-  };
-
-  // Stop timing and save data
-  const stopTiming = async () => {
-    if (startTimeRef.current) {
-      const elapsed = Date.now() - startTimeRef.current;
-      const updatedTime = timeSpent + elapsed;
-
-      setTimeSpent(updatedTime); // Update state
-      startTimeRef.current = null; // Clear
-
-      // Save to AsyncStorage
-      try {
-        await AsyncStorage.setItem(category, updatedTime.toString());
-      } catch (error) {
-        console.error("Failed to save time to AsyncStorage:", error);
-      }
+  const storeTimeSpent = async (timeToAdd: number) => {
+    try {
+      // get existing time and add new time
+      const savedTime = await AsyncStorage.getItem(category);
+      const currentTime = savedTime ? parseInt(savedTime, 10) : 0;
+      const newTotalTime = currentTime + timeToAdd;
+      
+      await AsyncStorage.setItem(category, newTotalTime.toString());
+    } catch (error) {
+      console.error("Failed to save time:", error);
     }
   };
 
-  return { timeSpent, startTiming, stopTiming };
+  const startTiming = () => {
+    if (!startTime) {
+      setStartTime(Date.now());
+    }
+  };
+
+  const stopTiming = async () => {
+    if (startTime) {
+      const timeSpentMs = Date.now() - startTime;
+      await storeTimeSpent(timeSpentMs); // store in milliseconds
+      setStartTime(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (startTime) {
+        stopTiming();
+      }
+    };
+  }, [startTime]); // rerun if startTime changes
+
+  return { startTiming, stopTiming };
 }
+
+export default useTimeTracker;

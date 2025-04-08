@@ -6,6 +6,8 @@ import Buttons from "../components/buttons";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const testSubjects = [
   {
@@ -35,11 +37,18 @@ const testSubjects = [
   },
 ];
 
+const API_BASE_URL = ""; // api config, empty for offline only
+
 export default function Home() {
   const router = useRouter();
+  const [userId, setUserId] = useState("");
   const [state, setState] = useState({ page: 0 });
   const [level, setLevel] = useState(0);
-  const [percent, setPercent] = useState(50);
+  // const [percent, setPercent] = useState(50);
+  const [percent, setPercent] = useState(0);
+  const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
+  const [dailyGoal, setDailyGoal] = useState(30);
+  const [timeReadToday, setTimeReadToday] = useState(0);
   const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
   const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
 
@@ -48,39 +57,83 @@ export default function Home() {
   const poemsTracker = useTimeTracker("poem");
   const newsTracker = useTimeTracker("news");
 
-  const handleReadMore = (item: ItemProps) => {
-    if (item.type === "book") {
-      booksTracker.startTiming();
-    } else if (item.type === "poem") {
-      poemsTracker.startTiming();
-    } else if (item.type === "news") {
-        newsTracker.startTiming();
+  useEffect(() => {
+    const loadProgress = async () => {
+      const localData = await AsyncStorage.getItem("userProgress");
+      if (localData) {
+        const { level, percent, viewedCategories, dailyGoal, timeReadToday } = JSON.parse(localData);
+        setLevel(level || 0);
+        setPercent(percent || 0);
+        setViewedCategories(new Set(viewedCategories || []));
+        setDailyGoal(dailyGoal || 30);
+        setTimeReadToday(timeReadToday || 0);
+      }
+    };
+    loadProgress();
+  }, []);
+
+  const saveProgress = async () => {
+    const progressData = {
+      viewedCategories: [...viewedCategories],
+      dailyGoal,
+      timeReadToday,
+      level,
+      percent
+    };
+    await AsyncStorage.setItem("userProgress", JSON.stringify(progressData));
+  };
+
+  // calculate updated progress
+  useEffect(() => {
+    // for every different category the user views, awards 26.6% per category to reach a 80% max
+    const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
+
+    // awards 20% for progress if daily reading goal is completed
+    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0; // const goalProgress = Math.min((timeReadToday / dailyGoal) * 67, 67);
+    
+    // 100% max
+    const totalProgress = Math.round(categoryProgress + goalProgress);
+    setPercent(totalProgress);
+    if (totalProgress >= 100) {
+      setLevel(prev => prev + 1);
+      setPercent(0);
+      saveProgress();
     }
+  }, [viewedCategories, timeReadToday, dailyGoal]);
+
+  const handleReadMore = (item: ItemProps) => {
+    // track category
+    const updatedCategories = new Set(viewedCategories).add(item.type);
+    setViewedCategories(updatedCategories);
+
+    // start timing
+    if (item.type === "book") booksTracker.startTiming();
+    else if (item.type === "poem") poemsTracker.startTiming();
+    else if (item.type === "news") newsTracker.startTiming();
 
     router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } });
   };
 
-    type ItemProps = {
-        id: string,
-        type: string,
-        image?: string,
-        title: string;
-        author: string;
-        summary?: string;
-        poem?: string;
-        link?: string;
-    };
+  type ItemProps = {
+    id: string,
+    type: string,
+    image?: string,
+    title: string;
+    author: string;
+    summary?: string;
+    poem?: string;
+    link?: string;
+  };
 
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.contentContainer}>
-        <View style={styles.mediaTag}>
-          <Text style={textStyles.subheadingWhite}>{item.type}</Text>
-        </View>
-        {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-      
+      <View style={styles.mediaTag}>
+        <Text style={textStyles.subheadingWhite}>{item.type}</Text>
+      </View>
+      {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
       <View style={{ padding: 10 }}>
         <Text style={textStyles.heading2purple}>{item.title}</Text>
-        <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>
+        <Text style={[textStyles.subheading, { marginBottom: 20 }]}>By: {item.author}</Text>
         {item.type === "poem" ? (
           <Text style={textStyles.subheading}>{item.poem}</Text>
         ) : (
@@ -122,52 +175,50 @@ export default function Home() {
 
   return (
     <ImageBackground
-        source={require('../../assets/images/Homebg.png')}
-        style={styles.imagebg}>
+      source={require('../../assets/images/Homebg.png')}
+      style={styles.imagebg}>
+      <View style={styles.container}>
+        <SwitchSelector
+          initial={0}
+          onPress={(value: number) => setState({ page: value })}
+          textColor={"white"}
+          selectedColor={"#413F6F"}
+          backgroundColor={"#736F96"}
+          buttonColor={"#E3E2EA"}
+          borderColor={"#736F96"}
+          hasPadding
+          valuePadding={3}
+          style={{ width: 200, marginTop: 50, marginBottom: 15 }}
+          options={[
+            { label: "For You", value: 0 },
+            { label: "Explore", value: 1 },
+          ]}
+        />
 
-        <View style={styles.container}>
-            <SwitchSelector
-                initial={0}
-                onPress={(value: number) => setState({ page: value })}
-                textColor={"white"}
-                selectedColor={"#413F6F"}
-                backgroundColor={"#736F96"}
-                buttonColor={"#E3E2EA"}
-                borderColor={"#736F96"}
-                hasPadding
-                valuePadding={3}
-                style={{ width: 200, marginTop: 50, marginBottom: 15 }}
-                options={[
-                { label: "For You", value: 0 },
-                { label: "Explore", value: 1 },
-                ]}
-            />
+        <FlatList
+          data={testSubjects}
+          renderItem={({ item }) => <Item item={item} />}
+          keyExtractor={(item) => item.id}
+          pagingEnabled={true}
+          showsVerticalScrollIndicator={false}
+          horizontal={false}
+        />
 
-            <FlatList
-                data={testSubjects}
-                renderItem={({ item }) => <Item item={item} />}
-                keyExtractor={(item) => item.id}
-                pagingEnabled={true}
-                showsVerticalScrollIndicator={false}
-                horizontal={false}
-            />
-            <View style={styles.lvlContainer}>
-                <View style={styles.lvlBar}>
-                    <View style={[styles.lvlFill, {width: `${percent}%`}]}>
-                        {/* <Image
-                            source={require('../../assets/images/fish.png')}
-                            style={{alignSelf: "flex-end"}}
-                        /> */}
-                    </View>        
-                </View>
-                <View style={styles.lvlText}>
-                    <Text style={[textStyles.pageHeader, {fontSize: 17}]}>{percent}%</Text>
-                    <Text style={[textStyles.pageHeader, {fontSize: 17}]}>LVL {level}</Text>
-                </View>
-            </View>
+        <View style={styles.lvlContainer}>
+          <View style={styles.lvlBar}>
+            <View style={[styles.lvlFill, { width: `${percent}%` }]} />
+            {/* <Image
+                      source={require('../../assets/images/fish.png')}
+                      style={{alignSelf: "flex-end"}}
+                    /> */}
+          </View>
+          <View style={styles.lvlText}>
+            <Text style={[textStyles.pageHeader, { fontSize: 17 }]}>{percent}%</Text>
+            <Text style={[textStyles.pageHeader, { fontSize: 17 }]}>LVL {level}</Text>
+          </View>
         </View>
+      </View>
     </ImageBackground>
-
   );
 }
 

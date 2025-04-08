@@ -18,8 +18,30 @@ const quizSchema = new mongoose.Schema({
 
 const Quiz = mongoose.model("Quiz", quizSchema);
 
+<<<<<<< HEAD
 // Endpoint to fetch and save a random quiz
 router.get("/fetch-quiz", async (req, res) => {
+=======
+router.post("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await Poem.find({
+    $or: [
+      { title: regex },
+      { lines: regex }
+    ]
+  });
+  // console.log(results);
+  res.json(results)
+})
+
+const AUTHOR_NAME = "William Shakespeare";
+const API_URL = `https://poetrydb.org/author/${encodeURIComponent(AUTHOR_NAME)}`;
+
+router.get("/data", async (req, res) => {
+>>>>>>> 2e40207ab5e592bd1cf63c9d59f27478c2f7dd49
   try {
     const API_KEY = process.env.QUIZ_API_KEY;
     const API_URL = "https://quizapi.io/api/v1/questions?limit=1";

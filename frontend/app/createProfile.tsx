@@ -61,7 +61,8 @@ export default function CreateProfile() {
         name: name,
         media: medias,
         dailyReadingTime: count,
-        // notification
+        notification: dailyNotifications,
+        notificationTime: time,
       }
       const token = await AsyncStorage.getItem('token');
       const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       borderRadius: 55,
       borderColor: '#646EA3',
-      borderWidth: 5,
+      borderWidth: 4,
   },
   textContainer: {
       position: "absolute",

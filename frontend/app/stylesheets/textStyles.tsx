@@ -47,7 +47,13 @@ export const textStyles = StyleSheet.create ({
         fontFamily: 'Lato Regular',
         fontSize: 20,
         marginVertical: 5,
-        color: 'white',
+        color: '#FFFFFF',
+    },
+    subheadingBlack: {
+        fontFamily: 'Lato Regular',
+        fontSize: 20,
+        marginVertical: 5,
+        color: '#000000',
     },
     subheading2: {
         fontFamily: 'Lato Italic',
@@ -80,7 +86,19 @@ export const textStyles = StyleSheet.create ({
         fontSize: 16,
         marginVertical: 5,
         color: '#413F6F',
-    }
+    },
+    bodytext4: {
+        fontFamily: 'Lato Bold Italic',
+        fontSize: 20,
+        marginVertical: 5,
+        color: '#413F6F',
+    },
+    bodytext5: {
+        fontFamily: 'Lato Italic',
+        fontSize: 16,
+        marginVertical: 16,
+        color: '#252323',
+    },
 });
 
 export default textStyles;
