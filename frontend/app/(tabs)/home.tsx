@@ -73,14 +73,17 @@ export default function Home() {
 
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.contentContainer}>
-        <View style={styles.mediaTag}>
-          <Text style={textStyles.subheadingWhite}>{item.type}</Text>
-        </View>
-        {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-      
+      {item.image ?(
+        <Image source={{ uri: item.image }} style={styles.image} />
+      ) : (
+        <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
+      )}
+      <View style={styles.mediaTag}>
+        <Text style={textStyles.subheadingWhite}>{item.type}</Text>
+      </View>
       <View style={{ padding: 10 }}>
         <Text style={textStyles.heading2purple}>{item.title}</Text>
-        <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>
+        {item.author && <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>}
         {item.type === "poem" ? (
           <View style={{height: 220, overflow: 'hidden'}}>
             <Text style={textStyles.subheading}>{item.poem}</Text>
@@ -225,6 +228,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "25%",
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
   },
   circleButton: {
     width: 45,
@@ -244,14 +249,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mediaTag: {
-    width: "100%",
+    width: 70,
     height: 35,
     backgroundColor: "#736F96",
     justifyContent: "center",
     alignItems: "center",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    alignSelf: "flex-end",
+    borderRadius: 5,
+    position: "absolute",
+    top: 110,
+    right: 10,
   },
   buttonContainer: {
     width: "100%",

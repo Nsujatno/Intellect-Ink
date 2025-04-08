@@ -154,11 +154,18 @@ export default function Profile() {
                 style={styles.pfpImg}/>
             )}
             {isEditing? (
+              <View>
                 <TouchableOpacity
-                    style={styles.button}
+                    style={[styles.button, {marginBottom: 10}]}
                     onPress={handleSubmit/*()=>setIsEditing(!isEditing)*/}>
                     <Text style={textStyles.subheading}>Save Changes</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={()=>setIsEditing(!isEditing)}>
+                  <Text style={textStyles.subheading}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             ):(
                 <TouchableOpacity
                     style={styles.button}
@@ -177,7 +184,7 @@ export default function Profile() {
                 </View>
             ):(
                 <View style={{marginTop: 45, marginBottom: 40, alignSelf: 'center'}}>
-                    <Text style={textStyles.heading2}>Hello, {name}</Text>
+                    <Text style={textStyles.heading1}>Hello, {name}</Text>
                 </View>
             )}
           
@@ -309,7 +316,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       textAlign: 'center',
       alignSelf: 'center',
-      height: 50,
+      height: 45,
       width: 160,
       marginLeft: 20,
   },
