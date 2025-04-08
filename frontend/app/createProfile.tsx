@@ -8,6 +8,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
+import { ngrokPath, isExpoMode } from "./utils";
 
 export default function CreateProfile() {
   const selectPhoto = async () => {
@@ -27,11 +28,11 @@ export default function CreateProfile() {
   const [medias, setMedias] = useState<string[]>([]);
   const [name, setName] = useState("")
   const options = [
-    { value: 'Poems', label: 'Poems' },
-    { value: 'Articles', label: 'Articles' },
-    { value: 'Books', label: 'Books' },
-    { value: 'Politics', label: 'Politics' },
-    { value: 'Research', label: 'Research' },
+    { value: 'poem', label: 'poem' },
+    { value: 'article', label: 'article' },
+    { value: 'book', label: 'book' },
+    { value: 'news', label: 'news' },
+    { value: 'paper', label: 'paper' },
   ];
   const [dailyNotifications, setDailyNotifications] = useState(false);
   const [time, setTimeState] = useState(new Date());
@@ -65,7 +66,7 @@ export default function CreateProfile() {
         notificationTime: time,
       }
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
+      const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-profile`, payload, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`

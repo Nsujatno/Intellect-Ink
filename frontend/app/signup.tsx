@@ -5,7 +5,7 @@ import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { ngrokPath, isExpoMode } from "./utils";
 
 export default function Signup() {
     const router = useRouter();
@@ -22,7 +22,7 @@ export default function Signup() {
         if(password == confirmPassword) {
             try {
                 const response = await axios.post(
-                  'http://localhost:8000/api/user/create',
+                  `${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/create`,
                   {email, password}
                 );
       
@@ -38,7 +38,7 @@ export default function Signup() {
             
             // auto log in user to get auth token
             try {
-                const response = await axios.post("http://localhost:8000/api/user/signin", {email, password})
+                const response = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/signin`, {email, password})
                 console.log(response.data)
                 // localStorage.setItem("token", response.data.user.token)
                 AsyncStorage.setItem("token", String(response.data.user.token))

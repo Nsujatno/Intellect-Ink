@@ -4,6 +4,7 @@ import { Link, useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ngrokPath, isExpoMode } from "./utils";
 
 export default function Login() {
     const router = useRouter();
@@ -14,7 +15,7 @@ export default function Login() {
     const handleSubmit = async () => {
         try {
           const response = await axios.post(
-            'http://localhost:8000/api/user/signin',
+            `${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/signin`,
             {email, password}
           );
         //   localStorage.setItem("token", response.data.user.token)
@@ -51,7 +52,7 @@ export default function Login() {
                 <TextInput style={styles.inputContainer} value={password} onChangeText={setPassword}/>
             </View>
             
-            <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
+            <TouchableOpacity style={styles.button} onPress={/*() => router.push("/home")*/ handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 
