@@ -3,7 +3,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const fetch = require("node-fetch");
 
-// Quiz schema
+// Define the quiz schema
 const quizSchema = new mongoose.Schema({
   question: { type: String, unique: true },
   description: String,
@@ -16,9 +16,10 @@ const quizSchema = new mongoose.Schema({
   multiple_correct_answers: String,
 });
 
-const Quiz = mongoose.model("Quiz", quizSchema);
+// Create or get the existing Quiz model
+const Quiz = mongoose.models.Quiz || mongoose.model("Quiz", quizSchema);
 
-// Endpoint to fetch and save a random quiz
+// GET /api/quiz/fetch-quiz - Fetch one quiz from external API and save
 router.get("/fetch-quiz", async (req, res) => {
   try {
     const API_KEY = process.env.QUIZ_API_KEY;
@@ -39,12 +40,12 @@ router.get("/fetch-quiz", async (req, res) => {
     const [quiz] = await response.json();
 
     if (!quiz || !quiz.question) {
-      throw new Error("No quiz received or missing 'question' field");
+      return res.status(400).json({ error: "Invalid quiz response" });
     }
 
-    const existingQuiz = await Quiz.findOne({ question: quiz.question });
-    if (existingQuiz) {
-      return res.json({ message: "Quiz already exists", quiz: existingQuiz });
+    const exists = await Quiz.findOne({ question: quiz.question });
+    if (exists) {
+      return res.json({ message: "Quiz already exists", quiz: exists });
     }
 
     const newQuiz = new Quiz({
@@ -60,22 +61,23 @@ router.get("/fetch-quiz", async (req, res) => {
     });
 
     await newQuiz.save();
-    res.json({ message: "Quiz saved successfully", quiz: newQuiz });
+    res.json({ message: "Quiz saved", quiz: newQuiz });
   } catch (error) {
-    console.error("❌ Error fetching quiz:", error.message);
+    console.error("❌ Error in /fetch-quiz:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Endpoint to get all saved quizzes
+// GET /api/quiz/get-quizzes - Return all saved quizzes
 router.get("/get-quizzes", async (req, res) => {
   try {
     const quizzes = await Quiz.find();
     res.json(quizzes);
   } catch (error) {
-    console.error("❌ Error retrieving quizzes:", error.message);
+    console.error("❌ Error in /get-quizzes:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
+// ✅ Correct export (important!)
 module.exports = router;
