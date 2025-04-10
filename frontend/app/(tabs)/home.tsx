@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, Linking, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, ImageBackground } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 import { textStyles } from "../stylesheets/textStyles";
 import Buttons from "../components/buttons";
@@ -24,9 +24,14 @@ interface SubjectItem {
 
 export default function Home() {
   const router = useRouter();
+  const [userId, setUserId] = useState("");
   const [state, setState] = useState({ page: 0 });
   const [level, setLevel] = useState(0);
-  const [percent, setPercent] = useState(50);
+  // const [percent, setPercent] = useState(50);
+  const [percent, setPercent] = useState(0);
+  const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
+  const [dailyGoal, setDailyGoal] = useState(30);
+  const [timeReadToday, setTimeReadToday] = useState(0);
   const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
   const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
 
@@ -38,28 +43,73 @@ export default function Home() {
   const [forYouItems, setForYouItems] = useState<SubjectItem[]>([]);
   const [exploreItems, setExploreItems] = useState<SubjectItem[]>([]);
 
-  const handleReadMore = (item: ItemProps) => {
-    if (item.type === "book") {
-      booksTracker.startTiming();
-    } else if (item.type === "poem") {
-      poemsTracker.startTiming();
-    } else if (item.type === "news") {
-        newsTracker.startTiming();
+  useEffect(() => {
+    const loadProgress = async () => {
+      const localData = await AsyncStorage.getItem("userProgress");
+      if (localData) {
+        const { level, percent, viewedCategories, dailyGoal, timeReadToday } = JSON.parse(localData);
+        setLevel(level || 0);
+        setPercent(percent || 0);
+        setViewedCategories(new Set(viewedCategories || []));
+        setDailyGoal(dailyGoal || 30);
+        setTimeReadToday(timeReadToday || 0);
+      }
+    };
+    loadProgress();
+  }, []);
+
+  const saveProgress = async () => {
+    const progressData = {
+      viewedCategories: [...viewedCategories],
+      dailyGoal,
+      timeReadToday,
+      level,
+      percent
+    };
+    await AsyncStorage.setItem("userProgress", JSON.stringify(progressData));
+  };
+
+  // calculate updated progress
+  useEffect(() => {
+    // for every different category the user views, awards 26.6% per category to reach a 80% max
+    const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
+
+    // awards 20% for progress if daily reading goal is completed
+    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0; // const goalProgress = Math.min((timeReadToday / dailyGoal) * 67, 67);
+    
+    // 100% max
+    const totalProgress = Math.round(categoryProgress + goalProgress);
+    setPercent(totalProgress);
+    if (totalProgress >= 100) {
+      setLevel(prev => prev + 1);
+      setPercent(0);
+      saveProgress();
     }
+  }, [viewedCategories, timeReadToday, dailyGoal]);
+
+  const handleReadMore = (item: ItemProps) => {
+    // track category
+    const updatedCategories = new Set(viewedCategories).add(item.type);
+    setViewedCategories(updatedCategories);
+
+    // start timing
+    if (item.type === "book") booksTracker.startTiming();
+    else if (item.type === "poem") poemsTracker.startTiming();
+    else if (item.type === "news") newsTracker.startTiming();
 
     router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } });
   };
 
-    type ItemProps = {
-        id: string,
-        type: string,
-        image?: string,
-        title: string;
-        author: string;
-        summary?: string;
-        poem?: string;
-        link?: string;
-    };
+  type ItemProps = {
+    id: string,
+    type: string,
+    image?: string,
+    title: string;
+    author: string;
+    summary?: string;
+    poem?: string;
+    link?: string;
+  };
 
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.contentContainer}>
@@ -349,7 +399,6 @@ export default function Home() {
             </View>
         </View>
     </ImageBackground>
-
   );
 }
 

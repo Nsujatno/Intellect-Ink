@@ -5,7 +5,7 @@ import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import axios from "axios";
 
-export default function question1View() {
+export default function Question1View() {
     const router = useRouter();
     const maxLength = 200;
     const [expanded, setExpanded] = useState([]);
@@ -63,13 +63,13 @@ export default function question1View() {
 
             <View style={styles.textContainer}>
                 <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 25, right: 85, color: '#646EA3' }]}>View Discussion</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 25, right: 100, color: '#646EA3' }]}>View Replies</Text>
             </View>
 
             <FlatList
                 data={replies}
                 keyExtractor={(item) => item._id}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                     <View style={styles.replyContainer}>
                         <View style={styles.indivReplyContainer}>
                             <View style={styles.profileSection}>
@@ -92,24 +92,28 @@ export default function question1View() {
                         </View>
 
                         <View style={styles.replyButtonContainer}>
-                            <Buttons
-                                title="Reply"
-                                variant="gray2"
-                                onPress={() => router.push({
-                                    pathname: "/replyDiscussion",
-                                    params: item ? { 
-                                        replyId: item.id,
-                                        replyName: item.name,
-                                        replyText: item.text
-                                    } : {}
-                                })}
-                            />
-                            <Buttons
-                                title="More Replies"
-                                variant="purple3"
-                                onPress={() => router.push("/viewReplies")}
-                            />
+                            {index !== 1 && (
+                                <Buttons
+                                    title="Reply"
+                                    variant="gray2"
+                                    onPress={() => router.push("/replyDiscussion")}
+                                />
+                            )}
+                            {index !== 0 && (
+                                <Buttons
+                                    title="More Replies"
+                                    variant="purple3"
+                                    onPress={() => router.push("/viewReplies")}
+                                />
+                            )}
                         </View>
+
+                        {/* {index === 0 && (
+                            <Image
+                                source={require('../assets/images/line-12.png')}
+                                style={styles.lineImage}
+                            />
+                        )} */}
                     </View>
                 )}
                 initialNumToRender={5}
@@ -187,4 +191,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'center',
     },
+    // lineImage: {
+    //     width: '100%',
+    //     height: 2.5,
+    //     marginTop: 30,
+    //     paddingHorizontal: 20,
+    // },
 });

@@ -1,16 +1,19 @@
 import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, Linking} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useTimeTracker } from "../app/hooks/useTimeTracker";
 import { textStyles } from "./stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import Buttons from "./components/buttons";
+import TrackWrapper from "../app/layouts/trackWrapper";
 
 export default function ReadMore() {
     const router = useRouter();
     const { item } = useLocalSearchParams();
     const parseItem = JSON.parse(item as string);
-
+    
     return (
+        <TrackWrapper>
         <LinearGradient
         colors={["#4F3F7F", "#615796", "#646EA3"]}
         style={styles.container}
@@ -87,7 +90,8 @@ export default function ReadMore() {
              </View>
             </ScrollView>
         </LinearGradient>
-      )
+        </TrackWrapper>
+      );
 }
 
 const styles = StyleSheet.create({
