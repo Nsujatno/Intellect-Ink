@@ -66,10 +66,19 @@ export default function CreateProfile() {
         notificationTime: time,
       }
       const token = await AsyncStorage.getItem('token');
+      if(token){
+        console.log(token);
+      }else{
+        console.log("token not found")
+      }
+
+      // await AsyncStorage.removeItem('token');
+
       const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-profile`, payload, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+          Authorization: `Bearer ${token}`,
         }
       })
       router.push("/home")

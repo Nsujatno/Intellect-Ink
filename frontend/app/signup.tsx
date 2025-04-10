@@ -10,7 +10,7 @@ import { ngrokPath, isExpoMode } from "./utils";
 export default function Signup() {
     const router = useRouter();
 
-    const [error, setError] = useState("");
+    // const [error, setError] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -18,44 +18,45 @@ export default function Signup() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleSubmit = async () => {
-        setError("");
+        // setError("");
         if(password == confirmPassword) {
             try {
-                const response = await axios.post(
-                  `${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/create`,
-                  {email, password}
-                );
+                const payload = { email: email.toLowerCase(), password };
+                const response = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/user/create`, payload, {
+                    headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+                });
       
                 router.push("/createProfile")
       
               } catch (error) {
                   if (axios.isAxiosError(error)) {
                       if(error.response){
-                          setError(error.response.data)
+                          console.log(error.response.data)
                       }
                   }
               }
             
             // auto log in user to get auth token
             try {
-                const response = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/signin`, {email, password})
+                const payload = { email: email.toLowerCase(), password };
+                const response = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/user/signin`, payload, {
+                    headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+                });
                 console.log(response.data)
-                // localStorage.setItem("token", response.data.user.token)
-                AsyncStorage.setItem("token", String(response.data.user.token))
+                await AsyncStorage.setItem("token", String(response.data.user.token))
                 const token = await AsyncStorage.getItem('token');
-                // console.log('Token:', token);
-                // console.log(AsyncStorage.getItem("token"))
-                // console.log(localStorage.getItem("token"))
+                console.log("Token created in sing up from auto log in: " + token)
+                
             }
             catch (error) {
                 if (axios.isAxiosError(error)) {
                     if(error.response){
-                        setError(error.response.data)
+                        console.log(error.response.data)
                     }
                 }
             }
         } else{
-            setError("Passwords don't match")
+            console.log("Passwords don't match")
         }
         
     }
@@ -108,7 +109,7 @@ export default function Signup() {
                         </TouchableOpacity>
                     </View>
                 </View>
-            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null}
+            {/* {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null} */}
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Sign Up</Text>
             </TouchableOpacity>

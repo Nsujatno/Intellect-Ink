@@ -14,13 +14,12 @@ export default function Login() {
 
     const handleSubmit = async () => {
         try {
-          const response = await axios.post(
-            `${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/signin`,
-            {email, password}
-          );
-        //   localStorage.setItem("token", response.data.user.token)
-          AsyncStorage.setItem("token", String(response.data.user.token))
-        //   console.log(localStorage.getItem("token"))
+            const payload = { email: email.toLowerCase(), password };
+            const response = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/user/signin`, payload, {
+                headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+            });
+
+          await AsyncStorage.setItem("token", String(response.data.user.token))
           console.log(AsyncStorage.getItem("token"))
           router.push("/home")
 
@@ -32,6 +31,7 @@ export default function Login() {
             }
         }
     }
+
 
   return (
     <View style={styles.container}>
