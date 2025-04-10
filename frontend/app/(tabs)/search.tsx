@@ -117,7 +117,7 @@ export default function Search() {
   );
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
             <TextInput
                 style={styles.inputContainer}
                 placeholder="Search"
@@ -141,7 +141,7 @@ export default function Search() {
                         />
                     </LinearGradient>
                 ) : (
-                    <View style={styles.categoriesContainer}>
+                    <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
                         <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
                         <DropDownButtons
                             title='Books'
@@ -186,11 +186,11 @@ export default function Search() {
                             categories={["See all favorites"]}
                             gradientColors={['#042C71', '#6D90EB']} 
                         />
-                    </View>
+                    </ScrollView>
                 )
             }
 
-        </ScrollView>
+        </View>
     );
 }
 
