@@ -32,7 +32,7 @@ export default function ReadMore() {
                     </View>      
                     <View style={{ padding: 10 }}>
                         <Text style={textStyles.heading2purple}>{parseItem.title}</Text>
-                        <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {parseItem.author}</Text>
+                        {parseItem.author && <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {parseItem.author}</Text> }
                         {parseItem.type === "poem" ? (
                         <Text style={textStyles.subheading}>{parseItem.poem}</Text>
                         ) : (

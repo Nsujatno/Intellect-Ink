@@ -13,8 +13,8 @@ export default function Search() {
           id: "1",
           type: "book",
           image: "https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg",
-          title: "Harry Potter and the Chamber of Secrets",
-          author: "JK Rowling",
+          title: "Harry Potter and the Chamber of Secrets, where Harry si a magical wizard who goes to iwzer jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj and he said ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
+          author: "JK Rowlinggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
           link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',
           summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.",
         },
@@ -31,7 +31,7 @@ export default function Search() {
           id: "3",
           type: "poem",
           title: "The Raven",
-          author: "Edgar Allan Poe",
+          author: "",
           poem: "Once upon a midnight dreary, While I pondered, weak and weary...",
         },
       ];
@@ -104,12 +104,12 @@ export default function Search() {
 
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.contentContainer}>
-        <View>
-            <Text style={[textStyles.heading2purple,{fontSize: 16}]}>{item.title}</Text>
-            <Text style={[textStyles.subheading, {fontSize: 14}]}>By: {item.author}</Text>
+        <View style={{width: '90%'}}>
+            <Text numberOfLines={2} style={[textStyles.heading2purple,{fontSize: 16}]}>{item.title}</Text>
+            {item.author && <Text numberOfLines={1} style={[textStyles.subheading, {fontSize: 14}]}>By: {item.author}</Text> }
         </View>
         <View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
                 <Text style={textStyles.heading2purple}> {`>`}</Text>
             </TouchableOpacity>
         </View>
