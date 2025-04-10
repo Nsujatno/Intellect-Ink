@@ -66,8 +66,8 @@ export default function Login() {
                     <Text style={[textStyles.subheading,{color:"white"}]}>Forgot Password?</Text>
                 </TouchableOpacity>
             </View>
-            {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null}
-            <TouchableOpacity style={styles.button} onPress={() => handleSubmit}>
+            {/* {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null} */}
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 
