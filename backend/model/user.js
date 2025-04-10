@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     },
     notificationTime: {
         type: Date,
-    }
+    },
 })
 
 userSchema.pre('save', async function(next){
