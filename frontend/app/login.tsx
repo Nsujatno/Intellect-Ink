@@ -19,7 +19,11 @@ export default function Login() {
         try {
           const response = await axios.post(
             `${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/signin`,
-            {email, password}
+            {email, password}, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'skip-browser-warning',
+                }
+            }
           );
         //   localStorage.setItem("token", response.data.user.token)
           AsyncStorage.setItem("token", String(response.data.user.token))
@@ -67,7 +71,7 @@ export default function Login() {
                 </TouchableOpacity>
             </View>
             {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null}
-            <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
+            <TouchableOpacity style={styles.button} onPress={() => handleSubmit}>
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 

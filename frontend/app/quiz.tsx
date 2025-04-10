@@ -9,11 +9,24 @@ export default function Quiz() {
   const [percent, setPercent] = useState(0);
   const [questionIndex, setQuestionIndex] = useState(-1);
   const testQuestions = [
-    { question: 'What is the capital of France?', options: ['Paris', 'London', 'Berlin', 'Rome'], answer: 0 },
-    { question: 'What is 2 + 2?', options: ['3', '4', '5', '6'], answer: 1 },
-    { question: 'What is our team name?', options: ['IntellectInk', 'CometClaim', 'WanderLust', 'Abis'], answer: 0 },
+    { question: 'What is the capital of France?', options: ['Paris', 'London', 'Berlin', 'Rome'], answer: 'Paris' },
+    { question: 'What is 2 + 2?', options: ['3', '4', '5', '6'], answer: '4' },
+    { question: 'What is our team name?', options: ['IntellectInk', 'CometClaim', 'WanderLust', 'Abis'], answer: 'IntellectInk'},
   ];
-  useEffect(() => {
+
+  const [selectedOption, setSelectedOption] = useState('');
+  const [score, setScore] = useState(0); //keeps track of score
+  const handleAnswer = (selectedOption: string) => {
+    if (selectedOption === testQuestions[questionIndex].answer) {
+      setScore(score + 1);
+    }
+    if (selectedOption != '') {
+      setQuestionIndex(questionIndex+1)
+      setSelectedOption('');
+    }
+  }
+
+  useEffect(() => { //displays percentage on progress bar
     if (questionIndex>=0)
       {const newPercent = ((questionIndex / testQuestions.length) * 100);
       setPercent(newPercent);}
@@ -34,7 +47,7 @@ export default function Quiz() {
             <View style={[styles.lvlFill, {width: `${percent}%`}]}></View>
           </View>
           <View style={styles.lvlText}>
-            <Text style={[textStyles.pageHeader, {fontSize: 17}]}>{percent}%</Text>
+            <Text style={[textStyles.pageHeader, {fontSize: 17}]}>{Math.round(percent)}%</Text>
           </View>
         </View>
         { questionIndex === -1 && (
@@ -49,26 +62,27 @@ export default function Quiz() {
           </View>
         )}
         {questionIndex !== -1 && questionIndex !== testQuestions.length && (
-          <View style={[styles.topicContainer, {height: 400, marginTop: '20%'}]}>
-            <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Question {questionIndex+1}</Text>
-            <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>{testQuestions[questionIndex].question}</Text>
+          <View style={styles.questionContainer}>
+            <Text style={[textStyles.heading2purple, {fontSize: 25, color: '#03045E'}]}>Question {questionIndex+1}</Text>
+            <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3'}]}>{testQuestions[questionIndex].question}</Text>
 
             {testQuestions[questionIndex].options.map((option, index) => (
-              <TouchableOpacity key={index} onPress={() => console.log(`Selected: ${option}`)}>
-              <Text style={textStyles.subheading}>{option}</Text>
+              <TouchableOpacity key={index} onPress={() => setSelectedOption(option)} style={styles.optionContainer}>
+                <View style={[{width: 20, height: 20, borderRadius: 20, marginRight: 20},{backgroundColor: selectedOption === option ? '#413F6F' : '#E2E2E2'}]}></View>
+                <Text style={textStyles.subheading}>{option}</Text>
               </TouchableOpacity>
             ))}
 
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-              <Buttons
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
+              {/* <Buttons
                 title='Back'
                 variant='purple'
                 onPress={()=>setQuestionIndex(questionIndex-1)}
-              />
+              /> */}
               <Buttons
                 title='Next'
                 variant='purple'
-                onPress={()=>setQuestionIndex(questionIndex+1)}
+                onPress={()=>handleAnswer(selectedOption)}
               />
             </View>
           </View>
@@ -76,7 +90,7 @@ export default function Quiz() {
         {questionIndex === testQuestions.length && (
           <View style={styles.topicContainer}>
           <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Quiz Completed</Text>
-          <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Your Score:</Text>
+          <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Your Score: {score}/{questionIndex}</Text>
           <Buttons
             title='Go to home'
             variant='purple'
@@ -123,6 +137,26 @@ const styles = StyleSheet.create({
       shadowOffset: { width: 4, height: 4 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
+    },
+    questionContainer: {
+      marginTop: '15%',
+      backgroundColor: 'white',
+      width: '85%',
+      height: 500,
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      gap: 15,
+      padding: 20,
+      borderRadius: 5,
+      shadowColor: "#000",
+      shadowOffset: { width: 4, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    optionContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignSelf: 'flex-start',
     },
     lvlContainer: {
         borderRadius: 30,
