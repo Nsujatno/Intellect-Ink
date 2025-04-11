@@ -43,6 +43,7 @@ export default function Home() {
   const [forYouItems, setForYouItems] = useState<SubjectItem[]>([]);
   const [exploreItems, setExploreItems] = useState<SubjectItem[]>([]);
 
+
   useEffect(() => {
     const loadProgress = async () => {
       const localData = await AsyncStorage.getItem("userProgress");
@@ -86,6 +87,32 @@ export default function Home() {
       saveProgress();
     }
   }, [viewedCategories, timeReadToday, dailyGoal]);
+
+  const handleBookmark = async (item: ItemProps) => {
+    try{
+      const payload = {
+        favorites: {
+          itemId: [item.id],
+          itemType: [item.type],
+        }
+      };
+      const token = await AsyncStorage.getItem('token');
+      // console.log("handling bookmark")
+      // console.log("payload: " + JSON.stringify(payload))
+      
+      const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-favorites`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      // console.log(response);
+    } catch (error){
+      console.log("error")
+    }
+    
+  }
 
   const handleReadMore = (item: ItemProps) => {
     // track category
@@ -147,11 +174,12 @@ export default function Home() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() =>
+            onPress={() => {
+              handleBookmark(item);
               setFavorite((prevIcon) =>
                 prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"
               )
-            }
+            }}
           >
             <Ionicons name={favorite} size={27} color={"white"} />
           </TouchableOpacity>
