@@ -22,8 +22,6 @@ const Article = mongoose.model("Article", articleSchema);
 
 const API_KEY = process.env.NYT_API_KEY;
 
-<<<<<<< HEAD
-=======
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
@@ -39,7 +37,6 @@ router.post("/search", async (req, res) => {
   res.json(results)
 })
 
->>>>>>> 2e40207ab5e592bd1cf63c9d59f27478c2f7dd49
 router.get("/data", async (req, res) => {
   let queryTopic = "history";
   const LIMIT = 5; // Set the limit for the number of articles saved per request

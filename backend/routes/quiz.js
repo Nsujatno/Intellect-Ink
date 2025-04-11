@@ -6,24 +6,29 @@ const fetch = require("node-fetch");
 // Define the quiz schema
 const quizSchema = new mongoose.Schema({
   question: { type: String, unique: true },
-  description: String,
+  description: { type: String, default: "No description provided" },
   answers: Object,
+  multiple_correct_answers: Boolean,
   correct_answer: String,
-  explanation: String,
+  explanation: { type: String, default: "No explanation available" },
   tags: Array,
   category: String,
   difficulty: String,
-  multiple_correct_answers: String,
+  topic: { type: String, default: "Computer Science" }, // ✅ Add topic field
 });
 
-// Create or get the existing Quiz model
-const Quiz = mongoose.models.Quiz || mongoose.model("Quiz", quizSchema);
+// 🔁 Temporarily change model name to force schema recompilation
+const Quiz = mongoose.models?.Quizz || mongoose.model("Quizz", quizSchema);
 
 // GET /api/quiz/fetch-quiz - Fetch one quiz from external API and save
 router.get("/fetch-quiz", async (req, res) => {
   try {
     const API_KEY = process.env.QUIZ_API_KEY;
-    const API_URL = "https://quizapi.io/api/v1/questions?limit=1";
+    if (!API_KEY) {
+      return res.status(500).json({ error: "API key is missing in environment variables." });
+    }
+
+    const API_URL = "https://quizapi.io/api/v1/questions?limit=1&correct_answers=true";
 
     const response = await fetch(API_URL, {
       headers: {
@@ -40,8 +45,15 @@ router.get("/fetch-quiz", async (req, res) => {
     const [quiz] = await response.json();
 
     if (!quiz || !quiz.question) {
-      return res.status(400).json({ error: "Invalid quiz response" });
+      return res.status(400).json({ error: "Invalid quiz response, missing question." });
     }
+
+    let correctAnswer = null;
+    Object.keys(quiz.correct_answers).forEach((key) => {
+      if (quiz.correct_answers[key] === "true") {
+        correctAnswer = key;
+      }
+    });
 
     const exists = await Quiz.findOne({ question: quiz.question });
     if (exists) {
@@ -50,34 +62,31 @@ router.get("/fetch-quiz", async (req, res) => {
 
     const newQuiz = new Quiz({
       question: quiz.question,
-      description: quiz.description,
+      description: quiz.description || "No description provided",
       answers: quiz.answers,
-      correct_answer: quiz.correct_answer,
-      explanation: quiz.explanation,
+      multiple_correct_answers: quiz.multiple_correct_answers === "true",
+      correct_answer: correctAnswer,
+      explanation: quiz.explanation || "No explanation available",
       tags: quiz.tags,
       category: quiz.category,
       difficulty: quiz.difficulty,
-      multiple_correct_answers: quiz.multiple_correct_answers,
+      topic: "Computer Science", // ✅ Set hardcoded topic
     });
 
-    await newQuiz.save();
-    res.json({ message: "Quiz saved", quiz: newQuiz });
+    await newQuiz.save()
+      .then(() => {
+        console.log("Quiz saved successfully!");
+        res.json({ message: "Quiz saved", quiz: newQuiz });
+      })
+      .catch((error) => {
+        console.error("Error saving quiz:", error);
+        res.status(500).json({ error: "Error saving quiz: " + error.message });
+      });
+
   } catch (error) {
     console.error("❌ Error in /fetch-quiz:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// GET /api/quiz/get-quizzes - Return all saved quizzes
-router.get("/get-quizzes", async (req, res) => {
-  try {
-    const quizzes = await Quiz.find();
-    res.json(quizzes);
-  } catch (error) {
-    console.error("❌ Error in /get-quizzes:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ✅ Correct export (important!)
 module.exports = router;
