@@ -37,8 +37,8 @@ exports.authMiddleware = async (req, res, next) => {
 
         const user = await User.findOne({ _id: decoded.userId });
         
-        console.log("Decoded JWT:", decoded);
-        console.log("Token:", token);
+        // console.log("Decoded JWT:", decoded);
+        // console.log("Token:", token);
         if (!user) {
         return res.status(401).json({ error: 'User not found' });
         }
