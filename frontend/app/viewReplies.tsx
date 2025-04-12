@@ -1,11 +1,10 @@
-import { Text, View, Image, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
-import axios from "axios";
 
-export default function Question1View() {
+export default function viewReplies() {
     const router = useRouter();
     const maxLength = 200;
     const [expanded, setExpanded] = useState([]);
