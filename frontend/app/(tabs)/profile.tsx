@@ -239,21 +239,21 @@ export default function Profile() {
             {isEditing? (
               <View>
                 <TouchableOpacity
-                    style={[styles.button, {marginBottom: 10}]}
+                    style={[styles.button, {marginBottom: 10, backgroundColor: '#8988B1'}]}
                     onPress={handleSubmit/*()=>setIsEditing(!isEditing)*/}>
-                    <Text style={textStyles.subheading}>Save Changes</Text>
+                    <Text style={[textStyles.subheading,{color: '#FFFFFF'}]}>Save</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={()=>setIsEditing(!isEditing)}>
-                  <Text style={textStyles.subheading}>Cancel</Text>
+                  <Text style={[textStyles.subheading,{color: '#413F6F'}]}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             ):(
                 <TouchableOpacity
                     style={styles.button}
                     onPress={()=>setIsEditing(!isEditing)}>
-                    <Text style={textStyles.subheading}>Edit Profile</Text>
+                    <Text style={[textStyles.subheading,{color: '#413F6F'}]}>Edit Profile</Text>
                 </TouchableOpacity>
             )}
             
@@ -336,14 +336,19 @@ export default function Profile() {
         )}
         <Text style={[textStyles.heading1, {marginVertical: 20, marginTop: 50,}]}>Favorites</Text>
         <View style={{width: 315}}>
-        <FlatList
-            data={favoriteItems.filter(item => item && item.id)}
-            renderItem={({ item }) => <Item item={item} />}
-            horizontal={true}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={false}
-        />
+          <FlatList
+              data={favoriteItems.filter(item => item && item.id)}
+              renderItem={({ item }) => <Item item={item} />}
+              horizontal={true}
+              keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
+          />
         </View>
+        <TouchableOpacity
+          style={[styles.button, {marginBottom: 10, backgroundColor: '#413F6F', width: 200, marginTop: 40}]}
+          onPress={()=>console.log('implement sign out feature yurrrr')}>
+          <Text style={[textStyles.subheading,{color: '#FFFFFF'}]}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

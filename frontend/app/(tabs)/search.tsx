@@ -1,6 +1,6 @@
 import { Text, View, FlatList, ScrollView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
-import { useState} from "react";
-import { useRouter } from "expo-router";
+import { useState, useEffect } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import axios from 'axios'
 import DropDownButtons from "../components/dropDownButtons";
 import Item from "../components/item";
@@ -10,6 +10,7 @@ import { ngrokPath, isExpoMode } from "../utils";
 
 export default function Search() {
     const router = useRouter();
+    const params = useLocalSearchParams();
     interface SubjectItem {
         id: string;
         type: string;
@@ -178,6 +179,13 @@ export default function Search() {
                 value={searchQuery}
                 onChangeText={(query) => handleSearch(query)}>
             </TextInput>
+            {searchQuery.length > 0 &&
+                <TouchableOpacity
+                    onPress={() => setSearchQuery('')}
+                    style={{position: 'absolute', top: 15, right: 20}}>
+                    <Text style={{color: '#807A7A', fontSize: 15}}>x</Text>
+                </TouchableOpacity>
+            }
             
             { searchQuery.trim() !=="" ? (
                     <LinearGradient
@@ -196,40 +204,40 @@ export default function Search() {
                     <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
                         <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
                         <DropDownButtons
-                            title='Books'
+                            title='Article'
                             variant='white'
-                            categories={["Horror", "Romance", "Mystery"]}
+                            categories={["Ocean Life", "Science", "History"]}
                             gradientColors={['#5C3E8F', '#2D1A4E']} 
+                        />
+                        <DropDownButtons
+                            title='Book'
+                            variant='white'
+                            categories={["Ocean Life", "Science", "History"]}
+                            gradientColors={['#615796', '#3B3461']} 
                         />
                         <DropDownButtons
                             title='News'
                             variant='white'
-                            categories={[]}
-                            gradientColors={['#615796', '#3B3461']} 
-                        />
-                        <DropDownButtons
-                            title='Poems'
-                            variant='white'
-                            categories={[]}
+                            categories={["Ocean Life"]}
                             gradientColors={['#514F82', '#22205F']} 
                         />
                         <DropDownButtons
-                            title='Politics'
+                            title='Paper'
                             variant='white'
-                            categories={[]}
+                            categories={["Ocean Life", "Science"]}
                             gradientColors={['#3F497B', '#646EA3']} 
                         />
                         <DropDownButtons
-                            title='Research'
+                            title='Poem'
                             variant='white'
-                            categories={[]}
+                            categories={["Ocean Life"]}
                             gradientColors={['#514F82', '#7347AD']} 
                         />
                         <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
                         <DropDownButtons
                             title='Quiz'
                             variant='whiteOutline'
-                            categories={["Go to today's quiz", "See past results"]}
+                            categories={["Go to today's quiz", "Computer Science", "Science"]}
                             gradientColors={['#103A70', '#485EEA']} 
                         />
                         <DropDownButtons

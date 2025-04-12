@@ -137,7 +137,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                             if (category === "Go to today's quiz") {
                               router.push('/quiz');
                             } else {
-                              router.push({ pathname: '/search', params: { query: category } });
+                              router.push({ pathname: '/search', params: { string: category } });
                             }
                           }}
                         >
