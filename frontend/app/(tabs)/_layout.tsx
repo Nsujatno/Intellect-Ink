@@ -1,4 +1,7 @@
 import { Tabs } from 'expo-router';
+import { useEffect } from "react";
+import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Layout(){

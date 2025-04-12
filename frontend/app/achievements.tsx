@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         width: '100%',
         height: undefined,
-        aspectRatio: 0.275,
+        aspectRatio: 0.457,
     },
     imageContainer: {
         width: '100%',

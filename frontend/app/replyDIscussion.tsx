@@ -1,10 +1,9 @@
-import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
+import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 
-// fix to show above input box comment being replied to
 export default function ReplyDiscussion() {
     const router = useRouter();
     const params = useLocalSearchParams();
