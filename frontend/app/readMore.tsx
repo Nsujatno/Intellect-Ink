@@ -57,6 +57,8 @@ export default function ReadMore() {
                     </View>
                 </View>
                     <Text style={textStyles.heading2}>You may also like</Text>
+                    
+                    {/* allocate data to these and use formatting from search page for each item */}
                     <View style={styles.relevantBox}>
                         <View>
                             <Text style={textStyles.heading2purple}>

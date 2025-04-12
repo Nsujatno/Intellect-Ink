@@ -46,12 +46,6 @@ export default function Profile() {
   const [favoriteItems, setFavorites] = useState<favorites[]>([]);
   const favorite: favorites[] = [];
 
-  // const favoriteItems = [
-  //   { id: "1", title: "Item 1" },
-  //   { id: "2", title: "Item 2" },
-  //   { id: "3", title: "Item 3" },
-  //   { id: "4", title: "Item 4" },
-  // ];
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.favorites}>
     <Text style={textStyles.heading2purple}>{item.title}</Text>
@@ -338,7 +332,7 @@ export default function Profile() {
         <Text style={[textStyles.heading1, {marginVertical: 20, marginTop: 50,}]}>Favorites</Text>
         <View style={{width: 315}}>
         <FlatList
-            data={favoriteItems}
+            data={favoriteItems.filter(item => item && item.id)}
             renderItem={({ item }) => <Item item={item} />}
             horizontal={true}
             keyExtractor={(item) => item.id}

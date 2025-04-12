@@ -98,24 +98,39 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
             )}
 
             {showContent && (
-                <View style={styles.body}>
-                    {achievements.map((achievement) => (
-                    <View key={achievement.id} style={styles.achievementBox}>
-                        <Image source={achievement.icon} style={styles.achievementIcon} />
-                        <View style={styles.achievementText}>
-                            <Text style={textStyles.heading2purple}>{achievement.title}</Text>
-                            <Text style={textStyles.bodytext3}>{achievement.description}</Text>
-                        </View>
-                    </View>
-                    ))}
+                <View style={styles.bodyBackground}>
+                    <View style={styles.body}>
+                        {achievements.length > 0 && (
+                            <ScrollView>
+                                {achievements.map((achievement) => (
+                                <View key={achievement.id} style={styles.achievementBox}>
+                                    <Image source={achievement.icon} style={styles.achievementIcon} />
+                                    <View style={styles.achievementText}>
+                                        <Text style={[textStyles.heading2purple, styles.centeredText]}>{achievement.title}</Text>
+                                        <Text style={[textStyles.bodytext3, styles.centeredText]}>{achievement.description}</Text>
+                                    </View>
+                                </View>
+                                ))}
+                                <TouchableOpacity
+                                    style={styles.viewMoreButton} 
+                                    onPress={() => router.push("/achievements")}>
+                                    <Text style={styles.viewMoreText}>View More</Text>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        )}
 
-                    {leaderboards.map((entry, index) => (
-                        <View key={entry.id} style={styles.leaderboardBox}>
-                            <Text style={styles.rankNumber}>{index + 1}.</Text>
-                            <Image source={entry.icon} style={styles.leaderboardIcon} />
-                            <Text style={textStyles.bodytext4}>{entry.title}</Text>
+                        {leaderboards.length > 0 && (
+                            <ScrollView>
+                                {leaderboards.map((entry, index) => (
+                                    <View key={entry.id} style={styles.leaderboardBox}>
+                                        <Text style={styles.rankNumber}>{index + 1}.</Text>
+                                        <Image source={entry.icon} style={styles.leaderboardIcon} />
+                                        <Text style={[textStyles.bodytext4, styles.centeredText]}>{entry.title}</Text>
+                                    </View>
+                                ))}
+                            </ScrollView>
+                        )}
                         </View>
-                    ))}
 
                     {categories.map((category, index) => (
                         <TouchableOpacity key={index} style={[styles.categoryBox,
@@ -136,7 +151,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                         </TouchableOpacity>
                     ))}
 
-                    <View style={styles.spacing} />
+                    <View/>
                 </View>
             )}
         </View>
@@ -149,10 +164,10 @@ const styles = StyleSheet.create ({
         backgroundColor: '#FFFFFF',
         marginBottom: '3%',
         overflow: 'hidden',
-        //borderRadius: 5,
     },
     purpleContainer: {
         backgroundColor: '#413F6F',
+        height: 200,
     },
     whiteContainer: {
         backgroundColor: '#888FB8',
@@ -163,6 +178,10 @@ const styles = StyleSheet.create ({
     body: {
         paddingVertical: '0%',
     },
+    bodyBackground: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 0,
+    },
     titleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -172,34 +191,42 @@ const styles = StyleSheet.create ({
     },
     achievementBox: {
         flexDirection: 'row',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
         padding: 10,
-        borderRadius: 8,
         marginBottom: 10,
+        borderRadius: 0,
         marginHorizontal: '4%', 
     },
     achievementIcon: {
+        justifyContent: 'center',
+        alignItems: 'center',
         width: 40,
         height: 40,
         marginRight: 10,
     },
+    centeredText: {
+        textAlign: 'center',
+    },
     achievementText: {
         flex: 1,
-    },
-    spacing: {
-        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: -40,
     },
     leaderboardBox: {
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         padding: 10,
         backgroundColor: '#F5F5F5',
-        borderRadius: 8,
         marginBottom: 10,
+        borderRadius: 0,
         marginHorizontal: '4%', 
     },
     rankNumber: {
+        color: '#413F6F',
         fontSize: 18,
         fontWeight: 'bold',
         marginRight: 10,
@@ -219,6 +246,17 @@ const styles = StyleSheet.create ({
         height: 50,
         paddingHorizontal: 20,
     },
+    viewMoreButton: {
+        backgroundColor: '#413F6F',
+        padding: 15,
+        borderRadius: 0,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    viewMoreText: {
+        color: 'white',
+        fontWeight: 'bold',
+    }
 })
 
 export default dropDownButton;
