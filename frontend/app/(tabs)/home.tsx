@@ -143,13 +143,17 @@ export default function Home() {
 
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.contentContainer}>
-      {item.image ?(
+      {item.image ? (
         <Image source={{ uri: item.image }} style={styles.image} />
+      ) : item.type === "poem" ? (
+        <Image source={{ uri: 'https://www.toonpool.com/user/856/files/poem_544155.jpg'}} style={styles.image} />
+      ) : item.type === "paper" ? (
+        <Image source={require('../../assets/images/paperImg.png')} style={styles.image} />
       ) : (
         <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
       )}
       <View style={styles.mediaTag}>
-        <Text style={textStyles.subheadingWhite}>{item.type}</Text>
+        <Text style={[textStyles.subheadingWhite, {marginVertical: 0}]}>{item.type}</Text>
       </View>
       <View style={{ padding: 10 }}>
         <Text style={textStyles.heading2purple}>{item.title}</Text>
@@ -519,6 +523,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 110,
     right: 10,
+    textAlign: 'center',
   },
   buttonContainer: {
     width: "100%",

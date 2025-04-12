@@ -18,17 +18,17 @@ const Item = ({ item }: { item: ItemProps }) => {
   const router = useRouter();
 
   return (
-   <View style={styles.contentContainer}>
+    <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
+        <View style={styles.contentContainer}>
            <View style={{width: '90%'}}>
                <Text numberOfLines={2} style={[textStyles.heading2purple,{fontSize: 16}]}>{item.title}</Text>
                {item.author && <Text numberOfLines={1} style={[textStyles.subheading, {fontSize: 14}]}>By: {item.author}</Text> }
            </View>
            <View>
-               <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
-                   <Text style={textStyles.heading2purple}> {`>`}</Text>
-               </TouchableOpacity>
+                <Text style={textStyles.heading2purple}> {`>`}</Text>
            </View>
-    </View>
+        </View>
+    </TouchableOpacity>
     );
 };
 
