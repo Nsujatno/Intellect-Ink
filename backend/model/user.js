@@ -39,6 +39,15 @@ const userSchema = new mongoose.Schema({
     notificationTime: {
         type: Date,
     },
+    favorites: {
+        itemId: {
+            type: [mongoose.Schema.Types.ObjectId],
+        },
+        itemType: {
+            type: [String],
+        }
+        
+    }
 })
 
 userSchema.pre('save', async function(next){

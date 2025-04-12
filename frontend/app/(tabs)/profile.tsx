@@ -1,8 +1,8 @@
 import { Text, ScrollView, View, Switch, Image, StyleSheet, TextInput, TouchableOpacity, FlatList} from "react-native";
 import { textStyles } from "../stylesheets/textStyles";
 import CheckBox from "../components/checkbox";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useRouter, useFocusEffect } from "expo-router";
+import { useEffect, useState, useCallback } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios'
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,12 +33,25 @@ export default function Profile() {
     { value: 'news', label: 'news' },
     { value: 'paper', label: 'paper' },
   ];
-  const favorites = [
-    { id: "1", title: "Item 1" },
-    { id: "2", title: "Item 2" },
-    { id: "3", title: "Item 3" },
-    { id: "4", title: "Item 4" },
-  ];
+  interface favorites {
+    id: string;
+    type: string;
+    image?: string;
+    title: string;
+    author: string;
+    link?: string;
+    summary?: string;
+    poem?: string;
+  }
+  const [favoriteItems, setFavorites] = useState<favorites[]>([]);
+  const favorite: favorites[] = [];
+
+  // const favoriteItems = [
+  //   { id: "1", title: "Item 1" },
+  //   { id: "2", title: "Item 2" },
+  //   { id: "3", title: "Item 3" },
+  //   { id: "4", title: "Item 4" },
+  // ];
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.favorites}>
     <Text style={textStyles.heading2purple}>{item.title}</Text>
@@ -87,10 +100,10 @@ export default function Profile() {
       const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-profile`, payload, {
         headers: {
           "Content-Type": "application/json",
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
           Authorization: `Bearer ${token}`
         }
       })
-      
     }
     catch (error){
       if (axios.isAxiosError(error)) {
@@ -101,7 +114,8 @@ export default function Profile() {
     }
   }
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
     const fetchData = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
@@ -120,15 +134,84 @@ export default function Profile() {
         setName(response.data.name)
         setMedias(response.data.media)
         setDailyNotifications(response.data.notification)
+        // favorite.push(response.data.favorites)
+        // console.log(response.data.favorites)
+        
+        for(let i = 0; i < response.data.favorites.itemType.length; i++){
+          // console.log(response.data.favorites.itemType[i]);
+          if(response.data.favorites.itemType[i] == "article"){
+            // route to get article based on objectId
+            console.log("processing article");
+            let id = response.data.favorites.itemId[i]
+            const articleById = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/article/getById`, {itemId: id}, {
+              headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+            });
+            favorite.push(articleById.data.articleById);
+            console.log(articleById.data.articleById);
+          }
+
+          if(response.data.favorites.itemType[i] == "book"){
+            // route to get book based on objectId
+            console.log("processing book");
+            let id = response.data.favorites.itemId[i]
+            const bookById = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/book/getById`, {itemId: id}, {
+              headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+            });
+            favorite.push(bookById.data.bookById);
+            console.log(bookById.data.bookById);
+          }
+
+          if(response.data.favorites.itemType[i] == "poem"){
+            // route to get poem based on objectId
+            console.log("processing poem");
+            let id = response.data.favorites.itemId[i]
+            const poemById = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/poem/getById`, {itemId: id}, {
+              headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+            });
+            favorite.push(poemById.data.poemById);
+            console.log(poemById.data.poemById);
+          }
+
+          if(response.data.favorites.itemType[i] == "news"){
+            // route to get news based on objectId
+            console.log("processing news");
+            let id = response.data.favorites.itemId[i]
+            const newsById = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/news/getById`, {itemId: id}, {
+              headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+            });
+            favorite.push(newsById.data.newsById);
+            console.log(newsById.data.newsById);
+          }
+
+          if(response.data.favorites.itemType[i] == "paper"){
+            // route to get paper based on objectId
+            console.log("processing paper");
+            let id = response.data.favorites.itemId[i]
+            const paperById = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/paper/getById`, {itemId: id}, {
+              headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+            });
+            favorite.push(paperById.data.paperById);
+            console.log(paperById.data.paperById);
+          }
+        }
+        // I want to be able to take this id and find the right article
+
+
+
+
+        // setFavorites(favorite)
+        // console.log("favorite array: " + favorite);
         // setTimeState(response.data.notificationTime)
         console.log(response.data)
+        // console.log("Favorites: " + JSON.stringify(favorite))
+        setFavorites(favorite);
       } catch (error) {
         console.error('Error fetching profile:', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, []));
 
   return (
     <ScrollView style={styles.container}>
@@ -255,7 +338,7 @@ export default function Profile() {
         <Text style={[textStyles.heading1, {marginVertical: 20, marginTop: 50,}]}>Favorites</Text>
         <View style={{width: 315}}>
         <FlatList
-            data={favorites}
+            data={favoriteItems}
             renderItem={({ item }) => <Item item={item} />}
             horizontal={true}
             keyExtractor={(item) => item.id}

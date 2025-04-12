@@ -21,6 +21,12 @@ const researchPaperSchema = new mongoose.Schema({
 
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const paperById = await ResearchPaper.findById(req.body.itemId)
+  res.json({paperById});
+})
+
 router.get("/shuffle", async (req, res) => {
   const shuffledDocs = await ResearchPaper.aggregate([{ $sample: { size: await ResearchPaper.countDocuments() } }]);
   res.json(shuffledDocs)

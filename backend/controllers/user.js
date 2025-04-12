@@ -10,6 +10,32 @@ const { generateOTP, mailTransport } = require('../utils/mail')
 const { isValidObjectId } = require('mongoose')
 const verificationToken = require('../model/verificationToken')
 
+exports.updateFavorites = async (req, res) => {
+    try{
+        const { favorites } = req.body;
+        const { itemId, itemType } = favorites;
+
+        const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $addToSet: {
+                'favorites.itemId': { $each: itemId },
+            },
+            $push: {
+                'favorites.itemType': { $each: itemType },
+              }
+        },
+        { new: true, runValidators: true }
+        );
+
+        res.json({
+            favorites: updatedUser.favorites
+          });
+    } catch (error){
+        res.status(500).json({ error: 'Server error' });
+    }
+}
+
 exports.getProfile = async (req, res) => {
     try{
         res.json({
@@ -18,6 +44,7 @@ exports.getProfile = async (req, res) => {
             media: req.user.media || [],
             dailyReadingTime: req.user.dailyReadingTime,
             notification: req.user.notification,
+            favorites: req.user.favorites,
           });
     }
     catch (error) {

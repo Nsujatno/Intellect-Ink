@@ -23,6 +23,12 @@ const Article = mongoose.model("Article", articleSchema);
 
 const API_KEY = process.env.NYT_API_KEY;
 
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const articleById = await Article.findById(req.body.itemId)
+  res.json({articleById});
+})
+
 router.get("/shuffle", async (req, res) => {
   const shuffledDocs = await Article.aggregate([{ $sample: { size: await Article.countDocuments() } }]);
   res.json(shuffledDocs)
@@ -45,27 +51,6 @@ router.post("/search", async (req, res) => {
 
 router.get("/data", async (req, res) => {
   let randomMedia = "technology"
-  // try{
-  //   const response = await axios.get("http://localhost:8000/api/user/get-profile", {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2RhZWUxN2M5ZmNmMjk0NmI5MGE4YTIiLCJpYXQiOjE3NDI0MzIyNDQsImV4cCI6MTc0MzAzNzA0NH0.mmrPyzn8K8ZR3rBo116e8kZ6NEPCQjaxAcX6LMmRPfU"
-  //     }
-  //   })
-  //   // console.log("response is: " + response.data)
-  //   const data = response.data;
-
-  //   if (data.media.length != 0){
-  //     randomMedia = data.media[Math.floor(Math.random() * data.media.length)];
-  //     console.log("Random Media from user preferences: " + randomMedia);
-  //   } else {
-  //     console.log("No media specified");
-  //   }
-
-
-  // } catch (error) {
-  //   console.log(error)
-  // }
 
   try {
     const API_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${randomMedia}&api-key=${API_KEY}`;
