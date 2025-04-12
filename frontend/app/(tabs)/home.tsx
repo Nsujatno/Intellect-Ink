@@ -6,6 +6,7 @@ import Buttons from "../components/buttons";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Dimensions } from 'react-native';
 import axios from 'axios'
 import { transform } from "@babel/core";
 import { ngrokPath, isExpoMode } from "../utils";
@@ -21,13 +22,13 @@ interface SubjectItem {
   summary?: string;
   poem?: string;
 }
+const screenHeight = Dimensions.get('window').height;
 
 export default function Home() {
   const router = useRouter();
   const [userId, setUserId] = useState("");
   const [state, setState] = useState({ page: 0 });
   const [level, setLevel] = useState(0);
-  // const [percent, setPercent] = useState(50);
   const [percent, setPercent] = useState(0);
   const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
   const [dailyGoal, setDailyGoal] = useState(30);
@@ -447,9 +448,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "flex-start",
     textAlign: "center",
-    height: 610,
+    height: screenHeight-288,
+    marginVertical: 10,
     width: 370,
-    marginBottom: 20,
     position: "relative",
     shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },

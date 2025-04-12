@@ -36,7 +36,6 @@ interface ButtonProps {
 const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors=['#413F6F', '#413F6F']}) => {
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
-    const [checkedValues, setCheckedValues] = useState<string[]>([]);
 
     const toggleListItem = () => {
         const config = {
@@ -53,10 +52,6 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
         inputRange: [0, 1],
         outputRange: ['0deg', '90deg'],
     });
-
-    const handleCheckBoxChange = (values: string[]) => {
-        setCheckedValues(values);
-    }
 
     const router = useRouter();
 
@@ -101,7 +96,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                 <View style={styles.bodyBackground}>
                     <View style={styles.body}>
                         {achievements.length > 0 && (
-                            <ScrollView>
+                            <ScrollView style={{marginVertical: 20}}>
                                 {achievements.map((achievement) => (
                                 <View key={achievement.id} style={styles.achievementBox}>
                                     <Image source={achievement.icon} style={styles.achievementIcon} />
@@ -167,7 +162,6 @@ const styles = StyleSheet.create ({
     },
     purpleContainer: {
         backgroundColor: '#413F6F',
-        height: 200,
     },
     whiteContainer: {
         backgroundColor: '#888FB8',
@@ -176,7 +170,7 @@ const styles = StyleSheet.create ({
         backgroundColor: '#8FB5E3',
     },
     body: {
-        paddingVertical: '0%',
+        padding: 0,
     },
     bodyBackground: {
         backgroundColor: 'rgba(255, 255, 255, 0.5)',
@@ -252,6 +246,9 @@ const styles = StyleSheet.create ({
         borderRadius: 0,
         alignItems: 'center',
         marginTop: 10,
+        marginBottom: 50,
+        width: '93%',
+        alignSelf: 'center',
     },
     viewMoreText: {
         color: 'white',
