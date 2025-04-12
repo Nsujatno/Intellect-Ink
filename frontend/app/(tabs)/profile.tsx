@@ -221,11 +221,16 @@ export default function Profile() {
         <Text style={textStyles.pageHeader}>{isEditing?"Edit Profile":"Profile"}</Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 60,}}>
             {isEditing? (
-              <TouchableOpacity onPress={selectPhoto}>
-                <Image
+              <View style={{position: 'relative'}}>
+                <TouchableOpacity onPress={selectPhoto}>
+                  <Image
                   source={image ? { uri: image } : require('../../assets/images/pfp.png')}
                   style={styles.pfpImg}/>
-              </TouchableOpacity>
+                  <Image
+                  source={require('../../assets/images/editPencil.png')}
+                  style={styles.editIcon}/>
+                </TouchableOpacity>
+              </View>
             ):(
               <Image
                 source={image ? { uri: image } : require('../../assets/images/pfp.png')}
@@ -367,6 +372,12 @@ const styles = StyleSheet.create({
     borderColor: '#646EA3',
     borderWidth: 4,
 },
+  editIcon: {
+    width: 35,
+    height: 35,
+    position: 'absolute',
+    right: 0,
+  },
   textContainer: {
       position: "absolute",
       top: 50,

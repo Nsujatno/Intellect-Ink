@@ -3,6 +3,7 @@ import { useState} from "react";
 import { useRouter } from "expo-router";
 import axios from 'axios'
 import DropDownButtons from "../components/dropDownButtons";
+import Item from "../components/item";
 import { textStyles } from "../stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import { ngrokPath, isExpoMode } from "../utils";
@@ -166,31 +167,7 @@ export default function Search() {
             console.error('Error searching:', error);
         }
     }
-    type ItemProps = {
-        id: string,
-        type: string,
-        image?: string,
-        title: string;
-        author: string;
-        summary?: string;
-        poem?: string;
-        link?: string;
-    };
-
-  const Item = ({ item }: { item: ItemProps }) => (
-    <View style={styles.contentContainer}>
-        <View style={{width: '90%'}}>
-            <Text numberOfLines={2} style={[textStyles.heading2purple,{fontSize: 16}]}>{item.title}</Text>
-            {item.author && <Text numberOfLines={1} style={[textStyles.subheading, {fontSize: 14}]}>By: {item.author}</Text> }
-        </View>
-        <View>
-            <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
-                <Text style={textStyles.heading2purple}> {`>`}</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
-  );
-
+   
     return (
         <View style={styles.container}>
             <TextInput
@@ -291,18 +268,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-    },
-    contentContainer: {
-        width: 340,
-        height: 100,
-        marginVertical: 15,
-        padding: 15,
-        borderRadius: 5,
-        backgroundColor: "white",
-        shadowColor: "#000",
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
     },
     flatlistContainer: {
         backgroundColor: "#646EA3",

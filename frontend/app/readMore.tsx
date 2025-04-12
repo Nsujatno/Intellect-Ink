@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, Linking} from "react-native";
+import { Text, View, Image, FlatList, ScrollView, StyleSheet, TouchableOpacity, Linking} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useTimeTracker } from "../app/hooks/useTimeTracker";
@@ -6,12 +6,35 @@ import { textStyles } from "./stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import Buttons from "./components/buttons";
 import TrackWrapper from "../app/layouts/trackWrapper";
+import Item from "./components/item";
 
 export default function ReadMore() {
     const router = useRouter();
     const { item } = useLocalSearchParams();
     const parseItem = JSON.parse(item as string);
     
+    const testSubjects = [
+        {
+            id: '1',
+            type: 'book',
+            image: 'https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg',
+            title: 'Harry Potter and the Chamber of Secrets',
+            author: 'JK Rowling',
+            summary: 'Harry a 2nd year student at Hogwarts starts hearing mysterious voices in serpent’s tongue. When unusual tragedies start occurring, him and his friends search for answers.',
+            link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',    
+        },
+        {
+            id: '2',
+            type: 'news',
+            image: '',
+            title: 'Chuck E. Cheese wants to be the Costco of family fun',
+            author: 'Savannah Sellers and Alexandra Byrne',
+            summary: 'Chuck E. Cheese wants you to stop by as frequently as you pick up groceries, and it’s selling subscription plans to sweeten the pitch',
+            link: 'https://www.nbcnews.com/business/consumer/chuck-e-cheese-wants-costco-family-fun-rcna195652',    
+        },
+    ]
+       
+
     return (
         <TrackWrapper>
         <LinearGradient
@@ -59,7 +82,7 @@ export default function ReadMore() {
                     <Text style={textStyles.heading2}>You may also like</Text>
                     
                     {/* allocate data to these and use formatting from search page for each item */}
-                    <View style={styles.relevantBox}>
+                    {/* <View style={styles.relevantBox}>
                         <View>
                             <Text style={textStyles.heading2purple}>
                                 Title
@@ -88,7 +111,12 @@ export default function ReadMore() {
                                 <Text style={textStyles.heading2purple}> {`>`}</Text>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </View> */}
+
+                {testSubjects.map((item) => (
+                    <Item key={item.id} item={item} />
+                ))}
+
              </View>
             </ScrollView>
         </LinearGradient>
@@ -104,10 +132,11 @@ const styles = StyleSheet.create({
       marginTop: 50,
       alignSelf: 'center',
       alignItems: 'center',
+      marginBottom: 40,
     },
     mediaTag: {
         width: "100%",
-        height: 35,
+        height: 40,
         backgroundColor: "#736F96",
         justifyContent: "center",
         alignItems: "center",

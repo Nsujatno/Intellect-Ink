@@ -7,6 +7,7 @@ import Buttons from "./components/buttons";
 export default function Quiz() {
   const router = useRouter();
   const [percent, setPercent] = useState(0);
+  const [selected, setSelected] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(-1);
   const testQuestions = [
     { question: 'What is the capital of France?', options: ['Paris', 'London', 'Berlin', 'Rome'], answer: 'Paris' },
@@ -22,7 +23,9 @@ export default function Quiz() {
     }
     if (selectedOption != '') {
       setQuestionIndex(questionIndex+1)
-      setSelectedOption('');
+      setSelectedOption('')
+    } else {
+      setSelected(true)
     }
   }
 
@@ -67,13 +70,13 @@ export default function Quiz() {
             <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3'}]}>{testQuestions[questionIndex].question}</Text>
 
             {testQuestions[questionIndex].options.map((option, index) => (
-              <TouchableOpacity key={index} onPress={() => setSelectedOption(option)} style={styles.optionContainer}>
+              <TouchableOpacity key={index} onPress={() => {setSelectedOption(option); setSelected(false)}} style={styles.optionContainer}>
                 <View style={[{width: 20, height: 20, borderRadius: 20, marginRight: 20},{backgroundColor: selectedOption === option ? '#413F6F' : '#E2E2E2'}]}></View>
                 <Text style={textStyles.subheading}>{option}</Text>
               </TouchableOpacity>
             ))}
-
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
+            {selected && <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3', marginTop: 30, alignSelf: 'center'}]}>You must select an answer</Text>}
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
               {/* <Buttons
                 title='Back'
                 variant='purple'
