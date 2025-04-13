@@ -140,6 +140,7 @@ export default function Stats() {
           source={require("../../assets/images/profilebg.png")}
           style={styles.imagebg}
         />
+        <View style={{height: 150, width: '100%', backgroundColor: '#8990B6'}}></View>
       </View>
 
       <View style={styles.textContainer}>
