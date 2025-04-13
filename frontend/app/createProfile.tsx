@@ -64,6 +64,15 @@ export default function CreateProfile() {
         notification: dailyNotifications,
         notificationTime: time,
       }
+
+      // save to async
+      const progressData = {
+        dailyGoal: count,
+        notificationTime: time,
+        notificationEnabled: dailyNotifications,
+      };
+      await AsyncStorage.setItem("userProgress", JSON.stringify(progressData));
+      
       const token = await AsyncStorage.getItem('token');
       const response = await axios.put("http://localhost:8000/api/user/update-profile", payload, {
         headers: {

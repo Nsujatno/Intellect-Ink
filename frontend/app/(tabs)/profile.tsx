@@ -76,8 +76,20 @@ export default function Profile() {
         media: medias,
         dailyReadingTime: count,
         notification: dailyNotifications,
-        // notificationTime: time,
+        notificationTime: time,
       }
+
+      // save to async
+      const progressData = {
+        name: name,
+        media: medias,
+        dailyReadingTime: count,
+        dailyGoal: count,
+        notificationTime: time,
+        notificationEnabled: dailyNotifications,
+      };
+      await AsyncStorage.setItem("userProgress", JSON.stringify(progressData));
+
       // if(name){
       //   console.log(name + medias + count + dailyNotifications)
       // }
@@ -89,6 +101,8 @@ export default function Profile() {
           Authorization: `Bearer ${token}`
         }
       })
+
+      setIsEditing(!isEditing);
       
     }
     catch (error){

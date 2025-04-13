@@ -6,6 +6,7 @@ import Buttons from "../components/buttons";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Notification from "../components/notification";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -44,7 +45,6 @@ export default function Home() {
   const [userId, setUserId] = useState("");
   const [state, setState] = useState({ page: 0 });
   const [level, setLevel] = useState(0);
-  // const [percent, setPercent] = useState(50);
   const [percent, setPercent] = useState(0);
   const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
   const [dailyGoal, setDailyGoal] = useState(30);
@@ -52,16 +52,31 @@ export default function Home() {
   const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
   const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
 
-  // Time tracking for different categories
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [showProgressInNotification, setShowProgressInNotification] = useState(false);
+
+  // time tracking for different categories
   const booksTracker = useTimeTracker("books");
   const poemsTracker = useTimeTracker("poem");
   const newsTracker = useTimeTracker("news");
+
 
   useEffect(() => {
     const loadProgress = async () => {
       const localData = await AsyncStorage.getItem("userProgress");
       if (localData) {
-        const { level, percent, viewedCategories, dailyGoal, timeReadToday } = JSON.parse(localData);
+        const { 
+          level, 
+          percent, 
+          viewedCategories, 
+          dailyGoal, 
+          timeReadToday, 
+          notificationTime, 
+          notificationEnabled, 
+          eveningReminderTime = "20:00" 
+        } = JSON.parse(localData);
+
         setLevel(level || 0);
         setPercent(percent || 0);
         setViewedCategories(new Set(viewedCategories || []));
@@ -78,28 +93,108 @@ export default function Home() {
       dailyGoal,
       timeReadToday,
       level,
-      percent
+      percent,
+      eveningReminderTime: "20:00"
     };
     await AsyncStorage.setItem("userProgress", JSON.stringify(progressData));
   };
 
-  // calculate updated progress
+  useEffect(() => {
+    const checkReadingGoal = async () => {
+      const userSettings = await AsyncStorage.getItem("userProgress");
+      if (!userSettings) return;
+
+      const { 
+        dailyGoal, 
+        timeReadToday, 
+        notificationEnabled, 
+        notificationTime,
+        eveningReminderTime = "20:00"
+      } = JSON.parse(userSettings);
+      
+      // no notifications if daily reading time goal is not set
+      if (!notificationEnabled || !notificationTime) return;
+
+      const now = new Date();
+      const notificationDateTime = new Date(notificationTime); // notification time
+      const [eveningHour, eveningMinute] = eveningReminderTime.split(":").map(Number); // evening time
+
+      // 1. if 20% progress left on progress bar (80% reached)
+      if (percent >= 80 && percent <= 100) {
+        setNotificationMessage("You're almost there! Just 20% left to level up!");
+        setShowProgressInNotification(true);
+        setShowNotification(true);
+        return;
+    }
+
+      // 2. check if current time matches scheduled time (within 5-minute window)
+      const isNotificationTime =
+        now.getHours() === notificationDateTime.getHours() &&
+        now.getMinutes() >= notificationDateTime.getMinutes() &&
+        now.getMinutes() <= notificationDateTime.getMinutes() + 5;
+
+      if (isNotificationTime) {
+        setNotificationMessage("It's time to complete your daily reading goal! Earn 20% of progress!");
+        setShowProgressInNotification(true);
+        setShowNotification(true);
+        return;
+      }
+
+      // 3. check if it's past notification time and reading goal isn't complete
+      const isGoalIncomplete = timeReadToday < dailyGoal;
+      const isEveningTime =
+        now.getHours() == eveningHour &&
+        now.getMinutes() >= eveningMinute &&
+        now.getMinutes() <= eveningMinute + 5;
+
+      if (isEveningTime && isGoalIncomplete) {
+        setNotificationMessage("Remember to complete your daily reading goal!");
+        setShowProgressInNotification(true);
+        setShowNotification(true);
+      }
+    };
+
+      // check if there's room for the 20% progress reward (won't exceed 100%)
+      // const hasRoomForReward = potentialProgress <= 100;
+
+    //   if (isNotificationTime || (isPastNotificationTime && isGoalIncomplete)) {
+    //     let message = "Don't forget to complete your daily reading goal!";
+    //     // let showProgress = true;
+
+    //     // calculate how much progress would be added if goal is completed (20%)
+    //     const potentialProgress = percent + 20;
+
+    //     if (potentialProgress <= 100) {
+    //       message += ` Complete it now to earn 20% progress (${percent}% → ${potentialProgress}%)!`;
+    //     }
+
+    //     setNotificationMessage(message);
+    //     setShowProgressInNotification(true);
+    //     setShowNotification(true);
+    //   }
+    const interval = setInterval(checkReadingGoal, 60000);
+    checkReadingGoal();
+    return () => clearInterval(interval);
+  }, [percent]);
+
+
   useEffect(() => {
     // for every different category the user views, awards 26.6% per category to reach a 80% max
     const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
-
     // awards 20% for progress if daily reading goal is completed
-    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0; // const goalProgress = Math.min((timeReadToday / dailyGoal) * 67, 67);
-    
+    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0;
     // 100% max
-    const totalProgress = Math.round(categoryProgress + goalProgress);
+    const totalProgress = Math.min(Math.round(categoryProgress + goalProgress), 100);
     setPercent(totalProgress);
+
+    // changes level
     if (totalProgress >= 100) {
       setLevel(prev => prev + 1);
       setPercent(0);
       saveProgress();
     }
   }, [viewedCategories, timeReadToday, dailyGoal]);
+
 
   const handleReadMore = (item: ItemProps) => {
     // track category
@@ -217,6 +312,16 @@ export default function Home() {
             <Text style={[textStyles.pageHeader, { fontSize: 17 }]}>LVL {level}</Text>
           </View>
         </View>
+
+        {showNotification && (
+          <Notification
+            message={notificationMessage}
+            onClose={() => setShowNotification(false)}
+            showProgress={showProgressInNotification}
+            currentProgress={timeReadToday}
+            goal={dailyGoal}
+          />
+        )}
       </View>
     </ImageBackground>
   );
