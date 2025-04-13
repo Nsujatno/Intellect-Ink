@@ -65,7 +65,14 @@ export default function Profile() {
     }
   };
 
-  const [count,setCount]=useState(0)
+  const [count,setCount]=useState(0);
+  const [dailyGoal, setDailyGoal] = useState(30);
+  const [notificationVisible, setNotificationVisible] = useState(false);
+  const [currentNotification, setCurrentNotification] = useState<{
+    title: String,
+    body: String,
+    action?: string} | null>(null);
+    
     const plus = ()=>{
       setCount(count + 5)
     }
