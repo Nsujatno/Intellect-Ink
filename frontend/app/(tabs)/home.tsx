@@ -6,39 +6,21 @@ import Buttons from "../components/buttons";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Notification from "../components/notification";
-import axios from "axios";
+import axios from 'axios'
+import { transform } from "@babel/core";
+import { ngrokPath, isExpoMode } from "../utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const testSubjects = [
-  {
-    id: "1",
-    type: "book",
-    image: "https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg",
-    title: "Harry Potter and the Chamber of Secrets",
-    author: "JK Rowling",
-    link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',
-    summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.",
-  },
-  {
-    id: "2",
-    type: "news",
-    image: "",
-    title: "Chuck E. Cheese wants to be the Costco of family fun",
-    author: "Savannah Sellers and Alexandra Byrne",
-    link: 'https://www.nbcnews.com/business/consumer/chuck-e-cheese-wants-costco-family-fun-rcna195652',
-    summary: "Chuck E. Cheese wants you to stop by as frequently as you pick up groceries, and it’s selling subscription plans to sweeten the pitch.",
-  },
-  {
-    id: "3",
-    type: "poem",
-    title: "The Raven",
-    author: "Edgar Allan Poe",
-    poem: "Once upon a midnight dreary, While I pondered, weak and weary...",
-  },
-];
-
-const API_BASE_URL = ""; // api config, empty for offline only
+interface SubjectItem {
+  id: string;
+  type: string;
+  image?: string;
+  title: string;
+  author: string;
+  link?: string;
+  summary?: string;
+  poem?: string;
+}
 
 export default function Home() {
   const router = useRouter();
@@ -49,8 +31,10 @@ export default function Home() {
   const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
   const [dailyGoal, setDailyGoal] = useState(30);
   const [timeReadToday, setTimeReadToday] = useState(0);
-  const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
-  const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
+
+  // Store liked and favorited items
+  const [likedItems, setLikedItems] = useState<{ [key: string]: boolean }>({});
+  const [favoritedItems, setFavoritedItems] = useState<{ [key: string]: boolean }>({});
 
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -60,6 +44,10 @@ export default function Home() {
   const booksTracker = useTimeTracker("books");
   const poemsTracker = useTimeTracker("poem");
   const newsTracker = useTimeTracker("news");
+
+
+  const [forYouItems, setForYouItems] = useState<SubjectItem[]>([]);
+  const [exploreItems, setExploreItems] = useState<SubjectItem[]>([]);
 
 
   useEffect(() => {
@@ -182,7 +170,9 @@ export default function Home() {
     // for every different category the user views, awards 26.6% per category to reach a 80% max
     const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
     // awards 20% for progress if daily reading goal is completed
-    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0;
+    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0; // const goalProgress = Math.min((timeReadToday / dailyGoal) * 67, 67);
+    // const quizProgress 
+    
     // 100% max
     const totalProgress = Math.min(Math.round(categoryProgress + goalProgress), 100);
     setPercent(totalProgress);
@@ -195,6 +185,32 @@ export default function Home() {
     }
   }, [viewedCategories, timeReadToday, dailyGoal]);
 
+
+  const handleBookmark = async (item: ItemProps) => {
+    try{
+      const payload = {
+        favorites: {
+          itemId: item.id,
+          itemType: item.type
+        }
+      };
+      const token = await AsyncStorage.getItem('token');
+      // console.log("handling bookmark")
+      // console.log("payload: " + JSON.stringify(payload))
+      
+      const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-favorites`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      // console.log(response);
+    } catch (error){
+      console.log("error")
+    }
+    
+  }
 
   const handleReadMore = (item: ItemProps) => {
     // track category
@@ -222,17 +238,23 @@ export default function Home() {
 
   const Item = ({ item }: { item: ItemProps }) => (
     <View style={styles.contentContainer}>
+      {item.image ?(
+        <Image source={{ uri: item.image }} style={styles.image} />
+      ) : (
+        <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
+      )}
       <View style={styles.mediaTag}>
         <Text style={textStyles.subheadingWhite}>{item.type}</Text>
       </View>
-      {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
       <View style={{ padding: 10 }}>
         <Text style={textStyles.heading2purple}>{item.title}</Text>
-        <Text style={[textStyles.subheading, { marginBottom: 20 }]}>By: {item.author}</Text>
+        {item.author && <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>}
         {item.type === "poem" ? (
-          <Text style={textStyles.subheading}>{item.poem}</Text>
+          <View style={{height: 200, overflow: 'hidden'}}>
+            <Text style={textStyles.subheading}>{item.poem}</Text>
+          </View>
         ) : (
-          <View>
+          <View style={{height: 200, overflow: 'hidden'}}>
             <Text style={textStyles.heading2purple}>Summary:</Text>
             <Text style={textStyles.subheading}>{item.summary}</Text>
           </View>
@@ -242,21 +264,26 @@ export default function Home() {
         <View style={{ flexDirection: "row", flex: 1, marginRight: 100 }}>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() =>
-              setLike((prevIcon) => (prevIcon === "heart-outline" ? "heart" : "heart-outline"))
-            }
+            onPress={() => {
+              setLikedItems((prev) => ({
+                ...prev,
+                [item.id]: !prev[item.id],
+              }));
+            }}
           >
-            <Ionicons name={like} size={30} color={"white"} />
+            <Ionicons name={likedItems[item.id] ? "heart" : "heart-outline"} size={30} color={"white"} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() =>
-              setFavorite((prevIcon) =>
-                prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"
-              )
-            }
+            onPress={() => {
+              handleBookmark(item);
+              setFavoritedItems((prev) => ({
+                ...prev,
+                [item.id]: !prev[item.id],
+              }));
+            }}
           >
-            <Ionicons name={favorite} size={27} color={"white"} />
+            <Ionicons name={favoritedItems[item.id] ? "bookmark" : "bookmark-outline"} size={27} color={"white"} />
           </TouchableOpacity>
         </View>
         <Buttons
@@ -268,8 +295,239 @@ export default function Home() {
     </View>
   );
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const token = await AsyncStorage.getItem('token');
+        if (!token) return;
+        const profileResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`, {
+          headers: {
+            "Content-Type": "application/json",
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        let media: string[] = profileResponse.data.media;
+        console.log("user media is: " + media)
+        
+        
+        // Fetch and process explore content
+        const exploreItemsArr: SubjectItem[] = [];
+        const forYouItemsArr: SubjectItem[] = [];
+
+        //article
+        try{
+          const response = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/shuffle`);
+
+          for(let i = 0; i < response.data.length; i++){
+            response.data[i].author = response.data[i].author.substr(3);
+            const transformedData = {
+              id: response.data[i]._id,
+              type: "article",
+              image: `https://static01.nyt.com/${response.data[i].urlToImage}` || "",
+              title: response.data[i].title,
+              author: response.data[i].author,
+              link: response.data[i].url,
+              summary: response.data[i].description,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+            // console.log(response.data[i])
+          }
+        } catch(error){
+          console.log(error);
+        }
+        
+
+        // books
+        try{
+          
+          const bookResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/book/shuffle`);
+
+          for(let i = 0; i < bookResponse.data.length; i++){
+            if(bookResponse.data[i].author.length == 0){
+              bookResponse.data[i].author = bookResponse.data[i].publisher
+            }
+            else{
+              bookResponse.data[i].author = bookResponse.data[i].author[0]
+            }
+            const transformedData = {
+              id: bookResponse.data[i]._id,
+              type: "book",
+              image: bookResponse.data[i].thumbnail || "",
+              title: bookResponse.data[i].title,
+              author: bookResponse.data[i].author,
+              link: bookResponse.data[i].previewLink,
+              summary: bookResponse.data[i].description,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error);
+        }
+        
+
+
+        // news
+        try{
+          const newsResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/news/shuffle`);
+          for(let i = 0; i < newsResponse.data.length; i++){
+            const transformedData = {
+              id: newsResponse.data[i]._id,
+              type: "news",
+              image: newsResponse.data[i].urlToImage || "",
+              title: newsResponse.data[i].title,
+              author: newsResponse.data[i].author,
+              link: newsResponse.data[i].url,
+              summary: newsResponse.data[i].description,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+        
+
+
+        //poem
+        try{
+          const poemResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/poem/shuffle`);
+          for(let i = 0; i < poemResponse.data.length; i++){
+            let poem = "";
+            for(let j = 0; j < poemResponse.data[i].lines.length; j++){
+              poem = poem + poemResponse.data[i].lines[j] + "\n"
+            }
+            const transformedData = {
+              id: poemResponse.data[i]._id,
+              type: "poem",
+              title: poemResponse.data[i].title,
+              author: poemResponse.data[i].author,
+              poem: poem,
+            }
+            
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+
+        //research paper
+        try{
+          const paperResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/paper/shuffle`);
+          for(let i = 0; i < paperResponse.data.length; i++){
+            let author = "";
+            if(paperResponse.data[i].author[0] == "Unknown Author") author = "";
+            const transformedData = {
+              id: paperResponse.data[i]._id,
+              type: "paper",
+              title: paperResponse.data[i].title,
+              author: author,
+              summary: paperResponse.data[i].abstract,
+              link: paperResponse.data[i].url,
+            }
+            
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+        
+        for (let i = exploreItemsArr.length - 1; i >= 0; i--) {
+          if (media.includes(exploreItemsArr[i].type)) {
+            forYouItemsArr.push(exploreItemsArr[i]);
+            exploreItemsArr.splice(i, 1);
+          }
+        }
+
+        // randomizes explore page
+        const randomizedExplore = [...exploreItemsArr];
+        for (let i = randomizedExplore.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomizedExplore[i], randomizedExplore[j]] = [randomizedExplore[j], randomizedExplore[i]];
+        }
+        // randomizes for you page
+        const randomizedForYou = [...forYouItemsArr];
+        for (let i = randomizedForYou.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomizedForYou[i], randomizedForYou[j]] = [randomizedForYou[j], randomizedForYou[i]];
+        }
+        setExploreItems(randomizedExplore);
+        setForYouItems(randomizedForYou)
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <ImageBackground
+        source={require('../../assets/images/Homebg.png')}
+        style={styles.imagebg}>
+
+        <View style={styles.container}>
+            <SwitchSelector
+                initial={0}
+                onPress={(value: number) => setState({ page: value })}
+                textColor={"white"}
+                selectedColor={"#413F6F"}
+                backgroundColor={"#736F96"}
+                buttonColor={"#E3E2EA"}
+                borderColor={"#736F96"}
+                hasPadding
+                valuePadding={3}
+                style={{ width: 200, marginTop: 50, marginBottom: 15 }}
+                options={[
+                { label: "For You", value: 0 },
+                { label: "Explore", value: 1 },
+                ]}
+            />
+            {state.page === 0 ? (
+              <FlatList
+              data={forYouItems}
+              renderItem={({ item }) => <Item item={item} />}
+              keyExtractor={(item) => item.id}
+              pagingEnabled={true}
+              showsVerticalScrollIndicator={false}
+              horizontal={false}
+            />
+          ) : (
+            <FlatList
+              data={exploreItems}
+              renderItem={({ item }) => <Item item={item} />}
+              keyExtractor={(item) => item.id}
+              pagingEnabled={true}
+              showsVerticalScrollIndicator={false}
+              horizontal={false}
+            />
+            )}
+            <View style={styles.lvlContainer}>
+                <View style={styles.lvlBar}>
+                    <View style={[styles.lvlFill, {width: `${percent}%`}]}>
+                        {/* <Image
+                            source={require('../../assets/images/fish.png')}
+                            style={{alignSelf: "flex-end"}}
+                        /> */}
+                    </View>        
+                </View>
+                <View style={styles.lvlText}>
+                    <Text style={[textStyles.pageHeader, {fontSize: 17}]}>{percent}%</Text>
+                    <Text style={[textStyles.pageHeader, {fontSize: 17}]}>LVL {level}</Text>
+                </View>
+            </View>
+        </View>
       source={require('../../assets/images/Homebg.png')}
       style={styles.imagebg}>
       <View style={styles.container}>
@@ -379,6 +637,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "25%",
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
   },
   circleButton: {
     width: 45,
@@ -398,14 +658,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mediaTag: {
-    width: "100%",
+    width: 70,
     height: 35,
-    backgroundColor: "#736F96",
+    backgroundColor: "#413F6F",
     justifyContent: "center",
     alignItems: "center",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    alignSelf: "flex-end",
+    borderRadius: 5,
+    position: "absolute",
+    top: 110,
+    right: 10,
   },
   buttonContainer: {
     width: "100%",
