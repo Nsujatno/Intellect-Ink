@@ -1,5 +1,5 @@
-import { Text, View, Image, ScrollView, Modal, TouchableWithoutFeedback, StyleSheet } from "react-native";
-import { CartesianChart, StackedBar } from "victory-native";
+import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
+import { VictoryStack, VictoryBar, VictoryChart, VictoryAxis } from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
@@ -7,7 +7,6 @@ import DropDownButtons from "../components/dropDownButtons";
 import { textStyles } from "../stylesheets/textStyles";
 
 export default function Stats() {
-
   const achievementsData = [
     {
       id: '1',
@@ -27,7 +26,7 @@ export default function Stats() {
       description: 'Description',
       icon: require('../../assets/images/stats_badge.png')
     },
-  ]
+  ];
 
   const leaderboardData = [
     {
@@ -45,7 +44,7 @@ export default function Stats() {
       title: 'Name',
       icon: require('../../assets/images/pfp.png')
     }
-  ]
+  ];
 
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -53,9 +52,6 @@ export default function Stats() {
     book: 0,
     poem: 0,
     news: 0,
-    // not implemented yet
-    // politics: 0,
-    // research: 0,
   });
 
   const [chartData, setChartData] = useState([
@@ -65,7 +61,7 @@ export default function Stats() {
     { day: "W", book: 0, poem: 0, news: 0 },
     { day: "Th", book: 0, poem: 0, news: 0 },
     { day: "F", book: 0, poem: 0, news: 0 },
-    { day: "S", book: 0, poem: 0, news: 0 },
+    { day: "S", book: 0, poem: 0, news: 0 }
   ]);
 
   // convert milliseconds
@@ -76,20 +72,8 @@ export default function Stats() {
     if (hours === 0) {
       return `${minutes}m`;
     }
-
     return `${hours}h ${minutes}m`;
   };
-
-  // test data
-  // const chartData = [
-  //   { day: "Sun", books: 30, poems: 45, politics: 20, research: 10 },
-  //   { day: "Mon", books: 25, poems: 30, politics: 15, research: 40 },
-  //   { day: "Tue", books: 40, poems: 35, politics: 10, research: 25 },
-  //   { day: "Wed", books: 50, poems: 20, politics: 30, research: 15 },
-  //   { day: "Thu", books: 35, poems: 25, politics: 20, research: 30 },
-  //   { day: "Fri", books: 45, poems: 40, politics: 25, research: 20 },
-  //   { day: "Sat", books: 20, poems: 30, politics: 50, research: 35 },
-  // ];
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -97,28 +81,34 @@ export default function Stats() {
         // fetch time spent on each category from AsyncStorage
         const booksTime = parseInt((await AsyncStorage.getItem("book")) || "0", 10);
         const poemsTime = parseInt((await AsyncStorage.getItem("poem")) || "0", 10);
-        const newsTime = parseInt((await AsyncStorage.getItem("news")) || "0", 10)
-        // const politicsTime = parseInt((await AsyncStorage.getItem("politics")) || "0", 10);
-        // const researchTime = parseInt((await AsyncStorage.getItem("research")) || "0", 10);
+        const newsTime = parseInt((await AsyncStorage.getItem("news")) || "0", 10);
 
         setTimeSpentData({
           book: booksTime,
           poem: poemsTime,
           news: newsTime,
-          // politics: politicsTime,
-          // research: researchTime,
         });
 
-        // adding time to specific days
-        setChartData((prevData) => {
-          const newData = [...prevData];
-          // add today's time to today's day
-          const todayIndex = new Date().getDay(); // 0-6
-          newData[todayIndex].book += booksTime / 60000;
-          newData[todayIndex].poem += poemsTime / 60000;
-          newData[todayIndex].news += newsTime / 60000;
-          return newData;
-        });
+        const existingStats = await AsyncStorage.getItem("weeklyStats");
+        let weeklyStats = chartData;
+        if (existingStats) {
+          weeklyStats = JSON.parse(existingStats);
+        }
+
+        const todayIndex = new Date().getDay(); // 0 = Sunday
+        const updatedStats = weeklyStats.map((entry, index) =>
+          index === todayIndex
+            ? {
+              ...entry,
+              book: booksTime / 60000,
+              poem: poemsTime / 60000,
+              news: newsTime / 60000,
+            }
+            : entry
+        );
+
+        setChartData(updatedStats);
+        await AsyncStorage.setItem("weeklyStats", JSON.stringify(updatedStats));
       } catch (error) {
         console.error("Error fetching statistics:", error);
       } finally {
@@ -145,54 +135,75 @@ export default function Stats() {
       <View style={styles.textContainer}>
         <Text style={textStyles.pageHeader}>Statistics</Text>
 
-        {/* Bar Graph */}
+        {/* stacked bar chart */}
         <View style={styles.chartContainer}>
-          <CartesianChart
-            data={chartData}
-            xKey="day"
-            yKeys={["book", "poem", "news"]}
-            domainPadding={{ left: 30, right: 30, top: 20, bottom: 30 }}
-            domain={{ y: [0, 240] }} // 4 hours in minutes
-            axisOptions={{
-              axisLineColor: '#000',
-              axisLabelColor: '#000',
-              tickLabelColor: '#000',
-              labelPosition: 'outset',
-              formatXLabel: (value) => value,
-              formatYLabel: (value) => {
-                const hours = Math.floor(value / 60);
-                const mins = value % 60;
-                if (hours === 0) {
-                  return `${mins}m`;
-                }
-                return `${hours}h ${mins}m`;
-              },
-              axisSide: { x: 'bottom', y: 'left' },
-              tickCount: { x: 7, y: 5 },
-              lineColor: '#000',
-              labelColor: '#000',
-              labelOffset: { x: 0, y: 0 },
-              style: {
-                axis: { stroke: '#000', strokeWidth: 1 },
-                ticks: { stroke: '#000', size: 5 },
-                tickLabels: { fill: '#000', fontSize: 10 },
-                grid: { stroke: '#e0e0e0', strokeWidth: 0.5 },
-              },
-            }}
+          <View style={styles.chartHeader}>
+            <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>Daily</Text>
+            <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>
+              {formatTime(timeSpentData.book + timeSpentData.poem + timeSpentData.news)}</Text>
+          </View>
+          <VictoryChart
+            domainPadding={{ x: 25 }}
+            height={300}
+            width={320}
+            padding={{ top: 50, bottom: 40, left: 40, right: 20 }}
+            domain={{ y: [0, 480] }} // 8 hours
           >
-            {({ points, chartBounds }) => (
-              <StackedBar
-                chartBounds={chartBounds}
-                points={[points.book, points.poem, points.news]}
-                colors={["#4E86E9", "#0A0B78", "#5A5CF6"]} // #3335CF #93AAFD
-                barOptions={({ isBottom, isTop }) => ({
-                  roundedCorners: isTop
-                    ? { topLeft: 10, topRight: 10 }
-                    : isBottom
-                })}
+            {/* <VictoryAxis
+              style={{
+                axis: { stroke: "#000" },
+                tickLabels: { 
+                  fill: "#000", 
+                  fontSize: 10,
+                  padding: 2,
+                }
+              }}
+            /> */}
+
+            {/* Y Axis */}
+            <VictoryAxis
+              dependentAxis
+              tickValues={[60, 240, 480]}
+              tickFormat={(y) => `${Math.floor(y / 60)}h`}
+              style={{
+                axis: { stroke: "#e0e0e0" },
+                ticks: { stroke: "#ccc", size: 4 },
+                grid: { stroke: "#d3d3d3", strokeDasharray: "4" },
+                tickLabels: { fill: "#333", fontSize: 10 },
+              }}
+            />
+
+            {/* X Axis */}
+            <VictoryAxis
+              tickValues={chartData.map((d) => d.day)}
+              style={{
+                tickLabels: { fontSize: 12, fill: "#555" },
+              }}
+            />
+            <VictoryStack colorScale={["#4E86E9", "#0A0B78", "#5A5CF6"]}>
+              <VictoryBar
+                data={chartData}
+                x="day"
+                y="book"
+                barWidth={20}
+              // cornerRadius={{ top: 6 }}
               />
-            )}
-          </CartesianChart>
+              <VictoryBar
+                data={chartData}
+                x="day"
+                y="poem"
+                barWidth={20}
+              // cornerRadius={{ top: 6 }}
+              />
+              <VictoryBar
+                data={chartData}
+                x="day"
+                y="news"
+                barWidth={20}
+              // cornerRadius={{ top: 6 }}
+              />
+            </VictoryStack>
+          </VictoryChart>
         </View>
 
         {/* Time Spent Per Category */}
@@ -270,7 +281,6 @@ export default function Stats() {
           </View>
         </View>
 
-
         {/* Achievement & Leaderboard Buttons */}
         <View style={{ flexDirection: 'column', marginTop: 130, width: 300, height: 150 }}>
           <DropDownButtons
@@ -310,11 +320,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chartContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 20,
+    padding: 5,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -322,52 +332,63 @@ const styles = StyleSheet.create({
     height: 350,
     marginTop: 70,
     marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  timeSpentContainer: { // Statistics Category Time Spent Box
-    alignItems: "center",
+  chartHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    position: 'absolute',
+    top: 15,
+    left: 15,
+    zIndex: 1,
   },
-  overallStatsContainer: { // Statistics Overall Box
-    position: "relative",
-    alignItems: "center",
+  timeSpentContainer: {
+    alignItems: 'center',
+  },
+  overallStatsContainer: {
+    position: 'relative',
+    alignItems: 'center',
     height: 180,
   },
   statsBoxPlacement1: {
     width: 300,
     height: 400,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
     marginTop: -80,
   },
   statsBoxPlacement2: {
     width: 480,
     height: 200,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
   miniBoxContainer: {
-    position: "absolute",
-    flexDirection: "row",
+    position: 'absolute',
+    flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: "center",
-    width: '65%', // adds spacing between two boxes first row
+    justifyContent: 'center',
+    width: '65%',
     top: -10,
   },
   miniBoxWrapper: {
-    flexDirection: "column",
-    alignItems: "center",
-    width: '50%', // two boxes first row
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '50%',
   },
   thirdBoxWrapper: {
     flexDirection: 'column',
     alignItems: 'center',
     width: '50%',
-    alignSelf: 'flex-start', // under first box
+    alignSelf: 'flex-start',
     marginLeft: -150,
   },
   statsMiniBox: {
     width: 140,
     height: 120,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     marginBottom: 5,
   },
   miniIcon: {
@@ -382,8 +403,8 @@ const styles = StyleSheet.create({
     top: 30,
     left: -20
   },
-  todaysDataContainer: { // Data for Statistics Category Time Spent Box
-    position: "absolute",
+  todaysDataContainer: {
+    position: 'absolute',
     top: 5,
     left: 50,
     right: 0,
@@ -392,8 +413,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   categoryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '87%',
     top: -4,
     left: -5,
