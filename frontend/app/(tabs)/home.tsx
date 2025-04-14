@@ -154,24 +154,6 @@ export default function Home() {
       }
     };
 
-      // check if there's room for the 20% progress reward (won't exceed 100%)
-      // const hasRoomForReward = potentialProgress <= 100;
-
-    //   if (isNotificationTime || (isPastNotificationTime && isGoalIncomplete)) {
-    //     let message = "Don't forget to complete your daily reading goal!";
-    //     // let showProgress = true;
-
-    //     // calculate how much progress would be added if goal is completed (20%)
-    //     const potentialProgress = percent + 20;
-
-    //     if (potentialProgress <= 100) {
-    //       message += ` Complete it now to earn 20% progress (${percent}% → ${potentialProgress}%)!`;
-    //     }
-
-    //     setNotificationMessage(message);
-    //     setShowProgressInNotification(true);
-    //     setShowNotification(true);
-    //   }
     const interval = setInterval(checkReadingGoal, 60000);
     checkReadingGoal();
     return () => clearInterval(interval);

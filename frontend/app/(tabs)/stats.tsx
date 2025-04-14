@@ -53,6 +53,7 @@ export default function Stats() {
     poem: 0,
     news: 0,
   });
+  const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay());
 
   const [chartData, setChartData] = useState([
     { day: "Sun", book: 0, poem: 0, news: 0 },
@@ -130,6 +131,7 @@ export default function Stats() {
           source={require("../../assets/images/profilebg.png")}
           style={styles.imagebg}
         />
+        <View style={{height: 150, width: '100%', backgroundColor: '#8990B6'}}></View>
       </View>
 
       <View style={styles.textContainer}>
@@ -138,9 +140,15 @@ export default function Stats() {
         {/* stacked bar chart */}
         <View style={styles.chartContainer}>
           <View style={styles.chartHeader}>
-            <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>Daily</Text>
+            <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>{chartData[selectedDayIndex].day}</Text>
             <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>
-              {formatTime(timeSpentData.book + timeSpentData.poem + timeSpentData.news)}</Text>
+              {formatTime(
+                (chartData[selectedDayIndex].book + 
+                  chartData[selectedDayIndex].poem + 
+                  chartData[selectedDayIndex].news) * 60000
+              )}
+                {/* timeSpentData.book + timeSpentData.poem + timeSpentData.news)} */}
+              </Text>
           </View>
           <VictoryChart
             domainPadding={{ x: 25 }}
@@ -149,16 +157,6 @@ export default function Stats() {
             padding={{ top: 50, bottom: 40, left: 40, right: 20 }}
             domain={{ y: [0, 480] }} // 8 hours
           >
-            {/* <VictoryAxis
-              style={{
-                axis: { stroke: "#000" },
-                tickLabels: { 
-                  fill: "#000", 
-                  fontSize: 10,
-                  padding: 2,
-                }
-              }}
-            /> */}
 
             {/* Y Axis */}
             <VictoryAxis
@@ -186,21 +184,42 @@ export default function Stats() {
                 x="day"
                 y="book"
                 barWidth={20}
-              // cornerRadius={{ top: 6 }}
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: (event, props) => {
+                      setSelectedDayIndex(props.index);
+                    }
+                  }
+                }]}
               />
               <VictoryBar
                 data={chartData}
                 x="day"
                 y="poem"
                 barWidth={20}
-              // cornerRadius={{ top: 6 }}
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: (event, props) => {
+                      setSelectedDayIndex(props.index);
+                    }
+                  }
+                }]}
               />
               <VictoryBar
                 data={chartData}
                 x="day"
                 y="news"
                 barWidth={20}
-              // cornerRadius={{ top: 6 }}
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: (event, props) => {
+                      setSelectedDayIndex(props.index);
+                    }
+                  }
+                }]}
               />
             </VictoryStack>
           </VictoryChart>
