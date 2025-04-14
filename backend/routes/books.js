@@ -25,6 +25,16 @@ const bookSchema = new mongoose.Schema({
 
 const Book = mongoose.model("Book", bookSchema);
 
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const bookById = await Book.findById(req.body.itemId)
+  res.json({bookById});
+})
+
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await Book.aggregate([{ $sample: { size: await Book.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
 
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
