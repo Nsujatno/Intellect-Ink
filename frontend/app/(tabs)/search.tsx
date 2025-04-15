@@ -10,7 +10,7 @@ import { ngrokPath, isExpoMode } from "../utils";
 
 export default function Search() {
     const router = useRouter();
-    const params = useLocalSearchParams();
+    const {topic, category} = useLocalSearchParams();
     interface SubjectItem {
         id: string;
         type: string;
@@ -171,14 +171,29 @@ export default function Search() {
    
     return (
         <View style={styles.container}>
-            <TextInput
+           
+            {topic ? (
+                <View>
+                    <TouchableOpacity
+                        style={{alignSelf: 'flex-start'}}
+                        onPress={() => {router.push('/search')}}>
+                        <Text style={textStyles.subheading}>{`< Back`}</Text>
+                    </TouchableOpacity>
+                    <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>{topic}: {category}</Text>
+                    {/* handleSearch({category}); */}
+                </View>
+            ) : (
+                <TextInput
                 style={styles.inputContainer}
                 placeholder="Search"
                 placeholderTextColor="#807A7A"
                 clearButtonMode="always"
                 value={searchQuery}
                 onChangeText={(query) => handleSearch(query)}>
-            </TextInput>
+                </TextInput>
+            )
+            }
+                
             {searchQuery.length > 0 &&
                 <TouchableOpacity
                     onPress={() => setSearchQuery('')}

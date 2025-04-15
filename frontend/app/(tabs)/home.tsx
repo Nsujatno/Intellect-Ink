@@ -95,8 +95,8 @@ export default function Home() {
     try{
       const payload = {
         favorites: {
-          itemId: item.id,
-          itemType: item.type
+          itemId: [item.id],
+          itemType: [item.type]
         }
       };
       const token = await AsyncStorage.getItem('token');
