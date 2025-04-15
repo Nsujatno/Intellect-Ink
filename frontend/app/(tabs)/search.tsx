@@ -171,7 +171,6 @@ export default function Search() {
    
     return (
         <View style={styles.container}>
-           
             {topic ? (
                 <View>
                     <TouchableOpacity

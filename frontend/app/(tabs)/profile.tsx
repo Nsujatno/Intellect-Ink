@@ -34,7 +34,7 @@ export default function Profile() {
     { value: 'paper', label: 'paper' },
   ];
   interface favorites {
-    id: string;
+    _id: string;
     type: string;
     image?: string;
     title: string;
@@ -46,15 +46,14 @@ export default function Profile() {
   const [favoriteItems, setFavorites] = useState<favorites[]>([]);
   const favorite: favorites[] = [];
 
-  const Item = ({ item }: { item: ItemProps }) => (
-    <View style={styles.favorites}>
-    <Text style={textStyles.heading2purple}>{item.title}</Text>
-  </View>
+  const Item = ({ item }: { item: favorites }) => (
+    // <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
+      <View style={styles.favorites}>
+        <Text numberOfLines={4} style={textStyles.heading2purple}>{item.title}</Text>
+        <Text numberOfLines={2} style={[textStyles.subheading, {fontSize: 15}]}>By: {item.author}</Text>
+      </View>
+    // </TouchableOpacity>
   );
-  type ItemProps = {
-    id: string,
-    title: string,
-    };
 
   const [dailyNotifications, setDailyNotifications] = useState(false);
   const [time, setTimeState] = useState(new Date());
@@ -214,6 +213,9 @@ export default function Profile() {
         <Image
           source={require('../../assets/images/profilebg.png')}
           style={styles.image}/>
+          <View
+          style={{width: '100%', height: 200, backgroundColor: '#8990B6'}}>
+          </View>
       </View>
 
       <View style={styles.textContainer}>
@@ -222,14 +224,14 @@ export default function Profile() {
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 60,}}>
             {isEditing? (
               <View style={{position: 'relative'}}>
-                <TouchableOpacity onPress={selectPhoto}>
-                  <Image
+              <TouchableOpacity onPress={selectPhoto}>
+                <Image
                   source={image ? { uri: image } : require('../../assets/images/pfp.png')}
                   style={styles.pfpImg}/>
                   <Image
                   source={require('../../assets/images/editPencil.png')}
                   style={styles.editIcon}/>
-                </TouchableOpacity>
+              </TouchableOpacity>
               </View>
             ):(
               <Image
@@ -261,17 +263,28 @@ export default function Profile() {
 
         <View style={styles.leftContainer}>
             {isEditing? (
-                <View style={{marginTop: 20}}>
+                <View style={{marginTop: 20, marginBottom: 8}}>
                     <Text style={textStyles.heading2}>Change Name</Text>
                     <TextInput style={styles.inputContainer} value={name} onChangeText={setName}/>
                 </View>
             ):(
-                <View style={{marginTop: 45, marginBottom: 40, alignSelf: 'center'}}>
+                <View style={{marginTop: 45, marginBottom: 35, alignSelf: 'center'}}>
                     <Text style={textStyles.heading1}>Hello, {name}</Text>
                 </View>
             )}
           
-          <Text style={[textStyles.heading1, {marginTop: 30}]}>Preferences</Text>
+          <Text style={[textStyles.heading1, {marginVertical: 20, marginTop: 20,}]}>Favorites</Text>
+          <View style={{width: 315}}>
+            <FlatList
+                data={favoriteItems}
+                renderItem={({ item }) => <Item item={item} />}
+                horizontal={true}
+                keyExtractor={(item) => item._id}
+                showsHorizontalScrollIndicator={false}
+            />
+          </View>
+
+          <Text style={[textStyles.heading1, {marginTop: 50}]}>Preferences</Text>
         
           <Text style={[textStyles.heading2, {marginVertical: 20}]}>Media</Text>
           <CheckBox
@@ -334,19 +347,10 @@ export default function Profile() {
               />
             </View>
         )}
-        <Text style={[textStyles.heading1, {marginVertical: 20, marginTop: 50,}]}>Favorites</Text>
-        <View style={{width: 315}}>
-          <FlatList
-              data={favoriteItems.filter(item => item && item.id)}
-              renderItem={({ item }) => <Item item={item} />}
-              horizontal={true}
-              keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-          />
-        </View>
+        
         <TouchableOpacity
-          style={[styles.button, {marginBottom: 10, backgroundColor: '#413F6F', width: 200, marginTop: 40}]}
-          onPress={()=>console.log('implement sign out feature yurrrr')}>
+          style={[styles.button, {marginBottom: 10, backgroundColor: '#413F6F', width: '100%', marginTop: 50, marginLeft: 0}]}
+          onPress={()=>console.log('sign out')}>
           <Text style={[textStyles.subheading,{color: '#FFFFFF'}]}>Sign Out</Text>
         </TouchableOpacity>
       </View>
@@ -382,7 +386,7 @@ const styles = StyleSheet.create({
     height: 35,
     position: 'absolute',
     right: 0,
-  },
+},
   textContainer: {
       position: "absolute",
       top: 50,
@@ -451,7 +455,8 @@ const styles = StyleSheet.create({
   favorites: {
     backgroundColor: 'white',
     padding: 10,
-    height: 100,
+    width: 150,
+    height: 200,
     borderRadius: 5,
     marginRight: 15,
   },

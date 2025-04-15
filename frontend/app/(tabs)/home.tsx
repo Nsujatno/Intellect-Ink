@@ -33,11 +33,7 @@ export default function Home() {
   const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
   const [dailyGoal, setDailyGoal] = useState(30);
   const [timeReadToday, setTimeReadToday] = useState(0);
-
-  // Store liked and favorited items
-  const [likedItems, setLikedItems] = useState<{ [key: string]: boolean }>({});
-  const [favoritedItems, setFavoritedItems] = useState<{ [key: string]: boolean }>({});
-
+  
   // Time tracking for different categories
   const booksTracker = useTimeTracker("books");
   const poemsTracker = useTimeTracker("poem");
@@ -96,7 +92,7 @@ export default function Home() {
       const payload = {
         favorites: {
           itemId: [item.id],
-          itemType: [item.type]
+          itemType: [item.type],
         }
       };
       const token = await AsyncStorage.getItem('token');
@@ -141,7 +137,10 @@ export default function Home() {
     link?: string;
   };
 
-  const Item = ({ item }: { item: ItemProps }) => (
+  const Item = ({ item }: { item: ItemProps }) => {
+    const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
+    const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
+    return (
     <View style={styles.contentContainer}>
       {item.image ? (
         <Image source={{ uri: item.image }} style={styles.image} />
@@ -173,26 +172,22 @@ export default function Home() {
         <View style={{ flexDirection: "row", flex: 1, marginRight: 100 }}>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() => {
-              setLikedItems((prev) => ({
-                ...prev,
-                [item.id]: !prev[item.id],
-              }));
-            }}
+            onPress={() =>
+              setLike((prevIcon) => (prevIcon === "heart-outline" ? "heart" : "heart-outline"))
+            }
           >
-            <Ionicons name={likedItems[item.id] ? "heart" : "heart-outline"} size={30} color={"white"} />
+            <Ionicons name={like} size={30} color={"white"} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.circleButton}
             onPress={() => {
               handleBookmark(item);
-              setFavoritedItems((prev) => ({
-                ...prev,
-                [item.id]: !prev[item.id],
-              }));
+              setFavorite((prevIcon) =>
+                prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"
+              )
             }}
           >
-            <Ionicons name={favoritedItems[item.id] ? "bookmark" : "bookmark-outline"} size={27} color={"white"} />
+            <Ionicons name={favorite} size={27} color={"white"} />
           </TouchableOpacity>
         </View>
         <Buttons
@@ -203,6 +198,7 @@ export default function Home() {
       </View>
     </View>
   );
+};
 
   useEffect(() => {
     const fetchData = async () => {
