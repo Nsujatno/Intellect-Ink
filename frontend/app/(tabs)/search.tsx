@@ -20,6 +20,7 @@ export default function Search() {
         link?: string;
         summary?: string;
         poem?: string;
+        topic?: string;
     }
     const [searchItems, setSearchItems] = useState<SubjectItem[]>([]);
     const testSubjects: SubjectItem[] = [];
@@ -43,6 +44,7 @@ export default function Search() {
                     author: response.data[i].author,
                     link: response.data[i].url,
                     summary: response.data[i].description,
+                    topic: response.data[i].topic,
                     }
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
                     testSubjects.push(transformedData);
@@ -73,6 +75,7 @@ export default function Search() {
                     author: bookResponse.data[i].author,
                     link: bookResponse.data[i].previewLink,
                     summary: bookResponse.data[i].description,
+                    topic: bookResponse.data[i].topic,
                     }
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
                     testSubjects.push(transformedData);
@@ -97,6 +100,7 @@ export default function Search() {
                     author: newsResponse.data[i].author,
                     link: newsResponse.data[i].url,
                     summary: newsResponse.data[i].description,
+                    topic: newsResponse.data[i].topic,
                     }
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
                     testSubjects.push(transformedData);
@@ -123,6 +127,7 @@ export default function Search() {
                     title: poemResponse.data[i].title,
                     author: poemResponse.data[i].author,
                     poem: poem,
+                    topic: poemResponse.data[i].topic,
                     }
                     
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
@@ -149,6 +154,7 @@ export default function Search() {
                     author: author,
                     summary: paperResponse.data[i].abstract,
                     link: paperResponse.data[i].url,
+                    topic: paperResponse.data[i].topic,
                     }
                     
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
@@ -178,90 +184,98 @@ export default function Search() {
                         onPress={() => {router.push('/search')}}>
                         <Text style={textStyles.subheading}>{`< Back`}</Text>
                     </TouchableOpacity>
-                    <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>{topic}: {category}</Text>
-                    {/* handleSearch({category}); */}
-                </View>
-            ) : (
-                <TextInput
-                style={styles.inputContainer}
-                placeholder="Search"
-                placeholderTextColor="#807A7A"
-                clearButtonMode="always"
-                value={searchQuery}
-                onChangeText={(query) => handleSearch(query)}>
-                </TextInput>
-            )
-            }
-                
-            {searchQuery.length > 0 &&
-                <TouchableOpacity
-                    onPress={() => setSearchQuery('')}
-                    style={{position: 'absolute', top: 15, right: 20}}>
-                    <Text style={{color: '#807A7A', fontSize: 15}}>x</Text>
-                </TouchableOpacity>
-            }
-            
-            { searchQuery.trim() !=="" ? (
+                    <Text style={[textStyles.heading2purple,{marginTop: 4, alignSelf: 'center'}]}>{topic}: {category}</Text>
+                    
                     <LinearGradient
                         colors={["#4F3F7F", "#615796", "#646EA3"]}
-                        style={styles.flatlistContainer}
-                    >
-                        <FlatList
-                            data={searchItems}
-                            renderItem={({ item }) => <Item item={item} />}
-                            keyExtractor={(item) => item.id}
-                            showsVerticalScrollIndicator={true}
-                            horizontal={false}
-                        />
+                        style={styles.flatlistContainer}>
+                            <FlatList
+                                data={searchItems}
+                                renderItem={({ item }) => <Item item={item} />}
+                                keyExtractor={(item) => item.id}
+                                showsVerticalScrollIndicator={true}
+                                horizontal={false}
+                            />
                     </LinearGradient>
-                ) : (
-                    <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
-                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
-                        <DropDownButtons
-                            title='Article'
-                            variant='white'
-                            categories={["Ocean Life", "Science", "History"]}
-                            gradientColors={['#5C3E8F', '#2D1A4E']} 
-                        />
-                        <DropDownButtons
-                            title='Book'
-                            variant='white'
-                            categories={["Ocean Life", "Science", "History"]}
-                            gradientColors={['#615796', '#3B3461']} 
-                        />
-                        <DropDownButtons
-                            title='News'
-                            variant='white'
-                            categories={["Ocean Life"]}
-                            gradientColors={['#514F82', '#22205F']} 
-                        />
-                        <DropDownButtons
-                            title='Paper'
-                            variant='white'
-                            categories={["Ocean Life", "Science"]}
-                            gradientColors={['#3F497B', '#646EA3']} 
-                        />
-                        <DropDownButtons
-                            title='Poem'
-                            variant='white'
-                            categories={["Ocean Life"]}
-                            gradientColors={['#514F82', '#7347AD']} 
-                        />
-                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
-                        <DropDownButtons
-                            title='Quiz'
-                            variant='whiteOutline'
-                            categories={["Go to today's quiz", "Computer Science", "Science"]}
-                            gradientColors={['#103A70', '#485EEA']} 
-                        />
-                        <DropDownButtons
-                            title='Favorites'
-                            variant='whiteOutline'
-                            categories={["See all favorites"]}
-                            gradientColors={['#042C71', '#6D90EB']} 
-                        />
-                    </ScrollView>
-                )
+
+                </View>
+            ) : (
+                <View>
+                    <TextInput
+                    style={styles.inputContainer}
+                    placeholder="Search"
+                    placeholderTextColor="#807A7A"
+                    clearButtonMode="always"
+                    value={searchQuery}
+                    onChangeText={(query) => handleSearch(query)}>
+                    </TextInput>
+
+                    {searchQuery.length > 0 &&
+                        <TouchableOpacity
+                            onPress={() => setSearchQuery('')}
+                            style={{position: 'absolute', top: 15, right: 20}}>
+                            <Text style={{color: '#807A7A', fontSize: 15}}>x</Text>
+                        </TouchableOpacity>
+                    }
+
+                    { searchQuery.trim() !=="" ? (
+                            <LinearGradient
+                                colors={["#4F3F7F", "#615796", "#646EA3"]}
+                                style={styles.flatlistContainer}
+                            >
+                                <FlatList
+                                    data={searchItems}
+                                    renderItem={({ item }) => <Item item={item} />}
+                                    keyExtractor={(item) => item.id}
+                                    showsVerticalScrollIndicator={true}
+                                    horizontal={false}
+                                />
+                            </LinearGradient>
+                        ) : (
+                            <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
+                                <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
+                                <DropDownButtons
+                                    title='Article'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science", "History"]}
+                                    gradientColors={['#5C3E8F', '#2D1A4E']} 
+                                />
+                                <DropDownButtons
+                                    title='Book'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science", "History"]}
+                                    gradientColors={['#615796', '#3B3461']} 
+                                />
+                                <DropDownButtons
+                                    title='News'
+                                    variant='white'
+                                    categories={["Ocean Life"]}
+                                    gradientColors={['#514F82', '#22205F']} 
+                                />
+                                <DropDownButtons
+                                    title='Paper'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science"]}
+                                    gradientColors={['#3F497B', '#646EA3']} 
+                                />
+                                <DropDownButtons
+                                    title='Poem'
+                                    variant='white'
+                                    categories={["Ocean Life"]}
+                                    gradientColors={['#514F82', '#7347AD']} 
+                                />
+                                <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
+                                <DropDownButtons
+                                    title='Quiz'
+                                    variant='whiteOutline'
+                                    categories={["Go to today's quiz", "Computer Science", "Science"]}
+                                    gradientColors={['#103A70', '#485EEA']} 
+                                />
+                            </ScrollView>
+                        )
+                    }
+                </View>
+            )
             }
 
         </View>

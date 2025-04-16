@@ -135,6 +135,7 @@ export default function Home() {
     summary?: string;
     poem?: string;
     link?: string;
+    topic?: string;
   };
 
   const Item = ({ item }: { item: ItemProps }) => {
@@ -145,9 +146,9 @@ export default function Home() {
       {item.image ? (
         <Image source={{ uri: item.image }} style={styles.image} />
       ) : item.type === "poem" ? (
-        <Image source={{ uri: 'https://www.toonpool.com/user/856/files/poem_544155.jpg'}} style={styles.image} />
+        <Image source={require('../../assets/images/poemImg3.png')} style={styles.image} />
       ) : item.type === "paper" ? (
-        <Image source={require('../../assets/images/paperImg.png')} style={styles.image} />
+        <Image source={require('../../assets/images/paperImg2.png')} style={styles.image} />
       ) : (
         <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
       )}
@@ -236,6 +237,7 @@ export default function Home() {
               author: response.data[i].author,
               link: response.data[i].url,
               summary: response.data[i].description,
+              topic: response.data[i].topic,
             }
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
               exploreItemsArr.push(transformedData);
@@ -267,6 +269,7 @@ export default function Home() {
               author: bookResponse.data[i].author,
               link: bookResponse.data[i].previewLink,
               summary: bookResponse.data[i].description,
+              topic: bookResponse.data[i].topic,
             }
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
               exploreItemsArr.push(transformedData);
@@ -290,6 +293,7 @@ export default function Home() {
               author: newsResponse.data[i].author,
               link: newsResponse.data[i].url,
               summary: newsResponse.data[i].description,
+              topic: newsResponse.data[i].topic,
             }
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
               exploreItemsArr.push(transformedData);
@@ -315,6 +319,7 @@ export default function Home() {
               title: poemResponse.data[i].title,
               author: poemResponse.data[i].author,
               poem: poem,
+              topic: poemResponse.data[i].topic,
             }
             
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
@@ -338,6 +343,7 @@ export default function Home() {
               author: author,
               summary: paperResponse.data[i].abstract,
               link: paperResponse.data[i].url,
+              topic: paperResponse.data[i].topic,
             }
             
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
