@@ -68,6 +68,7 @@ export default function Login() {
             </View>
             {/* {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null} */}
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            {/* onPress={()=>router.push("/discussion") */}
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>
             </TouchableOpacity>
 

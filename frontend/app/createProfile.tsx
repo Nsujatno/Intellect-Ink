@@ -183,7 +183,7 @@ export default function CreateProfile() {
           <Buttons
             title='Next'
             variant='white'
-            onPress={handleSubmit/*() => router.push('/home')*/}
+            onPress={handleSubmit /*() => router.push('/home')*/}
           />
         </View>
       </View>
