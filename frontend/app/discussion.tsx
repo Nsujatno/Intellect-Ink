@@ -92,6 +92,10 @@ export default function Discussion() {
     </View>
   );
 
+   /* note: if facing issues with scrolling on page: 
+  place finger near "ask a question +" button (end of list)
+  or on topic question boxes, hover over the buttons and scroll
+  */
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
