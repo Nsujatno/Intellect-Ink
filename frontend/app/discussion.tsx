@@ -15,7 +15,7 @@ export default function Discussion() {
   const [showInput, setShowInput] = useState(false);
   const [topics, setTopics] = useState([
     { id: "1", title: "Topic Question 1", description: "Description", isEditing: false },
-    { id: "2", title: "Topic Question 2", description: "Description", isEditing: false },
+    // { id: "2", title: "Topic Question 2", description: "Description", isEditing: false },
   ]);
 
   const toggleEdit = (index) => {
@@ -73,42 +73,6 @@ export default function Discussion() {
           )}
         </View>
 
-        {/* <View style={styles.buttonWrapper}>
-          {item.isEditing ? (
-            <Buttons
-              title="Save"
-              variant="purple2"
-              onPress={() => handleSave(index)}
-            />
-          ) : (
-            <>
-            <View style={styles.buttonRow}>
-              <Buttons
-                title="Answer"
-                variant="purple2"
-                onPress={() => router.push(`/topicQuestion${item.id}`)}
-              />
-              {item.isNew && (
-                <>
-                <View style={styles.buttonRow}>
-                  <Buttons
-                    title="Edit"
-                    variant="small"
-                    onPress={() => toggleEdit(index)}
-                  />
-                  <Buttons
-                    title="Delete"
-                    variant="small"
-                    onPress={() => handleDelete(index)}
-                  />
-                </View>
-                </>
-              )}
-              </View>
-            </>
-          )}
-        </View> */}
-
         <View style={styles.buttonWrapper}>
           {item.isEditing ? (
             <Buttons
@@ -121,8 +85,18 @@ export default function Discussion() {
               <Buttons
                 title="Answer"
                 variant="purple2"
-                onPress={() => router.push(`/topicQuestion${item.id}`)}
+                onPress={() => router.push({
+                  pathname: `/topicQuestion1`,
+                  params: {
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                  }
+                })}
+                
               />
+
+
               {item.isNew && (
                 <View style={styles.editDeleteRow}>
                   <Buttons
@@ -145,11 +119,6 @@ export default function Discussion() {
     </View>
   );
 
-
-  /* note: if facing issues with scrolling on page: 
- place finger near "ask a question +" button (end of list)
- or on topic question boxes, hover over the buttons and scroll
- */
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -190,13 +159,6 @@ export default function Discussion() {
                 >
                   <Text style={styles.submitButtonText}>Ask a Question +</Text>
                 </TouchableOpacity>
-                {/* <Text style={styles.submitButton}>
-                  <Buttons
-                    title="Ask a Question +"
-                    variant="shadowLight"
-                    onPress={() => setShowInput(true)}
-                  />
-                </Text> */}
 
                 {showInput && (
                   <View style={styles.boxContainer}>
@@ -297,13 +259,11 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     width: 120,
     bottom: -55,
-    // right: -8,
     alignItems: 'flex-start',
   },
   editDeleteRow: {
     flexDirection: 'row',
     gap: 8,
-    // alignItems: 'flex-start',
     transform: [{ translateX: -220 }],
   },
   textButtonContainer: {
@@ -347,7 +307,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 100,
     fontSize: 18,
-    color: '#504F4F',
+    fontStyle: 'italic',
+    color: '#646EA3',
     textAlignVertical: 'top',
     padding: 5,
   },
@@ -376,14 +337,14 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 10,
-    backgroundColor: '#6C63FF',
+    backgroundColor: '#D9D9D9',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
-    alignSelf: 'center',
+    alignItems: 'center',
   },
   submitButtonText: {
-    color: '#fff',
+    color: '#413F6F',
     fontSize: 16,
     fontWeight: 'bold',
   },

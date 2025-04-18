@@ -6,30 +6,33 @@ import Buttons from "./components/buttons";
 
 export default function ReplyDiscussion() {
     const router = useRouter();
-    const params = useLocalSearchParams();
+    // const params = useLocalSearchParams();
     const [inputText, setInputText] = useState("");
     const [replyingTo, setReplyingTo] = useState(null);
     const maxChars = 1400;
 
+    const { topicId, replyId, replyName, replyText } = useLocalSearchParams();
+
     useEffect(() => {
-        if (params.replyId && (!replyingTo || replyingTo.id !== params.replyId)) {
+        if (replyId) {
             setReplyingTo({
-                id: params.replyId,
-                name: params.replyName,
-                text: params.replyText
+                id: replyId,
+                name: replyName,
+                text: replyText
             });
         }
-    }, [params.replyId, params.replyName, params.replyText]);
+    }, [replyId, replyName, replyText]);
 
     const handleSubmit = useCallback(() => {
         if (inputText.trim() === "") {
             Alert.alert("Please enter your thoughts before submitting.");
-        } else if (inputText.trim().length < 200) {
-            Alert.alert("Please enter at least 200 characters");
+        } else if (inputText.trim().length < 50) {
+            Alert.alert("Please enter at least 50 characters");
         } else {
             router.push('/viewReplies');
+            params: {topicId}
         }
-    }, [inputText, router]);
+    }, [inputText, router, topicId]);
 
     return (
         <ScrollView style={styles.container}>
@@ -39,16 +42,16 @@ export default function ReplyDiscussion() {
                     style={styles.imagebg}
                 />
             </View>
-            
+
             <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => router.back()}
             >
                 <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
-            
+
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question {topicId}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 140, color: '#646EA3' }]}>Reply</Text>
             </View>
 
@@ -80,11 +83,11 @@ export default function ReplyDiscussion() {
                     <Text style={styles.placeholder}>Your thoughts here...</Text>
                 )}
             </View>
-            
+
             <Text style={styles.charCount}>
                 {`${inputText.length} / ${maxChars} characters`}
             </Text>
-            
+
             <View style={styles.buttonContainer}>
                 <Buttons
                     title='Comment'
@@ -106,7 +109,7 @@ const styles = StyleSheet.create({
         height: undefined,
         marginTop: 250,
         aspectRatio: 0.855,
-    },    
+    },
     imageContainer: {
         width: '100%',
         position: 'absolute',
@@ -114,9 +117,9 @@ const styles = StyleSheet.create({
         pointerEvents: 'none',
     },
     backButton: {
-        alignSelf: 'flex-start', 
-        marginTop: 50, 
-        marginBottom: -20, 
+        alignSelf: 'flex-start',
+        marginTop: 50,
+        marginBottom: -20,
         left: 20,
     },
     textContainer: {
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     placeholder: {
         position: 'absolute',
         fontSize: 16,
-        color:'#504F4F',
+        color: '#504F4F',
         textAlign: 'left',
         padding: 10,
     },

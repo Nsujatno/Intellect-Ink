@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, StyleSheet } from "react-native";
+import { Text, View, Image, ScrollView, StyleSheet, Dimensions } from "react-native";
 import { VictoryStack, VictoryBar, VictoryChart, VictoryAxis } from "victory-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
