@@ -7,6 +7,8 @@ import Buttons from "./components/buttons";
 export default function Quiz() {
   const router = useRouter();
   const [percent, setPercent] = useState(0);
+  const [finalScore, setFinalScore] = useState(0);
+  const [selected, setSelected] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(-1);
   const testQuestions = [
     { question: 'What is the capital of France?', options: ['Paris', 'London', 'Berlin', 'Rome'], answer: 'Paris' },
@@ -22,7 +24,9 @@ export default function Quiz() {
     }
     if (selectedOption != '') {
       setQuestionIndex(questionIndex+1)
-      setSelectedOption('');
+      setSelectedOption('')
+    } else {
+      setSelected(true)
     }
   }
 
@@ -30,6 +34,12 @@ export default function Quiz() {
     if (questionIndex>=0)
       {const newPercent = ((questionIndex / testQuestions.length) * 100);
       setPercent(newPercent);}
+  }, [questionIndex]);
+
+  useEffect(() => { //calculate final score
+    if (questionIndex === testQuestions.length)
+      {const newFinalScore = ((score / testQuestions.length) * 100);
+      setFinalScore(newFinalScore);}
   }, [questionIndex]);
 
   return (
@@ -67,13 +77,13 @@ export default function Quiz() {
             <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3'}]}>{testQuestions[questionIndex].question}</Text>
 
             {testQuestions[questionIndex].options.map((option, index) => (
-              <TouchableOpacity key={index} onPress={() => setSelectedOption(option)} style={styles.optionContainer}>
+              <TouchableOpacity key={index} onPress={() => {setSelectedOption(option); setSelected(false)}} style={styles.optionContainer}>
                 <View style={[{width: 20, height: 20, borderRadius: 20, marginRight: 20},{backgroundColor: selectedOption === option ? '#413F6F' : '#E2E2E2'}]}></View>
                 <Text style={textStyles.subheading}>{option}</Text>
               </TouchableOpacity>
             ))}
-
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
+            {selected && <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3', marginTop: 30, alignSelf: 'center'}]}>You must select an answer</Text>}
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
               {/* <Buttons
                 title='Back'
                 variant='purple'
@@ -88,9 +98,33 @@ export default function Quiz() {
           </View>
         )}
         {questionIndex === testQuestions.length && (
-          <View style={styles.topicContainer}>
+          <View style={[styles.topicContainer, {height: 380, marginTop: '22%'}]}>
           <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Quiz Completed</Text>
           <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Your Score: {score}/{questionIndex}</Text>
+          <View style={{position: 'relative'}}>
+            <Image
+            source={require('../assets/images/quizFinale.png')}
+            style={styles.quizFinaleImg}/>
+            
+            { finalScore === 100 ? (
+              <View style={{position: 'absolute', top: 9, left: 20, alignItems: 'center'}}>
+                <Text style={[textStyles.heading2purple,{fontSize: 19}]}>Perfect</Text>
+                <Text style={[textStyles.heading2purple,{fontSize: 19}]}>score!</Text>
+              </View>
+            ): finalScore > 50 ? (
+              <View style={{position: 'absolute', top: 8, left: 28, alignItems: 'center'}}>
+                <Text style={[textStyles.heading2purple,{fontSize: 19}]}>Good</Text>
+                <Text style={[textStyles.heading2purple,{fontSize: 19}]}>job!</Text>
+              </View>
+            ) : (
+              <View style={{position: 'absolute', top: 12, left: 10, alignItems: 'center'}}>
+                <Text style={[textStyles.heading2purple,{fontSize: 16}]}>Better luck</Text>
+                <Text style={[textStyles.heading2purple,{fontSize: 16}]}>next time!</Text>
+              </View>  
+            )
+            }
+          </View>
+          
           <Buttons
             title='Go to home'
             variant='purple'
@@ -112,6 +146,10 @@ const styles = StyleSheet.create({
       width: '100%',
       height: 680,
       aspectRatio: 0.6317,
+    },
+    quizFinaleImg: {
+      height: 165,
+      width: 200,
     },
     imageContainer: {
       width: '100%',

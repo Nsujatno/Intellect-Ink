@@ -1,14 +1,16 @@
 import { Text, View, FlatList, ScrollView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
-import { useState} from "react";
-import { useRouter } from "expo-router";
+import { useState, useEffect } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import axios from 'axios'
 import DropDownButtons from "../components/dropDownButtons";
+import Item from "../components/item";
 import { textStyles } from "../stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import { ngrokPath, isExpoMode } from "../utils";
 
 export default function Search() {
     const router = useRouter();
+    const {topic, category} = useLocalSearchParams();
     interface SubjectItem {
         id: string;
         type: string;
@@ -18,6 +20,7 @@ export default function Search() {
         link?: string;
         summary?: string;
         poem?: string;
+        topic?: string;
     }
     const [searchItems, setSearchItems] = useState<SubjectItem[]>([]);
     const testSubjects: SubjectItem[] = [];
@@ -41,6 +44,7 @@ export default function Search() {
                     author: response.data[i].author,
                     link: response.data[i].url,
                     summary: response.data[i].description,
+                    topic: response.data[i].topic,
                     }
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
                     testSubjects.push(transformedData);
@@ -71,6 +75,7 @@ export default function Search() {
                     author: bookResponse.data[i].author,
                     link: bookResponse.data[i].previewLink,
                     summary: bookResponse.data[i].description,
+                    topic: bookResponse.data[i].topic,
                     }
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
                     testSubjects.push(transformedData);
@@ -95,6 +100,7 @@ export default function Search() {
                     author: newsResponse.data[i].author,
                     link: newsResponse.data[i].url,
                     summary: newsResponse.data[i].description,
+                    topic: newsResponse.data[i].topic,
                     }
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
                     testSubjects.push(transformedData);
@@ -121,6 +127,7 @@ export default function Search() {
                     title: poemResponse.data[i].title,
                     author: poemResponse.data[i].author,
                     poem: poem,
+                    topic: poemResponse.data[i].topic,
                     }
                     
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
@@ -147,6 +154,7 @@ export default function Search() {
                     author: author,
                     summary: paperResponse.data[i].abstract,
                     link: paperResponse.data[i].url,
+                    topic: paperResponse.data[i].topic,
                     }
                     
                     if (!testSubjects.some(subject => subject.id === transformedData.id)) {
@@ -166,103 +174,108 @@ export default function Search() {
             console.error('Error searching:', error);
         }
     }
-    type ItemProps = {
-        id: string,
-        type: string,
-        image?: string,
-        title: string;
-        author: string;
-        summary?: string;
-        poem?: string;
-        link?: string;
-    };
-
-  const Item = ({ item }: { item: ItemProps }) => (
-    <View style={styles.contentContainer}>
-        <View style={{width: '90%'}}>
-            <Text numberOfLines={2} style={[textStyles.heading2purple,{fontSize: 16}]}>{item.title}</Text>
-            {item.author && <Text numberOfLines={1} style={[textStyles.subheading, {fontSize: 14}]}>By: {item.author}</Text> }
-        </View>
-        <View>
-            <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
-                <Text style={textStyles.heading2purple}> {`>`}</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
-  );
-
+   
     return (
         <View style={styles.container}>
-            <TextInput
-                style={styles.inputContainer}
-                placeholder="Search"
-                placeholderTextColor="#807A7A"
-                clearButtonMode="always"
-                value={searchQuery}
-                onChangeText={(query) => handleSearch(query)}>
-            </TextInput>
-            
-            { searchQuery.trim() !=="" ? (
+            {topic ? (
+                <View>
+                    <TouchableOpacity
+                        style={{alignSelf: 'flex-start'}}
+                        onPress={() => {router.push('/search')}}>
+                        <Text style={textStyles.subheading}>{`< Back`}</Text>
+                    </TouchableOpacity>
+                    <Text style={[textStyles.heading2purple,{marginTop: 4, alignSelf: 'center'}]}>{topic}: {category}</Text>
+                    
                     <LinearGradient
                         colors={["#4F3F7F", "#615796", "#646EA3"]}
-                        style={styles.flatlistContainer}
-                    >
-                        <FlatList
-                            data={searchItems}
-                            renderItem={({ item }) => <Item item={item} />}
-                            keyExtractor={(item) => item.id}
-                            showsVerticalScrollIndicator={true}
-                            horizontal={false}
-                        />
+                        style={styles.flatlistContainer}>
+                            <FlatList
+                                data={searchItems}
+                                renderItem={({ item }) => <Item item={item} />}
+                                keyExtractor={(item) => item.id}
+                                showsVerticalScrollIndicator={true}
+                                horizontal={false}
+                            />
                     </LinearGradient>
-                ) : (
-                    <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
-                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
-                        <DropDownButtons
-                            title='Books'
-                            variant='white'
-                            categories={["Horror", "Romance", "Mystery"]}
-                            gradientColors={['#5C3E8F', '#2D1A4E']} 
-                        />
-                        <DropDownButtons
-                            title='News'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#615796', '#3B3461']} 
-                        />
-                        <DropDownButtons
-                            title='Poems'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#514F82', '#22205F']} 
-                        />
-                        <DropDownButtons
-                            title='Politics'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#3F497B', '#646EA3']} 
-                        />
-                        <DropDownButtons
-                            title='Research'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#514F82', '#7347AD']} 
-                        />
-                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
-                        <DropDownButtons
-                            title='Quiz'
-                            variant='whiteOutline'
-                            categories={["Go to today's quiz", "See past results"]}
-                            gradientColors={['#103A70', '#485EEA']} 
-                        />
-                        <DropDownButtons
-                            title='Favorites'
-                            variant='whiteOutline'
-                            categories={["See all favorites"]}
-                            gradientColors={['#042C71', '#6D90EB']} 
-                        />
-                    </ScrollView>
-                )
+
+                </View>
+            ) : (
+                <View>
+                    <TextInput
+                    style={styles.inputContainer}
+                    placeholder="Search"
+                    placeholderTextColor="#807A7A"
+                    clearButtonMode="always"
+                    value={searchQuery}
+                    onChangeText={(query) => handleSearch(query)}>
+                    </TextInput>
+
+                    {searchQuery.length > 0 &&
+                        <TouchableOpacity
+                            onPress={() => setSearchQuery('')}
+                            style={{position: 'absolute', top: 15, right: 20}}>
+                            <Text style={{color: '#807A7A', fontSize: 15}}>x</Text>
+                        </TouchableOpacity>
+                    }
+
+                    { searchQuery.trim() !=="" ? (
+                            <LinearGradient
+                                colors={["#4F3F7F", "#615796", "#646EA3"]}
+                                style={styles.flatlistContainer}
+                            >
+                                <FlatList
+                                    data={searchItems}
+                                    renderItem={({ item }) => <Item item={item} />}
+                                    keyExtractor={(item) => item.id}
+                                    showsVerticalScrollIndicator={true}
+                                    horizontal={false}
+                                />
+                            </LinearGradient>
+                        ) : (
+                            <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
+                                <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
+                                <DropDownButtons
+                                    title='Article'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science", "History"]}
+                                    gradientColors={['#5C3E8F', '#2D1A4E']} 
+                                />
+                                <DropDownButtons
+                                    title='Book'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science", "History"]}
+                                    gradientColors={['#615796', '#3B3461']} 
+                                />
+                                <DropDownButtons
+                                    title='News'
+                                    variant='white'
+                                    categories={["Ocean Life"]}
+                                    gradientColors={['#514F82', '#22205F']} 
+                                />
+                                <DropDownButtons
+                                    title='Paper'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science"]}
+                                    gradientColors={['#3F497B', '#646EA3']} 
+                                />
+                                <DropDownButtons
+                                    title='Poem'
+                                    variant='white'
+                                    categories={["Ocean Life"]}
+                                    gradientColors={['#514F82', '#7347AD']} 
+                                />
+                                <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
+                                <DropDownButtons
+                                    title='Quiz'
+                                    variant='whiteOutline'
+                                    categories={["Go to today's quiz", "Computer Science", "Science"]}
+                                    gradientColors={['#103A70', '#485EEA']} 
+                                />
+                            </ScrollView>
+                        )
+                    }
+                </View>
+            )
             }
 
         </View>
@@ -291,18 +304,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-    },
-    contentContainer: {
-        width: 340,
-        height: 100,
-        marginVertical: 15,
-        padding: 15,
-        borderRadius: 5,
-        backgroundColor: "white",
-        shadowColor: "#000",
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
     },
     flatlistContainer: {
         backgroundColor: "#646EA3",

@@ -6,6 +6,7 @@ import Buttons from "../components/buttons";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Dimensions } from 'react-native';
 import axios from 'axios'
 import { transform } from "@babel/core";
 import { ngrokPath, isExpoMode } from "../utils";
@@ -21,6 +22,7 @@ interface SubjectItem {
   summary?: string;
   poem?: string;
 }
+const screenHeight = Dimensions.get('window').height;
 
 export default function Home() {
   const router = useRouter();
@@ -172,8 +174,8 @@ export default function Home() {
     try{
       const payload = {
         favorites: {
-          itemId: item.id,
-          itemType: item.type
+          itemId: [item.id],
+          itemType: [item.type],
         }
       };
       const token = await AsyncStorage.getItem('token');
@@ -216,17 +218,25 @@ export default function Home() {
     summary?: string;
     poem?: string;
     link?: string;
+    topic?: string;
   };
 
-  const Item = ({ item }: { item: ItemProps }) => (
+  const Item = ({ item }: { item: ItemProps }) => {
+    const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
+    const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
+    return (
     <View style={styles.contentContainer}>
-      {item.image ?(
+      {item.image ? (
         <Image source={{ uri: item.image }} style={styles.image} />
+      ) : item.type === "poem" ? (
+        <Image source={require('../../assets/images/poemImg3.png')} style={styles.image} />
+      ) : item.type === "paper" ? (
+        <Image source={require('../../assets/images/paperImg2.png')} style={styles.image} />
       ) : (
         <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
       )}
       <View style={styles.mediaTag}>
-        <Text style={textStyles.subheadingWhite}>{item.type}</Text>
+        <Text style={[textStyles.subheadingWhite, {marginVertical: 0}]}>{item.type}</Text>
       </View>
       <View style={{ padding: 10 }}>
         <Text style={textStyles.heading2purple}>{item.title}</Text>
@@ -246,26 +256,22 @@ export default function Home() {
         <View style={{ flexDirection: "row", flex: 1, marginRight: 100 }}>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() => {
-              setLikedItems((prev) => ({
-                ...prev,
-                [item.id]: !prev[item.id],
-              }));
-            }}
+            onPress={() =>
+              setLike((prevIcon) => (prevIcon === "heart-outline" ? "heart" : "heart-outline"))
+            }
           >
-            <Ionicons name={likedItems[item.id] ? "heart" : "heart-outline"} size={30} color={"white"} />
+            <Ionicons name={like} size={30} color={"white"} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.circleButton}
             onPress={() => {
               handleBookmark(item);
-              setFavoritedItems((prev) => ({
-                ...prev,
-                [item.id]: !prev[item.id],
-              }));
+              setFavorite((prevIcon) =>
+                prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"
+              )
             }}
           >
-            <Ionicons name={favoritedItems[item.id] ? "bookmark" : "bookmark-outline"} size={27} color={"white"} />
+            <Ionicons name={favorite} size={27} color={"white"} />
           </TouchableOpacity>
         </View>
         <Buttons
@@ -276,6 +282,7 @@ export default function Home() {
       </View>
     </View>
   );
+};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -313,6 +320,7 @@ export default function Home() {
               author: response.data[i].author,
               link: response.data[i].url,
               summary: response.data[i].description,
+              topic: response.data[i].topic,
             }
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
               exploreItemsArr.push(transformedData);
@@ -344,6 +352,7 @@ export default function Home() {
               author: bookResponse.data[i].author,
               link: bookResponse.data[i].previewLink,
               summary: bookResponse.data[i].description,
+              topic: bookResponse.data[i].topic,
             }
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
               exploreItemsArr.push(transformedData);
@@ -367,6 +376,7 @@ export default function Home() {
               author: newsResponse.data[i].author,
               link: newsResponse.data[i].url,
               summary: newsResponse.data[i].description,
+              topic: newsResponse.data[i].topic,
             }
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
               exploreItemsArr.push(transformedData);
@@ -392,6 +402,7 @@ export default function Home() {
               title: poemResponse.data[i].title,
               author: poemResponse.data[i].author,
               poem: poem,
+              topic: poemResponse.data[i].topic,
             }
             
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
@@ -415,6 +426,7 @@ export default function Home() {
               author: author,
               summary: paperResponse.data[i].abstract,
               link: paperResponse.data[i].url,
+              topic: paperResponse.data[i].topic,
             }
             
             if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
@@ -578,9 +590,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "flex-start",
     textAlign: "center",
-    height: 610,
+    height: screenHeight-288,
+    marginVertical: 10,
     width: 370,
-    marginBottom: 20,
     position: "relative",
     shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },
@@ -649,6 +661,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 110,
     right: 10,
+    textAlign: 'center',
   },
   buttonContainer: {
     width: "100%",

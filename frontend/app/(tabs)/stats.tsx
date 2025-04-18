@@ -305,12 +305,12 @@ export default function Stats() {
         <View style={{ flexDirection: 'column', marginTop: 130, width: 300, height: 150 }}>
           <DropDownButtons
             title=' Achievements '
-            variant='purple2'
+            variant='purple'
             achievements={achievementsData}
           />
           <DropDownButtons
             title=' Leaderboard '
-            variant='purple2'
+            variant='purple'
             leaderboards={leaderboardData}
           />
         </View>
