@@ -69,13 +69,13 @@ export default function question1View() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question {topicId}</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 85, color: '#646EA3' }]}>View Discussion</Text>
             </View>
 
             <FlatList
                 data={replies}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <View style={styles.replyContainer}>
                         <View style={styles.indivReplyContainer}>
@@ -88,7 +88,7 @@ export default function question1View() {
                             </View>
 
                             <Text style={textStyles.bodytext5}>
-                                {expanded[item._id] ? item.text : `${item.text.slice(0, maxLength)}...`}
+                                {expanded[item._id] ? item.text : item.text.slice(0, maxLength) + '...'}
                             </Text>
 
                             <TouchableOpacity onPress={() => toggleExpanded(item._id)}>

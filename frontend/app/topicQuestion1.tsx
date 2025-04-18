@@ -27,13 +27,17 @@ export default function TopicQuestion() {
     const handleComment = () => {
         if (inputText.trim() === "") {
             Alert.alert("Please enter your thoughts before submitting.");
-        } else if (inputText.trim().length < 50) {
-            Alert.alert("Please enter at least 50 characters");
+        } else if (inputText.trim().length < 150) {
+            Alert.alert("Please enter at least 30 words (150 characters)");
         } else {
             router.push({
                 pathname: '/quest1view',
-                params: { topicId: id }
-            });
+                params: {
+                  topicId: id,
+                  title: title,
+                  description: description
+                }
+              });              
         }
     };
 

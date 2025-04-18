@@ -7,6 +7,7 @@ import Buttons from "./components/buttons";
 export default function ReplyDiscussion() {
     const router = useRouter();
     // const params = useLocalSearchParams();
+    const { id, title, description } = useLocalSearchParams();
     const [inputText, setInputText] = useState("");
     const [replyingTo, setReplyingTo] = useState(null);
     const maxChars = 1400;
@@ -51,7 +52,7 @@ export default function ReplyDiscussion() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question {topicId}</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 140, color: '#646EA3' }]}>Reply</Text>
             </View>
 
@@ -85,8 +86,9 @@ export default function ReplyDiscussion() {
             </View>
 
             <Text style={styles.charCount}>
-                {`${inputText.length} / ${maxChars} characters`}
-            </Text>
+    {inputText.length} / {maxChars} characters
+</Text>
+
 
             <View style={styles.buttonContainer}>
                 <Buttons
