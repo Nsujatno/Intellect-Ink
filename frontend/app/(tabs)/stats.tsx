@@ -52,17 +52,19 @@ export default function Stats() {
     book: 0,
     poem: 0,
     news: 0,
+    article: 0,
+    paper: 0,
   });
   const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay());
 
   const [chartData, setChartData] = useState([
-    { day: "Sun", book: 0, poem: 0, news: 0 },
-    { day: "M", book: 0, poem: 0, news: 0 },
-    { day: "T", book: 0, poem: 0, news: 0 },
-    { day: "W", book: 0, poem: 0, news: 0 },
-    { day: "Th", book: 0, poem: 0, news: 0 },
-    { day: "F", book: 0, poem: 0, news: 0 },
-    { day: "S", book: 0, poem: 0, news: 0 }
+    { day: "Sun", book: 0, poem: 0, news: 0, article: 0, paper: 0 },
+    { day: "M", book: 0, poem: 0, news: 0, article: 0, paper: 0 },
+    { day: "T", book: 0, poem: 0, news: 0, article: 0, paper: 0 },
+    { day: "W", book: 0, poem: 0, news: 0, article: 0, paper: 0 },
+    { day: "Th", book: 0, poem: 0, news: 0, article: 0, paper: 0 },
+    { day: "F", book: 0, poem: 0, news: 0, article: 0, paper: 0 },
+    { day: "S", book: 0, poem: 0, news: 0, article: 0, paper: 0 }
   ]);
 
   // convert milliseconds
@@ -83,11 +85,15 @@ export default function Stats() {
         const booksTime = parseInt((await AsyncStorage.getItem("book")) || "0", 10);
         const poemsTime = parseInt((await AsyncStorage.getItem("poem")) || "0", 10);
         const newsTime = parseInt((await AsyncStorage.getItem("news")) || "0", 10);
+        const articleTime = parseInt((await AsyncStorage.getItem("article")) || "0", 10);
+        const paperTime = parseInt((await AsyncStorage.getItem("paper")) || "0", 10);
 
         setTimeSpentData({
           book: booksTime,
           poem: poemsTime,
           news: newsTime,
+          article: articleTime,
+          paper: paperTime,
         });
 
         const existingStats = await AsyncStorage.getItem("weeklyStats");
@@ -104,6 +110,8 @@ export default function Stats() {
               book: booksTime / 60000,
               poem: poemsTime / 60000,
               news: newsTime / 60000,
+              article: articleTime / 60000,
+              paper: paperTime / 60000,
             }
             : entry
         );
@@ -145,7 +153,9 @@ export default function Stats() {
               {formatTime(
                 (chartData[selectedDayIndex].book + 
                   chartData[selectedDayIndex].poem + 
-                  chartData[selectedDayIndex].news) * 60000
+                  chartData[selectedDayIndex].news +
+                  chartData[selectedDayIndex].article +
+                  chartData[selectedDayIndex].paper) * 60000
               )}
                 {/* timeSpentData.book + timeSpentData.poem + timeSpentData.news)} */}
               </Text>
@@ -221,6 +231,34 @@ export default function Stats() {
                   }
                 }]}
               />
+              <VictoryBar
+                data={chartData}
+                x="day"
+                y="article"
+                barWidth={20}
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: (event, props) => {
+                      setSelectedDayIndex(props.index);
+                    }
+                  }
+                }]}
+              />
+              <VictoryBar
+                data={chartData}
+                x="day"
+                y="paper"
+                barWidth={20}
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: (event, props) => {
+                      setSelectedDayIndex(props.index);
+                    }
+                  }
+                }]}
+              />
             </VictoryStack>
           </VictoryChart>
         </View>
@@ -260,13 +298,13 @@ export default function Stats() {
             <View style={styles.categoryRow}>
               <Text style={textStyles.bodytext2}>Politics</Text>
               <Text style={textStyles.bodytext2}>
-                {/* {formatTime(timeSpentData.politics)} */}
+                {formatTime(timeSpentData.article)}
               </Text>
             </View>
             <View style={styles.categoryRow}>
               <Text style={textStyles.bodytext2}>Research</Text>
               <Text style={textStyles.bodytext2}>
-                {/* {formatTime(timeSpentData.research)} */}
+                {formatTime(timeSpentData.paper)}
               </Text>
             </View>
           </View>
@@ -300,8 +338,7 @@ export default function Stats() {
           </View>
         </View>
 
-        {/* Achievement & Leaderboard Buttons 
-        view 2e40207ab5e592bd1cf63c9d59f27478c2f7dd49 */}
+        {/* Achievement & Leaderboard Buttons */}
         <View style={{ flexDirection: 'column', marginTop: 130, width: 300, height: 150 }}>
           <DropDownButtons
             title=' Achievements '
