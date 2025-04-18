@@ -8,6 +8,7 @@ export default function viewReplies() {
     const router = useRouter();
     const maxLength = 200;
     const [expanded, setExpanded] = useState([]);
+    const { topicId } = useLocalSearchParams();
 
     const [replies, setReplies] = useState([
         {
@@ -34,15 +35,15 @@ export default function viewReplies() {
             }
         };
 
-        fetchComments();
-    }, [])
+        if (topicId) fetchComments();
+    }, [topicId])
 
-    // const toggleExpanded = (id) => {
-    //     setExpanded((prevState) => ({
-    //         ...prevState,
-    //         [id]: !prevState[id],
-    //     }));
-    // };
+    const toggleExpanded = (id) => {
+        setExpanded(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
 
     return (
         <View style={styles.container}>
@@ -61,7 +62,7 @@ export default function viewReplies() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question {topicId}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 100, color: '#646EA3' }]}>View Replies</Text>
             </View>
 
@@ -95,7 +96,15 @@ export default function viewReplies() {
                                 <Buttons
                                     title="Reply"
                                     variant="gray2"
-                                    onPress={() => router.push("/replyDiscussion")}
+                                    onPress={() => router.push({
+                                        pathname: "/replyDiscussion",
+                                        params: { 
+                                            topicId,
+                                            replyId: item.id,
+                                            replyName: item.name,
+                                            replyText: item.text
+                                        }
+                                    })}
                                 />
                             )}
                             {index !== 0 && (
