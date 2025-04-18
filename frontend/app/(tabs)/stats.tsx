@@ -300,7 +300,8 @@ export default function Stats() {
           </View>
         </View>
 
-        {/* Achievement & Leaderboard Buttons */}
+        {/* Achievement & Leaderboard Buttons 
+        view 2e40207ab5e592bd1cf63c9d59f27478c2f7dd49 */}
         <View style={{ flexDirection: 'column', marginTop: 130, width: 300, height: 150 }}>
           <DropDownButtons
             title=' Achievements '

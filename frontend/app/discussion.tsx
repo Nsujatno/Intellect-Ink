@@ -1,5 +1,7 @@
-import { Text, View, Image, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView,
-  Platform, TouchableWithoutFeedback, Keyboard, StyleSheet } from "react-native";
+import {
+  Text, View, Image, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView,
+  Platform, TouchableWithoutFeedback, Keyboard, StyleSheet
+} from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -34,6 +36,12 @@ export default function Discussion() {
     setTopics(updated);
   };
 
+  const handleDelete = (index) => {
+    const updated = [...topics];
+    updated.splice(index, 1);
+    setTopics(updated);
+  };
+
   const renderItem = ({ item, index }) => (
     <View style={styles.boxContainer}>
       <Image source={require("../assets/images/discussion_topicBox.png")} style={styles.boxImage} />
@@ -64,50 +72,96 @@ export default function Discussion() {
             </>
           )}
         </View>
+
+        {/* <View style={styles.buttonWrapper}>
+          {item.isEditing ? (
+            <Buttons
+              title="Save"
+              variant="purple2"
+              onPress={() => handleSave(index)}
+            />
+          ) : (
+            <>
+            <View style={styles.buttonRow}>
+              <Buttons
+                title="Answer"
+                variant="purple2"
+                onPress={() => router.push(`/topicQuestion${item.id}`)}
+              />
+              {item.isNew && (
+                <>
+                <View style={styles.buttonRow}>
+                  <Buttons
+                    title="Edit"
+                    variant="small"
+                    onPress={() => toggleEdit(index)}
+                  />
+                  <Buttons
+                    title="Delete"
+                    variant="small"
+                    onPress={() => handleDelete(index)}
+                  />
+                </View>
+                </>
+              )}
+              </View>
+            </>
+          )}
+        </View> */}
+
         <View style={styles.buttonWrapper}>
           {item.isEditing ? (
-            <Buttons 
-              title="Save" 
+            <Buttons
+              title="Save"
               variant="purple2"
-              onPress={() => handleSave(index)} />
+              onPress={() => handleSave(index)}
+            />
           ) : (
-            <View style={styles.buttonRow}>
-              <>
-              <Buttons 
-                title="Answer" 
-                variant="purple2" 
-                onPress={() => router.push(`/topicQuestion${item.id}`)} />
+            <>
+              <Buttons
+                title="Answer"
+                variant="purple2"
+                onPress={() => router.push(`/topicQuestion${item.id}`)}
+              />
               {item.isNew && (
-                <Buttons 
-                  title="Edit" 
-                  variant="purple2" 
-                  onPress={() => toggleEdit(index)} />
+                <View style={styles.editDeleteRow}>
+                  <Buttons
+                    title="Edit"
+                    variant="small"
+                    onPress={() => toggleEdit(index)}
+                  />
+                  <Buttons
+                    title="Delete"
+                    variant="small"
+                    onPress={() => handleDelete(index)}
+                  />
+                </View>
               )}
-              </>
-            </View>
+            </>
           )}
-
         </View>
+
       </View>
     </View>
   );
 
-   /* note: if facing issues with scrolling on page: 
-  place finger near "ask a question +" button (end of list)
-  or on topic question boxes, hover over the buttons and scroll
-  */
+
+  /* note: if facing issues with scrolling on page: 
+ place finger near "ask a question +" button (end of list)
+ or on topic question boxes, hover over the buttons and scroll
+ */
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 80}
-    > { /* ui moves up to avoid being hidden by the keyboard; padding for ios, height for android*/ }
-    
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}> { /* allows keyboard to close when tapping outside the inputs */ }
+    >
+
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1 }}>
           <View style={styles.imageContainer}>
-            <Image 
-              source={require("../assets/images/discussion_bg.png")} 
+            <Image
+              source={require("../assets/images/discussion_bg.png")}
               style={styles.imagebg} />
           </View>
 
@@ -126,7 +180,7 @@ export default function Discussion() {
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
             contentContainerStyle={styles.listContainer}
-            keyboardShouldPersistTaps="handled" // lets taps go through buttons or touchabe components even if the keyboard is up
+            keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             ListFooterComponent={
               <View style={styles.footer}>
@@ -136,6 +190,13 @@ export default function Discussion() {
                 >
                   <Text style={styles.submitButtonText}>Ask a Question +</Text>
                 </TouchableOpacity>
+                {/* <Text style={styles.submitButton}>
+                  <Buttons
+                    title="Ask a Question +"
+                    variant="shadowLight"
+                    onPress={() => setShowInput(true)}
+                  />
+                </Text> */}
 
                 {showInput && (
                   <View style={styles.boxContainer}>
@@ -173,7 +234,7 @@ export default function Discussion() {
                                 title,
                                 description,
                                 isEditing: false,
-                                isNew: true, // only for new posts
+                                isNew: true
                               };
                               setTopics([...topics, newTopic]);
                               setTitle("");
@@ -196,8 +257,8 @@ export default function Discussion() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1 
+  container: {
+    flex: 1
   },
   imagebg: {
     resizeMode: 'cover',
@@ -236,12 +297,15 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     width: 120,
     bottom: -55,
-    right: -8,
+    // right: -8,
+    alignItems: 'flex-start',
   },
-  // buttonRow: {
-  //   flexDirection: 'row',
-  //   gap: 10,
-  // },
+  editDeleteRow: {
+    flexDirection: 'row',
+    gap: 8,
+    // alignItems: 'flex-start',
+    transform: [{ translateX: -220 }],
+  },
   textButtonContainer: {
     flexDirection: 'row',
     width: 380,
@@ -250,7 +314,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'space-between',
   },
-  textContainer: { flex: 1 },
+  textContainer: {
+    flex: 1
+  },
   topicTitle: {
     fontSize: 25,
     color: '#03045E',
