@@ -104,7 +104,7 @@ export default function question1View() {
                                 variant="gray2"
                                 onPress={() => router.push({
                                     pathname: "/replyDiscussion",
-                                    params: item ? { 
+                                    params: item ? {
                                         replyId: item.id,
                                         replyName: item.name,
                                         replyText: item.text
@@ -119,9 +119,21 @@ export default function question1View() {
                         </View>
                     </View>
                 )}
+                ListFooterComponent={
+                    <View style={styles.footer}>
+                        <TouchableOpacity
+                            style={styles.submitButton}
+                            onPress={() => router.push("/topicQuestion1")}
+                            // onPress={() => setShowInput(true)}
+                        >
+                            <Text style={styles.submitButtonText}>Ask a Question +</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
                 initialNumToRender={5}
                 maxToRenderPerBatch={10}
             />
+
         </View>
     );
 }
@@ -194,4 +206,20 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'center',
     },
+    footer: {
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
+    submitButton: {
+        backgroundColor: '#D9D9D9',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+    },
+    submitButtonText: {
+        color: '#413F6F',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    
 });

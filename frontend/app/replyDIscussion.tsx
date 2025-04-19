@@ -27,8 +27,8 @@ export default function ReplyDiscussion() {
     const handleSubmit = useCallback(() => {
         if (inputText.trim() === "") {
             Alert.alert("Please enter your thoughts before submitting.");
-        } else if (inputText.trim().length < 50) {
-            Alert.alert("Please enter at least 50 characters");
+        // } else if (inputText.trim().length < 50) {
+        //     Alert.alert("Please enter at least 50 characters");
         } else {
             router.push('/viewReplies');
             params: {topicId}

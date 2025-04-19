@@ -86,7 +86,7 @@ export default function Discussion() {
                 title="Answer"
                 variant="purple2"
                 onPress={() => router.push({
-                  pathname: `/topicQuestion1`,
+                  pathname: `/quest1view`,
                   params: {
                     id: item.id,
                     title: item.title,
