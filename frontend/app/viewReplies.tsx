@@ -19,7 +19,6 @@ export default function viewReplies() {
     const [expanded, setExpanded] = useState([]);
     const [replies, setReplies] = useState([]);
 
-
     useEffect(() => {
         const hardcodedReplies = [
             {
@@ -33,7 +32,17 @@ export default function viewReplies() {
                 text: 'Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere.'
             },
         ];
-
+    
+        // add the new comment if it's passed
+        if (params.newComment) {
+            const newReply = {
+                _id: Date.now().toString(),
+                name: 'You',
+                text: params.newComment,
+            };
+            hardcodedReplies.push(newReply);
+        }
+    
         // if a main comment (commentId) is being replied to, bring that to the top
         if (commentId) {
             const mainComment = hardcodedReplies.find(r => r._id === commentId);
@@ -42,7 +51,7 @@ export default function viewReplies() {
         } else {
             setReplies(hardcodedReplies);
         }
-    }, [commentId]);
+    }, [params.newComment, commentId]);  // add `params.newComment` to the dependency array to trigger effect when it changes
 
 
     // useEffect(() => {

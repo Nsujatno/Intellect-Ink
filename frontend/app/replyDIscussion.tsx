@@ -101,7 +101,8 @@ export default function ReplyDiscussion() {
                         params: {
                             topicId: topicId,
                             title: title,
-                            description: description
+                            description: description,
+                            newComment: inputText,
                         }
                     })}
                 />
