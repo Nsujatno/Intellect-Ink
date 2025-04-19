@@ -75,7 +75,7 @@ export default function ReadMore() {
                         <Buttons
                             title='Discussion'
                             variant='purple'
-                            onPress={() => router.push('/discussion')}
+                            onPress={() => router.push(`/discussion?id=${parseItem.id}`)}
                         />
                     </View>
                 </View>
