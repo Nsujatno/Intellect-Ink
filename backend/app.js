@@ -11,14 +11,11 @@ const bookRouter = require('./routes/books')
 const newsRouter = require('./routes/news')
 const paperRouter = require('./routes/paper')
 const poemRouter = require('./routes/poem')
-<<<<<<< HEAD
 const commentRouter = require('./routes/comments')
 const replyRouter = require('./routes/replys')
-=======
 const quiz2Router = require('./routes/quiz2'); // add this
 
 
->>>>>>> 05e17ae3c6ac507f461f3e78299865b0b46376f4
 
 const app = express()
 
