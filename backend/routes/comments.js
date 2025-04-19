@@ -61,4 +61,9 @@ router.post("/edit-comment", async (req, res) => {
     res.json("Comment updated with question: " + question + " and body: " + body);
 })
 
+router.post("/get-comments", async (req, res) => {
+    const {mediaId} = req.body
+    const comments = await Comments.find({mediaId})
+    res.json(comments)
+})
 module.exports = router;
