@@ -9,37 +9,68 @@ export default function Quiz() {
   const [percent, setPercent] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
   const [selected, setSelected] = useState(false);
-  const [questionIndex, setQuestionIndex] = useState(-1);
-  const testQuestions = [
-    { question: 'What is the capital of France?', options: ['Paris', 'London', 'Berlin', 'Rome'], answer: 'Paris' },
-    { question: 'What is 2 + 2?', options: ['3', '4', '5', '6'], answer: '4' },
-    { question: 'What is our team name?', options: ['IntellectInk', 'CometClaim', 'WanderLust', 'Abis'], answer: 'IntellectInk'},
-  ];
+  const [questionIndex, setQuestionIndex] = useState(-1); // Initial state -1 for Start screen
+  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
 
   const [selectedOption, setSelectedOption] = useState('');
-  const [score, setScore] = useState(0); //keeps track of score
+  const [score, setScore] = useState(0); // keeps track of score
+
+  const shuffleOptions = (options: string[]) => {
+    return options.sort(() => Math.random() - 0.5);
+  };
+
+  // Fetch question from backend
+  const fetchQuestion = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/quiz2/get-quiz');
+      const data = await response.json();
+      console.log("Fetched Question Data:", data);
+  
+      // Format all questions and shuffle their options
+      const formattedQuestions = data.map((q: any) => ({
+        question: q.question,
+        options: shuffleOptions([q.correct_answer, ...q.incorrect_answers]),
+        answer: q.correct_answer,
+      }));
+  
+      setQuizQuestions(formattedQuestions);
+      setQuestionIndex(0); // Start at the first question
+    } catch (error) {
+      console.error('Error fetching quiz:', error);
+    }
+  };
+  
+  
+
+  // Handle the user's answer
   const handleAnswer = (selectedOption: string) => {
-    if (selectedOption === testQuestions[questionIndex].answer) {
+    if (selectedOption === quizQuestions[questionIndex].answer) {
       setScore(score + 1);
     }
-    if (selectedOption != '') {
-      setQuestionIndex(questionIndex+1)
-      setSelectedOption('')
+    if (selectedOption !== '') {
+      setQuestionIndex((prevIndex) => prevIndex + 1); // Increment question index
+      setSelectedOption('');
     } else {
-      setSelected(true)
+      setSelected(true);
     }
-  }
+  };
 
-  useEffect(() => { //displays percentage on progress bar
-    if (questionIndex>=0)
-      {const newPercent = ((questionIndex / testQuestions.length) * 100);
-      setPercent(newPercent);}
+  useEffect(() => { // Update percentage progress
+    if (questionIndex >= 0) {
+      const newPercent = ((questionIndex / quizQuestions.length) * 100);
+      setPercent(newPercent);
+    }
   }, [questionIndex]);
 
-  useEffect(() => { //calculate final score
-    if (questionIndex === testQuestions.length)
-      {const newFinalScore = ((score / testQuestions.length) * 100);
-      setFinalScore(newFinalScore);}
+  useEffect(() => { // Calculate final score
+    if (questionIndex === quizQuestions.length) {
+      const newFinalScore = ((score / quizQuestions.length) * 100);
+      setFinalScore(newFinalScore);
+    }
+  }, [questionIndex]);
+
+  useEffect(() => {
+    console.log("Question Index: ", questionIndex); // Log questionIndex to track its changes
   }, [questionIndex]);
 
   return (
@@ -67,16 +98,19 @@ export default function Quiz() {
             <Buttons
               title='Start'
               variant='purple'
-              onPress={()=>setQuestionIndex(questionIndex+1)}
+              onPress={() => {
+                setQuestionIndex(0);  // Start the quiz from index 0
+                fetchQuestion(); // Optionally, you can fetch the question here if you need dynamic questions
+              }}
             />
           </View>
         )}
-        {questionIndex !== -1 && questionIndex !== testQuestions.length && (
+        {questionIndex !== -1 && questionIndex !== quizQuestions.length && (
           <View style={styles.questionContainer}>
             <Text style={[textStyles.heading2purple, {fontSize: 25, color: '#03045E'}]}>Question {questionIndex+1}</Text>
-            <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3'}]}>{testQuestions[questionIndex].question}</Text>
+            <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3'}]}>{quizQuestions[questionIndex].question}</Text>
 
-            {testQuestions[questionIndex].options.map((option, index) => (
+            {quizQuestions[questionIndex].options.map((option, index) => (
               <TouchableOpacity key={index} onPress={() => {setSelectedOption(option); setSelected(false)}} style={styles.optionContainer}>
                 <View style={[{width: 20, height: 20, borderRadius: 20, marginRight: 20},{backgroundColor: selectedOption === option ? '#413F6F' : '#E2E2E2'}]}></View>
                 <Text style={textStyles.subheading}>{option}</Text>
@@ -97,7 +131,7 @@ export default function Quiz() {
             </View>
           </View>
         )}
-        {questionIndex === testQuestions.length && (
+        {questionIndex === quizQuestions.length && (
           <View style={[styles.topicContainer, {height: 380, marginTop: '22%'}]}>
           <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Quiz Completed</Text>
           <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Your Score: {score}/{questionIndex}</Text>

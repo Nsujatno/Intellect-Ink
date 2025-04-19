@@ -1,3 +1,4 @@
+// quiz2.js
 const express = require('express');
 const axios = require('axios');
 const mongoose = require('mongoose');
@@ -21,7 +22,6 @@ const router = express.Router();
 router.get('/fetch', async (req, res) => {
   try {
     const response = await axios.get('https://opentdb.com/api.php?amount=13&category=23&type=multiple');
-    
     const questions = response.data.results;
 
     if (!questions || questions.length === 0) {
@@ -37,7 +37,7 @@ router.get('/fetch', async (req, res) => {
         question: q.question,
         correct_answer: q.correct_answer,
         incorrect_answers: q.incorrect_answers,
-        category: modifiedCategory, // Saving the modified category
+        category: modifiedCategory,
         difficulty: q.difficulty,
         type: q.type
       });
@@ -59,53 +59,28 @@ router.get('/fetch', async (req, res) => {
   }
 });
 
-module.exports = router;
-
-/*
-const express = require('express');
-const mongoose = require('mongoose');
-
-const quiz2Schema = new mongoose.Schema({
-  question: { type: String, required: true },
-  correct_answer: { type: String, required: true },
-  incorrect_answers: { type: [String], required: true },
-  category: { type: String },
-  type: { type: String },
-  difficulty: { type: String },
-});
-
-const OpenTDBQuiz = mongoose.model('OpenTDBQuiz', quiz2Schema, 'quizzs');
-
-const router = express.Router();
-
-// Store used _ids in memory (can also use Redis/session/db if needed)
-const usedIds = [];
-
-router.get('/fetch', async (req, res) => {
+// Route to get quizzes from the database
+router.get('/get-quiz', async (req, res) => {
   try {
-    const allQuestions = await OpenTDBQuiz.find({});
-    
-    // Filter out used questions
-    const unusedQuestions = allQuestions.filter(q => !usedIds.includes(q._id.toString()));
+    const numberOfQuestions = 10; // Choose how many you want to return
+    const total = await OpenTDBQuiz.countDocuments();
 
-    if (unusedQuestions.length === 0) {
-      return res.status(404).json({ error: 'All questions have been used.' });
+    if (total === 0) {
+      return res.status(404).json({ error: 'No quiz questions found.' });
     }
 
-    // Pick a random question from the unused ones
-    const randomIndex = Math.floor(Math.random() * unusedQuestions.length);
-    const randomQuestion = unusedQuestions[randomIndex];
+    const actualCount = Math.min(numberOfQuestions, total); // Prevent oversampling
 
-    // Mark the question as used
-    usedIds.push(randomQuestion._id.toString());
+    // Randomly select documents
+    const questions = await OpenTDBQuiz.aggregate([{ $sample: { size: actualCount } }]);
 
-    res.status(200).json(randomQuestion);
-
+    res.json(questions);
   } catch (error) {
-    console.error("Error fetching question from DB:", error);
-    res.status(500).json({ error: 'Failed to fetch question from database.' });
+    console.error('Error fetching quiz:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
+
+// Export the router properly
 module.exports = router;
-*/
