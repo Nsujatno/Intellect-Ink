@@ -7,8 +7,7 @@ import axios from "axios";
 
 export default function TopicQuestion() {
     const router = useRouter();
-    const { id, title, description } = useLocalSearchParams();
-    // const { topicId, title, description } = useLocalSearchParams();
+    const { topicId, title, description } = useLocalSearchParams();
     const [inputText, setInputText] = useState("");
     const maxChars = 1400;
 
@@ -55,10 +54,10 @@ export default function TopicQuestion() {
                 onPress={() => { router.back() }}>
                 <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
-            <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 25, right: 110, color: '#646EA3' }]}>{description}</Text>
 
+            <View style={styles.textContainer}>
+                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 23, color: '#646EA3', textAlign: 'center', }]}>Comment</Text>
             </View>
 
             <View style={styles.answerBox}>
@@ -81,24 +80,22 @@ export default function TopicQuestion() {
                 <Buttons
                     title='Comment'
                     variant='purple2'
-                    // onPress={handleComment}
-                    // onPress={() => router.push({
-                    //                     pathname: '/quest1view',
-                    //                     params: {
-                    //                       topicId: id,
-                    //                       title: title,
-                    //                       description: description
-                    //                     }
-                    // )};
-                    onPress={() => router.push({
-                        pathname: "/quest1view",
-                        params: {
-                            topicId: id,
-                            title: title,
-                            description: description
-                        }
-                    })}
+                    onPress={() => {
+                        // if (inputText.trim().length < 150) {
+                        //     Alert.alert("Please enter at least 30 words (150 characters)");
+                        // } else {
+                        router.push({
+                            pathname: "/quest1view",
+                            params: {
+                                topicId,
+                                title,
+                                description,
+                                newComment: inputText,
+                            },
+                        });
+                    }}
                 />
+
             </View>
         </ScrollView>
     );

@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from "react-native";
+; import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -7,34 +7,57 @@ import Buttons from "./components/buttons";
 export default function viewReplies() {
     const router = useRouter();
     const maxLength = 200;
-    const { id, title, description } = useLocalSearchParams();
+
+    const { topicId, title, description } = useLocalSearchParams();
+    const { commentId, commentName, commentText } = useLocalSearchParams();
+
+    const [comment, setComment] = useState("");
+    const [showCommentInput, setShowCommentInput] = useState(false);
+    const params = useLocalSearchParams();
+    const { replyId, replyName, replyText } = params;
+
     const [expanded, setExpanded] = useState([]);
-    const { topicId, commentId, commentName, commentText } = useLocalSearchParams();
-    const [replies, setReplies] = useState([
-        {
-            id: '1',
-            name: 'Name',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.'
-        },
-        {
-            id: '2',
-            name: 'Name',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        },
-    ]);
+    const [replies, setReplies] = useState([]);
+
 
     useEffect(() => {
-        const fetchComments = async () => {
-            try {
-                const response = await axios.get(""); // api link
-                setReplies(response.data);
-            } catch (error) {
-                console.error("Error fetching comments:", error)
-            }
-        };
+        const hardcodedReplies = [
+            {
+                _id: '1',
+                name: 'Name',
+                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.'
+            },
+            {
+                _id: '2',
+                name: 'Name',
+                text: 'Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere.'
+            },
+        ];
 
-        if (topicId) fetchComments();
-    }, [topicId])
+        // if a main comment (commentId) is being replied to, bring that to the top
+        if (commentId) {
+            const mainComment = hardcodedReplies.find(r => r._id === commentId);
+            const otherReplies = hardcodedReplies.filter(r => r._id !== commentId);
+            setReplies(mainComment ? [mainComment, ...otherReplies] : hardcodedReplies);
+        } else {
+            setReplies(hardcodedReplies);
+        }
+    }, [commentId]);
+
+
+    // useEffect(() => {
+    //     const fetchComments = async () => {
+    //         try {
+    //             const response = await axios.get(""); // api link
+    //             setReplies(response.data);
+    //         } catch (error) {
+    //             console.error("Error fetching comments:", error)
+    //         }
+    //     };
+
+    //     if (topicId) fetchComments();
+    // }, [topicId])
+
 
     const toggleExpanded = (id) => {
         setExpanded(prev => ({
@@ -54,21 +77,45 @@ export default function viewReplies() {
 
             <TouchableOpacity
                 style={{ alignSelf: 'flex-start', marginTop: 50, marginBottom: -20, left: 20 }}
-                onPress={() => { router.back() }}
+                onPress={() => router.back()}
             >
                 <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
 
+            <View style={styles.topButtonWrapper}>
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={() =>
+                        router.push({
+                            pathname: "/replyDiscussion",
+                            params: {
+                                topicId: topicId,
+                                title: title,
+                                description: description,
+                                replyId: replyId,
+                                replyName: replyName,
+                                replyText: replyText,
+                            },
+                        })
+                    }
+                >
+                    <Text style={styles.submitButtonText}>Reply +</Text>
+                </TouchableOpacity>
+            </View>
+
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 25, right: 100, color: '#646EA3' }]}>View Replies</Text>
+                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 23, color: '#646EA3', textAlign: 'center', }]}>View Replies</Text>
             </View>
 
             <FlatList
                 data={replies}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item, index }) => (
-                    <View style={styles.replyContainer}>
+                    <View style={[
+                        styles.replyContainer,
+                        index === 0 && { marginTop: 12 } // add space above the first reply
+                    ]}>
                         <View style={styles.indivReplyContainer}>
                             <View style={styles.profileSection}>
                                 <Image
@@ -79,7 +126,7 @@ export default function viewReplies() {
                             </View>
 
                             <Text style={textStyles.bodytext5}>
-                                {expanded[item._id] ? item.text : `${item.text.slice(0, maxLength)}...`}
+                                {expanded[item._id] ? item.text : item.text.slice(0, maxLength) + '...'}
                             </Text>
 
                             <TouchableOpacity onPress={() => toggleExpanded(item._id)}>
@@ -89,50 +136,29 @@ export default function viewReplies() {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={styles.replyButtonContainer}>
-                            {index !== 1 && (
+                        {index !== 0 && (
+                            <View style={styles.replyButtonContainer}>
                                 <Buttons
                                     title="Reply"
                                     variant="gray2"
                                     onPress={() => router.push({
-                                        pathname: "/replyDiscussion",
-                                        params: { 
-                                            topicId,
-                                            replyId: item.id,
+                                        pathname: "/viewReplies",
+                                        params: {
+                                            topicId: topicId,
+                                            replyId: item._id,
                                             replyName: item.name,
                                             replyText: item.text
                                         }
                                     })}
                                 />
-                            )}
-                            {index !== 0 && (
-                                <Buttons
-                                title="More Replies"
-                                variant="purple3"
-                                onPress={() => router.push({
-                                  pathname: "/viewReplies",
-                                  params: {
-                                    topicId,
-                                    commentId: item.id,
-                                    commentName: item.name,
-                                    commentText: item.text,
-                                  }
-                                })}
-                              />
-                            )}
-                        </View>
-
-                        {/* {index === 0 && (
-                            <Image
-                                source={require('../assets/images/line-12.png')}
-                                style={styles.lineImage}
-                            />
-                        )} */}
+                            </View>
+                        )}
                     </View>
                 )}
                 initialNumToRender={5}
                 maxToRenderPerBatch={10}
             />
+
         </View>
     );
 }
@@ -205,10 +231,25 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'center',
     },
-    // lineImage: {
-    //     width: '100%',
-    //     height: 2.5,
-    //     marginTop: 30,
-    //     paddingHorizontal: 20,
-    // },
+    topButtonWrapper: {
+        position: 'absolute',
+        top: 50,
+        right: 20,
+        zIndex: 10,
+    },
+    footer: {
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
+    submitButton: {
+        backgroundColor: '#D9D9D9',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+    },
+    submitButtonText: {
+        color: '#413F6F',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });

@@ -190,11 +190,11 @@ export default function Discussion() {
                           title="Post"
                           variant="purple2"
                           onPress={() => {
-                            if (title && description) {
+                            if (title.trim()) {
                               const newTopic = {
                                 id: Date.now().toString(),
                                 title,
-                                description,
+                                description, // not required
                                 isEditing: false,
                                 isNew: true
                               };
@@ -257,14 +257,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   buttonWrapper: {
-    width: 120,
+    width: 105,
     bottom: -55,
     alignItems: 'flex-start',
+    marginLeft: -50,
   },
   editDeleteRow: {
     flexDirection: 'row',
-    gap: 8,
-    transform: [{ translateX: -220 }],
+    gap: 10,
+    marginTop: -42,
+    transform: [{ translateX: -240 }],
   },
   textButtonContainer: {
     flexDirection: 'row',
@@ -278,13 +280,13 @@ const styles = StyleSheet.create({
     flex: 1
   },
   topicTitle: {
-    fontSize: 25,
+    fontSize: 21.5,
     color: '#03045E',
     textAlign: 'left',
     top: -30,
   },
   topicDescription: {
-    fontSize: 18,
+    fontSize: 17,
     color: '#646EA3',
     textAlign: 'left',
     top: -30,

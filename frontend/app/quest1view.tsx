@@ -9,41 +9,76 @@ import { useLocalSearchParams } from "expo-router";
 export default function question1View() {
     const router = useRouter();
     const maxLength = 200;
-    const [expanded, setExpanded] = useState([]);
-    const { topicId, title, description } = useLocalSearchParams();
 
-    const [replies, setReplies] = useState([
-        {
-            id: '1',
-            name: 'Name',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.'
-        },
-        {
-            id: '2',
-            name: 'Name',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        },
-    ]);
+    const [expanded, setExpanded] = useState([]);
+    const [replies, setReplies] = useState();
+
+    const { topicId, title, description, newComment } = useLocalSearchParams();
 
     useEffect(() => {
-        const fetchComments = async () => {
-            try {
-                const response = await axios.get(""); // api link
-                setReplies(response.data);
-            } catch (error) {
-                console.error("Error fetching comments:", error)
-            }
-        };
+        let baseReplies = [
+            {
+                _id: '1',
+                name: 'Name',
+                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.'
+            },
+            {
+                _id: '2',
+                name: 'Name',
+                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+            },
+        ];
 
-        fetchComments();
-    }, [topicId])
+        if (newComment) {
+            baseReplies = [
+                ...baseReplies,
+                {
+                    _id: Date.now().toString(),
+                    name: 'You',
+                    text: newComment,
+                },
+            ];
+        }
 
-    // const toggleExpanded = (id) => {
-    //     setExpanded((prevState) => ({
-    //         ...prevState,
-    //         [id]: !prevState[id],
-    //     }));
+        setReplies(baseReplies);
+    }, [newComment]);
+
+
+    // useEffect(() => {
+    //     const fetchComments = async () => {
+    //         try {
+    //             const response = await axios.get(""); // api link
+    //             setReplies(response.data);
+    //         } catch (error) {
+    //             console.error("Error fetching comments:", error)
+    //         }
+    //     };
+
+    //     fetchComments();
+    // }, [topicId])
+
+    // const fetchComments = async () => {
+    //     try {
+    //         const response = await axios.get("");
+    //         let fetchedReplies = response.data;
+
+    //         if (newComment) {
+    //             fetchedReplies = [
+    //                 ...fetchedReplies,
+    //                 {
+    //                     _id: Date.now().toString(),
+    //                     name: "You",
+    //                     text: newComment,
+    //                 },
+    //             ];
+    //         }
+
+    //         setReplies(fetchedReplies);
+    //     } catch (err) {
+    //         console.error("Error fetching comments:", err);
+    //     }
     // };
+
 
     const toggleExpanded = (id) => {
         setExpanded(prev => ({
@@ -63,21 +98,43 @@ export default function question1View() {
 
             <TouchableOpacity
                 style={{ alignSelf: 'flex-start', marginTop: 50, marginBottom: -20, left: 20 }}
-                onPress={() => { router.back() }}
+                onPress={() => router.back()}
             >
-                <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
+            <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
 
+            <View style={styles.topButtonWrapper}>
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={() =>
+                        router.push({
+                            pathname: "/topicQuestion1",
+                            params: {
+                                topicId: topicId,
+                                title: title,
+                                description: description,
+                            },
+                        })
+                    }
+                >
+                    <Text style={styles.submitButtonText}>Comment +</Text>
+                </TouchableOpacity>
+            </View>
+
+
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 25, right: 85, color: '#646EA3' }]}>View Discussion</Text>
+                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 22, color: '#646EA3', textAlign: 'center', }]}>View Discussion</Text>
             </View>
 
             <FlatList
                 data={replies}
                 keyExtractor={(item) => item._id}
-                renderItem={({ item }) => (
-                    <View style={styles.replyContainer}>
+                renderItem={({ item, index }) => (
+                    <View style={[
+                        styles.replyContainer,
+                        index === 0 && { marginTop: 12 } // add space above the first reply
+                    ]}>
                         <View style={styles.indivReplyContainer}>
                             <View style={styles.profileSection}>
                                 <Image
@@ -86,50 +143,116 @@ export default function question1View() {
                                 />
                                 <Text style={styles.nameText}>{item.name}</Text>
                             </View>
-
+                
                             <Text style={textStyles.bodytext5}>
                                 {expanded[item._id] ? item.text : item.text.slice(0, maxLength) + '...'}
                             </Text>
-
+                
                             <TouchableOpacity onPress={() => toggleExpanded(item._id)}>
                                 <Text style={styles.viewMoreText}>
                                     {expanded[item._id] ? "View Less" : "View More"}
                                 </Text>
                             </TouchableOpacity>
                         </View>
-
+                
                         <View style={styles.replyButtonContainer}>
                             <Buttons
                                 title="Reply"
                                 variant="gray2"
                                 onPress={() => router.push({
-                                    pathname: "/replyDiscussion",
+                                    pathname: "/viewReplies",
                                     params: item ? {
-                                        replyId: item.id,
+                                        replyId: item._id,
                                         replyName: item.name,
-                                        replyText: item.text
+                                        replyText: item.text,
+                                        title: title,
+                                        description: description,
+                                        topicId: topicId
                                     } : {}
                                 })}
                             />
-                            <Buttons
-                                title="More Replies"
-                                variant="purple3"
-                                onPress={() => router.push("/viewReplies")}
-                            />
                         </View>
                     </View>
-                )}
-                ListFooterComponent={
-                    <View style={styles.footer}>
-                        <TouchableOpacity
-                            style={styles.submitButton}
-                            onPress={() => router.push("/topicQuestion1")}
-                            // onPress={() => setShowInput(true)}
-                        >
-                            <Text style={styles.submitButtonText}>Ask a Question +</Text>
-                        </TouchableOpacity>
-                    </View>
-                }
+                )}                
+                // renderItem={({ item }) => (
+                //     <View style={styles.replyContainer}>
+                //         <View style={styles.indivReplyContainer}>
+                //             <View style={styles.profileSection}>
+                //                 <Image
+                //                     source={require('../assets/images/pfp.png')}
+                //                     style={styles.profileImage}
+                //                 />
+                //                 <Text style={styles.nameText}>{item.name}</Text>
+                //             </View>
+
+                //             <Text style={textStyles.bodytext5}>
+                //                 {expanded[item._id] ? item.text : item.text.slice(0, maxLength) + '...'}
+                //             </Text>
+
+                //             <TouchableOpacity onPress={() => toggleExpanded(item._id)}>
+                //                 <Text style={styles.viewMoreText}>
+                //                     {expanded[item._id] ? "View Less" : "View More"}
+                //                 </Text>
+                //             </TouchableOpacity>
+                //         </View>
+
+                //         <View style={styles.replyButtonContainer}>
+                //             <Buttons
+                //                 title="Reply"
+                //                 variant="gray2"
+                //                 onPress={() => router.push({
+                //                     pathname: "/viewReplies",
+                //                     params: item ? {
+                //                         replyId: item._id,
+                //                         replyName: item.name,
+                //                         replyText: item.text,
+                //                         title: title,
+                //                         description: description,
+                //                         topicId: topicId
+                //                     } : {}
+                //                 })}
+                //             />
+                //             {/* <Buttons
+                //                 title="More Replies"
+                //                 variant="purple3"
+                //                 onPress={() =>
+                //                     router.push({
+                //                         pathname: "/viewReplies",
+                //                         params: {
+                //                             topicId,
+                //                             title,
+                //                             description,
+                //                             commentId: item._id,
+                //                             commentName: item.name,
+                //                             commentText: item.text,
+                //                         },
+                //                     })
+                //                 }
+                //             /> */}
+
+                //         </View>
+                //     </View>
+                // )}
+                // ListFooterComponent={
+                //     <View style={styles.footer}>
+                //         <TouchableOpacity
+                //             style={styles.submitButton}
+                //             onPress={() =>
+                //                 router.push({
+                //                     pathname: "/topicQuestion1",
+                //                     params: {
+                //                         topicId: topicId,
+                //                         title: title,
+                //                         description: description,
+                //                     },
+                //                 })
+                //             }
+                //         >
+                //             <Text style={styles.submitButtonText}>Add a comment +</Text>
+                //         </TouchableOpacity>
+
+                //     </View>
+                // }
                 initialNumToRender={5}
                 maxToRenderPerBatch={10}
             />
@@ -158,6 +281,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 50,
         marginBottom: 60,
+        paddingHorizontal: 20,
     },
     replyContainer: {
         position: 'relative',
@@ -206,6 +330,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'center',
     },
+    topButtonWrapper: {
+        position: 'absolute',
+        top: 50,
+        right: 20,
+        zIndex: 10,
+    },
     footer: {
         alignItems: 'center',
         paddingVertical: 20,
@@ -221,5 +351,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    
+
 });
