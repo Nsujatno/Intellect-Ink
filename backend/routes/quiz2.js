@@ -20,7 +20,7 @@ const router = express.Router();
 // Route to fetch and save questions from OpenTDB
 router.get('/fetch', async (req, res) => {
   try {
-    const response = await axios.get('https://opentdb.com/api.php?amount=5&category=17&type=multiple');
+    const response = await axios.get('https://opentdb.com/api.php?amount=13&category=23&type=multiple');
     
     const questions = response.data.results;
 

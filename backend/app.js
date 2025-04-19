@@ -11,7 +11,6 @@ const bookRouter = require('./routes/books')
 const newsRouter = require('./routes/news')
 const paperRouter = require('./routes/paper')
 const poemRouter = require('./routes/poem')
-const quizRouter = require('./routes/quiz');
 const quiz2Router = require('./routes/quiz2'); // add this
 
 
@@ -29,7 +28,6 @@ app.use('/api/book', bookRouter);
 app.use('/api/news', newsRouter);
 app.use('/api/paper', paperRouter);
 app.use('/api/poem', poemRouter);
-app.use('/api/quiz', quizRouter);
 app.use('/api/quiz2', quiz2Router);
 
 
