@@ -7,9 +7,9 @@ import Buttons from "./components/buttons";
 export default function viewReplies() {
     const router = useRouter();
     const maxLength = 200;
+    const { id, title, description } = useLocalSearchParams();
     const [expanded, setExpanded] = useState([]);
-    const { topicId } = useLocalSearchParams();
-
+    const { topicId, commentId, commentName, commentText } = useLocalSearchParams();
     const [replies, setReplies] = useState([
         {
             id: '1',
@@ -22,8 +22,6 @@ export default function viewReplies() {
             text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
         },
     ]);
-
-    // const [replies, setReplies] = useState([]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -62,7 +60,7 @@ export default function viewReplies() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question {topicId}</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 100, color: '#646EA3' }]}>View Replies</Text>
             </View>
 
@@ -109,10 +107,18 @@ export default function viewReplies() {
                             )}
                             {index !== 0 && (
                                 <Buttons
-                                    title="More Replies"
-                                    variant="purple3"
-                                    onPress={() => router.push("/viewReplies")}
-                                />
+                                title="More Replies"
+                                variant="purple3"
+                                onPress={() => router.push({
+                                  pathname: "/viewReplies",
+                                  params: {
+                                    topicId,
+                                    commentId: item.id,
+                                    commentName: item.name,
+                                    commentText: item.text,
+                                  }
+                                })}
+                              />
                             )}
                         </View>
 
