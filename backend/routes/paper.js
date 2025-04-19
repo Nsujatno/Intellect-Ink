@@ -18,7 +18,38 @@ const researchPaperSchema = new mongoose.Schema({
 // ✅ Define the model
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 
+<<<<<<< HEAD
 // Fetch research papers from Semantic Scholar API
+=======
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const paperById = await ResearchPaper.findById(req.body.itemId)
+  res.json({paperById});
+})
+
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await ResearchPaper.aggregate([{ $sample: { size: await ResearchPaper.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
+router.post("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await ResearchPaper.find({
+    $or: [
+      { title: regex },
+      { description: regex }
+    ]
+  });
+  // console.log(results);
+  res.json(results)
+})
+
+
+// Fetch research papers from CORE API
+>>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
 router.get("/data", async (req, res) => {
   let queryTerm = req.query.topic || "Science"; // Use query param or default
   let saveLimit = parseInt(req.query.limit) || 5; // Limit the number of saved papers (default: 5)

@@ -5,7 +5,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface ButtonProps {
     title: string;
-    variant: 'purple' | 'purple2' | 'purple3' | 'white' | 'gray' | 'gray2' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
+    variant: 'purple' | 'purple2' | 'purple3' | 'white' | 'gray' | 'gray2' | 'small' | 'whiteOutline'| 'whiteOutlineBig' | 'whiteBig';
     onPress: () => void;
 }
 
@@ -20,6 +20,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
             variant === 'white' ? styles.whiteContainer : null,
             variant == 'gray' ? styles.grayContainer : null,
             variant == 'gray2' ? styles.gray2Container : null,
+            variant == 'small' ? styles.smallContainer : null,
             variant === 'whiteBig' ? styles.whiteContainerBig : null,
             variant === 'whiteOutline' ? styles.outlineContainer : null,
             variant === 'whiteOutlineBig' ? styles.outlineContainerBig : null, ]}
@@ -33,6 +34,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                     variant === 'white' ? {color: '#413F6F'} : null,
                     variant == 'gray' ? {color: '#413F6F'} : null,
                     variant === 'gray2' ? {color: '#413F6F', fontSize: 16} : null,
+                    variant == 'small' ? {color: '#413F6F', fontSize: 14} : null,
                     variant === 'whiteBig' ? {color: '#413F6F', fontSize: 25} : null,
                     variant === 'whiteOutline' ? {color: 'white'} : null,
                     variant === 'whiteOutlineBig' ? {color: 'white', fontSize: 25} : null, ]}>
@@ -74,6 +76,10 @@ const styles = StyleSheet.create ({
     whiteContainer: {
         backgroundColor:'#FFFFFF',
     },
+    lightContainer: {
+        backgroundColor: '#D9D9D9',
+        fontWeight: 'bold',
+    },
     grayContainer: {
         backgroundColor: '#D9D9D9',
         paddingHorizontal: 20,
@@ -83,6 +89,13 @@ const styles = StyleSheet.create ({
         width: 80,
         height: 30,
         paddingHorizontal: 20,
+    },
+    smallContainer: {
+        backgroundColor: '#D9D9D9',
+        width: 80,
+        height: 30,
+        paddingHorizontal: 10,
+        justifyContent: 'center',
     },
     outlineContainer: {
         backgroundColor:'transparent',

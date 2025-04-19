@@ -18,8 +18,41 @@ const quizSchema = new mongoose.Schema({
 
 const Quiz = mongoose.model("Quiz", quizSchema);
 
+<<<<<<< HEAD
 // Endpoint to fetch and save a random quiz
 router.get("/fetch-quiz", async (req, res) => {
+=======
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const poemById = await Poem.findById(req.body.itemId)
+  res.json({poemById});
+})
+
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await Poem.aggregate([{ $sample: { size: await Poem.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
+router.post("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await Poem.find({
+    $or: [
+      { title: regex },
+      { lines: regex }
+    ]
+  });
+  // console.log(results);
+  res.json(results)
+})
+
+const AUTHOR_NAME = "William Shakespeare";
+const API_URL = `https://poetrydb.org/author/${encodeURIComponent(AUTHOR_NAME)}`;
+
+router.get("/data", async (req, res) => {
+>>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
   try {
     const API_KEY = process.env.QUIZ_API_KEY;
     const API_URL = "https://quizapi.io/api/v1/questions?limit=1";

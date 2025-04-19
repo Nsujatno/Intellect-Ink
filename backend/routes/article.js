@@ -22,6 +22,17 @@ const Article = mongoose.model("Article", articleSchema);
 
 const API_KEY = process.env.NYT_API_KEY;
 
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const articleById = await Article.findById(req.body.itemId)
+  res.json({articleById});
+})
+
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await Article.aggregate([{ $sample: { size: await Article.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
@@ -38,8 +49,12 @@ router.post("/search", async (req, res) => {
 })
 
 router.get("/data", async (req, res) => {
+<<<<<<< HEAD
   let queryTopic = "history";
   const LIMIT = 5; // Set the limit for the number of articles saved per request
+=======
+  let randomMedia = "technology"
+>>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
 
   try {
     const API_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${queryTopic}&api-key=${API_KEY}`;

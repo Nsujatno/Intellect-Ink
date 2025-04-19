@@ -1,67 +1,80 @@
 import { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, Linking, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, FlatList, ImageBackground } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 import { textStyles } from "../stylesheets/textStyles";
 import Buttons from "../components/buttons";
+import Notification from "../components/notification";
 import { useTimeTracker } from "../hooks/useTimeTracker";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import axios from "axios";
+import { Dimensions } from 'react-native';
+import axios from 'axios'
+import { transform } from "@babel/core";
+import { ngrokPath, isExpoMode } from "../utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const testSubjects = [
-  {
-    id: "1",
-    type: "book",
-    image: "https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg",
-    title: "Harry Potter and the Chamber of Secrets",
-    author: "JK Rowling",
-    link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',
-    summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.",
-  },
-  {
-    id: "2",
-    type: "news",
-    image: "",
-    title: "Chuck E. Cheese wants to be the Costco of family fun",
-    author: "Savannah Sellers and Alexandra Byrne",
-    link: 'https://www.nbcnews.com/business/consumer/chuck-e-cheese-wants-costco-family-fun-rcna195652',
-    summary: "Chuck E. Cheese wants you to stop by as frequently as you pick up groceries, and it’s selling subscription plans to sweeten the pitch.",
-  },
-  {
-    id: "3",
-    type: "poem",
-    title: "The Raven",
-    author: "Edgar Allan Poe",
-    poem: "Once upon a midnight dreary, While I pondered, weak and weary...",
-  },
-];
-
-const API_BASE_URL = ""; // api config, empty for offline only
+interface SubjectItem {
+  id: string;
+  type: string;
+  image?: string;
+  title: string;
+  author: string;
+  link?: string;
+  summary?: string;
+  poem?: string;
+}
+const screenHeight = Dimensions.get('window').height;
 
 export default function Home() {
   const router = useRouter();
   const [userId, setUserId] = useState("");
   const [state, setState] = useState({ page: 0 });
   const [level, setLevel] = useState(0);
-  // const [percent, setPercent] = useState(50);
   const [percent, setPercent] = useState(0);
   const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
   const [dailyGoal, setDailyGoal] = useState(30);
   const [timeReadToday, setTimeReadToday] = useState(0);
-  const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
-  const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
 
-  // Time tracking for different categories
+  // Store liked and favorited items
+  // const [likedItems, setLikedItems] = useState<{ [key: string]: boolean }>({});
+  // const [favoritedItems, setFavoritedItems] = useState<{ [key: string]: boolean }>({});
+
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [showProgressInNotification, setShowProgressInNotification] = useState(false);
+  const [shownNotifications, setShownNotifications] = useState({
+    progressNotification: false,
+    scheduledNotification: false,
+    eveningNotification: false
+  });
+
+  // time tracking for different categories
   const booksTracker = useTimeTracker("books");
   const poemsTracker = useTimeTracker("poem");
   const newsTracker = useTimeTracker("news");
+  const articleTracker = useTimeTracker("article");
+  const paperTracker = useTimeTracker("paper");
+
+  const [forYouItems, setForYouItems] = useState<SubjectItem[]>([]);
+  const [exploreItems, setExploreItems] = useState<SubjectItem[]>([]);
+
 
   useEffect(() => {
     const loadProgress = async () => {
       const localData = await AsyncStorage.getItem("userProgress");
       if (localData) {
-        const { level, percent, viewedCategories, dailyGoal, timeReadToday } = JSON.parse(localData);
+        const { 
+          level, 
+          percent, 
+          viewedCategories, 
+          dailyGoal, 
+          timeReadToday, 
+          notificationTime, 
+          notificationEnabled, 
+          eveningReminderTime = "20:00",
+          shownNotifications
+        } = JSON.parse(localData);
+
         setLevel(level || 0);
         setPercent(percent || 0);
         setViewedCategories(new Set(viewedCategories || []));
@@ -78,22 +91,88 @@ export default function Home() {
       dailyGoal,
       timeReadToday,
       level,
-      percent
+      percent,
+      eveningReminderTime: "20:00",
+      shownNotifications
     };
     await AsyncStorage.setItem("userProgress", JSON.stringify(progressData));
   };
 
-  // calculate updated progress
   useEffect(() => {
-    // for every different category the user views, awards 26.6% per category to reach a 80% max
-    const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
+    const checkReadingGoal = async () => {
+      const userSettings = await AsyncStorage.getItem("userProgress");
+      if (!userSettings) return;
 
-    // awards 20% for progress if daily reading goal is completed
+      const { 
+        dailyGoal, 
+        timeReadToday, 
+        notificationEnabled, 
+        notificationTime,
+        eveningReminderTime = "20:00"
+      } = JSON.parse(userSettings);
+      
+      // no notifications if daily reading time goal is not set
+      if (!notificationEnabled || !notificationTime) return;
+
+      const now = new Date();
+      const notificationDateTime = new Date(notificationTime); // notification time
+      const [eveningHour, eveningMinute] = eveningReminderTime.split(":").map(Number); // evening time
+
+      // 1. If 20% progress left on progress bar (80% reached)
+      if (percent >= 80 && percent <= 100 && !shownNotifications.progressNotification) {
+        setNotificationMessage("You're almost there! Just ~20% left to level up!");
+        setShowProgressInNotification(true);
+        setShowNotification(true);
+        setShownNotifications(prev => ({...prev, progressNotification: true}));
+        return;
+    }
+
+      // 2. Check if current time matches scheduled time
+      const isNotificationTime =
+        now.getHours() === notificationDateTime.getHours() &&
+        now.getMinutes() >= notificationDateTime.getMinutes() &&
+        now.getMinutes() <= notificationDateTime.getMinutes() + 5;
+
+      if (isNotificationTime && !shownNotifications.scheduledNotification) {
+        setNotificationMessage("It's time to complete your daily reading goal! Earn 20% of progress!");
+        setShowProgressInNotification(true);
+        setShowNotification(true);
+        setShownNotifications(prev => ({...prev, scheduledNotification: true}));
+        return;
+      }
+
+      // 3. Check if it's past notification time and reading goal isn't complete
+      const isGoalIncomplete = timeReadToday < dailyGoal;
+      const isEveningTime =
+        now.getHours() == eveningHour &&
+        now.getMinutes() >= eveningMinute &&
+        now.getMinutes() <= eveningMinute + 5;
+
+      if (isEveningTime && isGoalIncomplete && !shownNotifications.eveningNotification) {
+        setNotificationMessage("Remember to complete your daily reading goal!");
+        setShowProgressInNotification(true);
+        setShowNotification(true);
+        setShownNotifications(prev => ({...prev, eveningNotification: true}));
+      }
+    };
+
+    const interval = setInterval(checkReadingGoal, 60000);
+    checkReadingGoal();
+    return () => clearInterval(interval);
+  }, [percent]);
+
+
+  useEffect(() => {
+    // For every different category the user views, awards 26.6% per category to reach a 80% max
+    const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
+    // Awards 20% for progress if daily reading goal is completed
     const goalProgress = timeReadToday >= dailyGoal ? 20 : 0; // const goalProgress = Math.min((timeReadToday / dailyGoal) * 67, 67);
     
     // 100% max
-    const totalProgress = Math.round(categoryProgress + goalProgress);
+    const totalProgress = Math.min(Math.round(categoryProgress + goalProgress), 100);
     setPercent(totalProgress);
+
+    // Changes level - fix
     if (totalProgress >= 100) {
       setLevel(prev => prev + 1);
       setPercent(0);
@@ -101,15 +180,44 @@ export default function Home() {
     }
   }, [viewedCategories, timeReadToday, dailyGoal]);
 
+
+  const handleBookmark = async (item: ItemProps) => {
+    try{
+      const payload = {
+        favorites: {
+          itemId: [item.id],
+          itemType: [item.type],
+        }
+      };
+      const token = await AsyncStorage.getItem('token');
+      // console.log("handling bookmark")
+      // console.log("payload: " + JSON.stringify(payload))
+      
+      const response = await axios.put(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/update-favorites`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      // console.log(response);
+    } catch (error){
+      console.log("error")
+    }
+    
+  }
+
   const handleReadMore = (item: ItemProps) => {
-    // track category
+    // Track category
     const updatedCategories = new Set(viewedCategories).add(item.type);
     setViewedCategories(updatedCategories);
 
-    // start timing
+    // Start timing
     if (item.type === "book") booksTracker.startTiming();
     else if (item.type === "poem") poemsTracker.startTiming();
     else if (item.type === "news") newsTracker.startTiming();
+    else if (item.type === "article") articleTracker.startTiming();
+    else if (item.type === "paper") paperTracker.startTiming();
 
     router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } });
   };
@@ -123,21 +231,35 @@ export default function Home() {
     summary?: string;
     poem?: string;
     link?: string;
+    topic?: string;
   };
 
-  const Item = ({ item }: { item: ItemProps }) => (
+  const Item = ({ item }: { item: ItemProps }) => {
+    const [like, setLike] = useState<"heart-outline" | "heart">("heart-outline");
+    const [favorite, setFavorite] = useState<"bookmark-outline" | "bookmark">("bookmark-outline");
+    return (
     <View style={styles.contentContainer}>
+      {item.image ? (
+        <Image source={{ uri: item.image }} style={styles.image} />
+      ) : item.type === "poem" ? (
+        <Image source={require('../../assets/images/poemImg3.png')} style={styles.image} />
+      ) : item.type === "paper" ? (
+        <Image source={require('../../assets/images/paperImg2.png')} style={styles.image} />
+      ) : (
+        <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
+      )}
       <View style={styles.mediaTag}>
-        <Text style={textStyles.subheadingWhite}>{item.type}</Text>
+        <Text style={[textStyles.subheadingWhite, {marginVertical: 0}]}>{item.type}</Text>
       </View>
-      {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
       <View style={{ padding: 10 }}>
         <Text style={textStyles.heading2purple}>{item.title}</Text>
-        <Text style={[textStyles.subheading, { marginBottom: 20 }]}>By: {item.author}</Text>
+        {item.author && <Text style={[textStyles.subheading, {marginBottom: 20}]}>By: {item.author}</Text>}
         {item.type === "poem" ? (
-          <Text style={textStyles.subheading}>{item.poem}</Text>
+          <View style={{height: 200, overflow: 'hidden'}}>
+            <Text style={textStyles.subheading}>{item.poem}</Text>
+          </View>
         ) : (
-          <View>
+          <View style={{height: 200, overflow: 'hidden'}}>
             <Text style={textStyles.heading2purple}>Summary:</Text>
             <Text style={textStyles.subheading}>{item.summary}</Text>
           </View>
@@ -155,11 +277,12 @@ export default function Home() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() =>
+            onPress={() => {
+              handleBookmark(item);
               setFavorite((prevIcon) =>
                 prevIcon === "bookmark-outline" ? "bookmark" : "bookmark-outline"
               )
-            }
+            }}
           >
             <Ionicons name={favorite} size={27} color={"white"} />
           </TouchableOpacity>
@@ -172,11 +295,195 @@ export default function Home() {
       </View>
     </View>
   );
+};
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const token = await AsyncStorage.getItem('token');
+        if (!token) return;
+        const profileResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`, {
+          headers: {
+            "Content-Type": "application/json",
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        let media: string[] = profileResponse.data.media;
+        console.log("user media is: " + media)
+        
+        
+        // Fetch and process explore content
+        const exploreItemsArr: SubjectItem[] = [];
+        const forYouItemsArr: SubjectItem[] = [];
+
+        //article
+        try{
+          const response = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/shuffle`);
+
+          for(let i = 0; i < response.data.length; i++){
+            response.data[i].author = response.data[i].author.substr(3);
+            const transformedData = {
+              id: response.data[i]._id,
+              type: "article",
+              image: `https://static01.nyt.com/${response.data[i].urlToImage}` || "",
+              title: response.data[i].title,
+              author: response.data[i].author,
+              link: response.data[i].url,
+              summary: response.data[i].description,
+              topic: response.data[i].topic,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+            // console.log(response.data[i])
+          }
+        } catch(error){
+          console.log(error);
+        }
+        
+
+        // books
+        try{
+          
+          const bookResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/book/shuffle`);
+
+          for(let i = 0; i < bookResponse.data.length; i++){
+            if(bookResponse.data[i].author.length == 0){
+              bookResponse.data[i].author = bookResponse.data[i].publisher
+            }
+            else{
+              bookResponse.data[i].author = bookResponse.data[i].author[0]
+            }
+            const transformedData = {
+              id: bookResponse.data[i]._id,
+              type: "book",
+              image: bookResponse.data[i].thumbnail || "",
+              title: bookResponse.data[i].title,
+              author: bookResponse.data[i].author,
+              link: bookResponse.data[i].previewLink,
+              summary: bookResponse.data[i].description,
+              topic: bookResponse.data[i].topic,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error);
+        }
+        
+
+
+        // news
+        try{
+          const newsResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/news/shuffle`);
+          for(let i = 0; i < newsResponse.data.length; i++){
+            const transformedData = {
+              id: newsResponse.data[i]._id,
+              type: "news",
+              image: newsResponse.data[i].urlToImage || "",
+              title: newsResponse.data[i].title,
+              author: newsResponse.data[i].author,
+              link: newsResponse.data[i].url,
+              summary: newsResponse.data[i].description,
+              topic: newsResponse.data[i].topic,
+            }
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+        
+
+
+        //poem
+        try{
+          const poemResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/poem/shuffle`);
+          for(let i = 0; i < poemResponse.data.length; i++){
+            let poem = "";
+            for(let j = 0; j < poemResponse.data[i].lines.length; j++){
+              poem = poem + poemResponse.data[i].lines[j] + "\n"
+            }
+            const transformedData = {
+              id: poemResponse.data[i]._id,
+              type: "poem",
+              title: poemResponse.data[i].title,
+              author: poemResponse.data[i].author,
+              poem: poem,
+              topic: poemResponse.data[i].topic,
+            }
+            
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+
+        //research paper
+        try{
+          const paperResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/paper/shuffle`);
+          for(let i = 0; i < paperResponse.data.length; i++){
+            let author = "";
+            if(paperResponse.data[i].author[0] == "Unknown Author") author = "";
+            const transformedData = {
+              id: paperResponse.data[i]._id,
+              type: "paper",
+              title: paperResponse.data[i].title,
+              author: author,
+              summary: paperResponse.data[i].abstract,
+              link: paperResponse.data[i].url,
+              topic: paperResponse.data[i].topic,
+            }
+            
+            if (!exploreItemsArr.some(subject => subject.id === transformedData.id)) {
+              exploreItemsArr.push(transformedData);
+            }
+          }
+        }catch(error){
+          console.log(error)
+        }
+        
+        for (let i = exploreItemsArr.length - 1; i >= 0; i--) {
+          if (media.includes(exploreItemsArr[i].type)) {
+            forYouItemsArr.push(exploreItemsArr[i]);
+            exploreItemsArr.splice(i, 1);
+          }
+        }
+
+        // randomizes explore page
+        const randomizedExplore = [...exploreItemsArr];
+        for (let i = randomizedExplore.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomizedExplore[i], randomizedExplore[j]] = [randomizedExplore[j], randomizedExplore[i]];
+        }
+        // randomizes for you page
+        const randomizedForYou = [...forYouItemsArr];
+        for (let i = randomizedForYou.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomizedForYou[i], randomizedForYou[j]] = [randomizedForYou[j], randomizedForYou[i]];
+        }
+        setExploreItems(randomizedExplore);
+        setForYouItems(randomizedForYou)
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ImageBackground
       source={require('../../assets/images/Homebg.png')}
-      style={styles.imagebg}>
+      style={styles.imagebg}
+    >
       <View style={styles.container}>
         <SwitchSelector
           initial={0}
@@ -194,29 +501,51 @@ export default function Home() {
             { label: "Explore", value: 1 },
           ]}
         />
-
-        <FlatList
-          data={testSubjects}
-          renderItem={({ item }) => <Item item={item} />}
-          keyExtractor={(item) => item.id}
-          pagingEnabled={true}
-          showsVerticalScrollIndicator={false}
-          horizontal={false}
-        />
-
+        {state.page === 0 ? (
+          <FlatList
+            data={forYouItems}
+            renderItem={({ item }) => <Item item={item} />}
+            keyExtractor={(item) => item.id}
+            pagingEnabled={true}
+            showsVerticalScrollIndicator={false}
+            horizontal={false}
+          />
+        ) : (
+          <FlatList
+            data={exploreItems}
+            renderItem={({ item }) => <Item item={item} />}
+            keyExtractor={(item) => item.id}
+            pagingEnabled={true}
+            showsVerticalScrollIndicator={false}
+            horizontal={false}
+          />
+        )}
         <View style={styles.lvlContainer}>
           <View style={styles.lvlBar}>
-            <View style={[styles.lvlFill, { width: `${percent}%` }]} />
-            {/* <Image
-                      source={require('../../assets/images/fish.png')}
-                      style={{alignSelf: "flex-end"}}
-                    /> */}
+            <View style={[styles.lvlFill, { width: `${percent}%` }]}>
+              {/* <Image
+                source={require('../../assets/images/fish.png')}
+                style={{alignSelf: "flex-end"}}
+              /> */}
+            </View>
           </View>
           <View style={styles.lvlText}>
             <Text style={[textStyles.pageHeader, { fontSize: 17 }]}>{percent}%</Text>
             <Text style={[textStyles.pageHeader, { fontSize: 17 }]}>LVL {level}</Text>
           </View>
         </View>
+  
+        {showNotification && (
+          <Notification
+            message={notificationMessage}
+            onClose={() => setShowNotification(false)}
+            showProgress={showProgressInNotification}
+            // currentProgress={timeReadToday} // minutes read today
+            // goal={dailyGoal} // daily goal
+            currentProgress={percent}
+            goal={dailyGoal}
+          />
+        )}
       </View>
     </ImageBackground>
   );
@@ -233,9 +562,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "flex-start",
     textAlign: "center",
-    height: 610,
+    height: screenHeight-288,
+    marginVertical: 10,
     width: 370,
-    marginBottom: 20,
     position: "relative",
     shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },
@@ -274,6 +603,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "25%",
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
   },
   circleButton: {
     width: 45,
@@ -293,14 +624,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mediaTag: {
-    width: "100%",
+    width: 70,
     height: 35,
-    backgroundColor: "#736F96",
+    backgroundColor: "#413F6F",
     justifyContent: "center",
     alignItems: "center",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    alignSelf: "flex-end",
+    borderRadius: 5,
+    position: "absolute",
+    top: 110,
+    right: 10,
+    textAlign: 'center',
   },
   buttonContainer: {
     width: "100%",

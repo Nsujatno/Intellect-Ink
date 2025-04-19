@@ -1,15 +1,15 @@
-import { Text, View, Image, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
-import axios from "axios";
 
-export default function Question1View() {
+export default function viewReplies() {
     const router = useRouter();
     const maxLength = 200;
+    const { id, title, description } = useLocalSearchParams();
     const [expanded, setExpanded] = useState([]);
-
+    const { topicId, commentId, commentName, commentText } = useLocalSearchParams();
     const [replies, setReplies] = useState([
         {
             id: '1',
@@ -23,8 +23,6 @@ export default function Question1View() {
         },
     ]);
 
-    // const [replies, setReplies] = useState([]);
-
     useEffect(() => {
         const fetchComments = async () => {
             try {
@@ -35,15 +33,15 @@ export default function Question1View() {
             }
         };
 
-        fetchComments();
-    }, [])
+        if (topicId) fetchComments();
+    }, [topicId])
 
-    // const toggleExpanded = (id) => {
-    //     setExpanded((prevState) => ({
-    //         ...prevState,
-    //         [id]: !prevState[id],
-    //     }));
-    // };
+    const toggleExpanded = (id) => {
+        setExpanded(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
 
     return (
         <View style={styles.container}>
@@ -62,7 +60,7 @@ export default function Question1View() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 100, color: '#646EA3' }]}>View Replies</Text>
             </View>
 
@@ -96,15 +94,31 @@ export default function Question1View() {
                                 <Buttons
                                     title="Reply"
                                     variant="gray2"
-                                    onPress={() => router.push("/replyDiscussion")}
+                                    onPress={() => router.push({
+                                        pathname: "/replyDiscussion",
+                                        params: { 
+                                            topicId,
+                                            replyId: item.id,
+                                            replyName: item.name,
+                                            replyText: item.text
+                                        }
+                                    })}
                                 />
                             )}
                             {index !== 0 && (
                                 <Buttons
-                                    title="More Replies"
-                                    variant="purple3"
-                                    onPress={() => router.push("/viewReplies")}
-                                />
+                                title="More Replies"
+                                variant="purple3"
+                                onPress={() => router.push({
+                                  pathname: "/viewReplies",
+                                  params: {
+                                    topicId,
+                                    commentId: item.id,
+                                    commentName: item.name,
+                                    commentText: item.text,
+                                  }
+                                })}
+                              />
                             )}
                         </View>
 

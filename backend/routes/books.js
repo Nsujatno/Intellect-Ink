@@ -26,7 +26,38 @@ const bookSchema = new mongoose.Schema({
 
 const Book = mongoose.model("Book", bookSchema);
 
+<<<<<<< HEAD
 // Fetch books and save to DB, with a limit to avoid duplicates
+=======
+router.post("/getById", async (req, res) => {
+  // console.log(req.body.itemId)
+  const bookById = await Book.findById(req.body.itemId)
+  res.json({bookById});
+})
+
+router.get("/shuffle", async (req, res) => {
+  const shuffledDocs = await Book.aggregate([{ $sample: { size: await Book.countDocuments() } }]);
+  res.json(shuffledDocs)
+})
+
+router.post("/search", async (req, res) => {
+  // console.log(req.body.keyword);
+  keyword = req.body.keyword
+  if(!keyword) return res.json([])
+  const regex = new RegExp(keyword, "i");
+  const results = await Book.find({
+    $or: [
+      { title: regex },
+      { description: regex }
+    ]
+  });
+  // console.log(results);
+  res.json(results)
+})
+
+
+// Fetch books and save to DB, avoiding duplicates
+>>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
 router.get("/data", async (req, res) => {
   try {
     let queryTopic = "History";

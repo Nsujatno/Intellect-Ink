@@ -1,194 +1,284 @@
 import { Text, View, FlatList, ScrollView, TextInput, StyleSheet, TouchableOpacity} from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import axios from 'axios'
 import DropDownButtons from "../components/dropDownButtons";
+import Item from "../components/item";
 import { textStyles } from "../stylesheets/textStyles";
 import { LinearGradient } from "expo-linear-gradient";
+import { ngrokPath, isExpoMode } from "../utils";
 
 export default function Search() {
-    const testSubjects = [
-        {
-          id: "1",
-          type: "book",
-          image: "https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg",
-          title: "Harry Potter and the Chamber of Secrets",
-          author: "JK Rowling",
-          link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',
-          summary: "Harry, a 2nd-year student at Hogwarts, starts hearing mysterious voices. When unusual tragedies occur, he and his friends search for answers.",
-        },
-        {
-          id: "2",
-          type: "news",
-          image: "",
-          title: "Chuck E. Cheese wants to be the Costco of family fun",
-          author: "Savannah Sellers and Alexandra Byrne",
-          link: 'https://www.nbcnews.com/business/consumer/chuck-e-cheese-wants-costco-family-fun-rcna195652',
-          summary: "Chuck E. Cheese wants you to stop by as frequently as you pick up groceries, and it’s selling subscription plans to sweeten the pitch.",
-        },
-        {
-          id: "3",
-          type: "poem",
-          title: "The Raven",
-          author: "Edgar Allan Poe",
-          poem: "Once upon a midnight dreary, While I pondered, weak and weary...",
-        },
-      ];
+    const router = useRouter();
+    const {topic, category} = useLocalSearchParams();
+    interface SubjectItem {
+        id: string;
+        type: string;
+        image?: string;
+        title: string;
+        author: string;
+        link?: string;
+        summary?: string;
+        poem?: string;
+        topic?: string;
+    }
+    const [searchItems, setSearchItems] = useState<SubjectItem[]>([]);
+    const testSubjects: SubjectItem[] = [];
 
     const [searchQuery, setSearchQuery] = useState("");
     const handleSearch = async (query: string) => {
-        setSearchQuery(query);
-        console.log(query);
+        try{
+            testSubjects.splice(0, testSubjects.length);
+            setSearchQuery(query);
+            console.log(query);
 
-        try{
-            const response = await axios.post("http://localhost:8000/api/article/search", {keyword: query});
-            for(let i = 0; i < response.data.length; i++){
-                console.log(response.data[i])
-            }
-        }catch(error){
-            if (axios.isAxiosError(error)) {
-                if(error.response){
-                    console.log('Error: ', error.response.data)
+            try{
+                const response = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/search`, {keyword: query});
+                for(let i = 0; i < response.data.length; i++){
+                    response.data[i].author = response.data[i].author.substr(3);
+                    const transformedData = {
+                    id: response.data[i]._id,
+                    type: "article",
+                    image: `https://static01.nyt.com/${response.data[i].urlToImage}` || "",
+                    title: response.data[i].title,
+                    author: response.data[i].author,
+                    link: response.data[i].url,
+                    summary: response.data[i].description,
+                    topic: response.data[i].topic,
+                    }
+                    if (!testSubjects.some(subject => subject.id === transformedData.id)) {
+                    testSubjects.push(transformedData);
+                    }
+                    // console.log(response.data[i])
+                }
+            }catch(error){
+                if (axios.isAxiosError(error)) {
+                    if(error.response){
+                        console.log('Error: ', error.response.data)
+                    }
                 }
             }
-        }
-        try{
-            const response = await axios.post("http://localhost:8000/api/book/search", {keyword: query});
-            for(let i = 0; i < response.data.length; i++){
-                console.log(response.data[i])
-            }
-        }catch(error){
-            if (axios.isAxiosError(error)) {
-                if(error.response){
-                    console.log('Error: ', error.response.data)
+            try{
+                const bookResponse = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/book/search`, {keyword: query});
+                for(let i = 0; i < bookResponse.data.length; i++){
+                    if(bookResponse.data[i].author.length == 0){
+                    bookResponse.data[i].author = bookResponse.data[i].publisher
+                    }
+                    else{
+                    bookResponse.data[i].author = bookResponse.data[i].author[0]
+                    }
+                    const transformedData = {
+                    id: bookResponse.data[i]._id,
+                    type: "book",
+                    image: bookResponse.data[i].thumbnail || "",
+                    title: bookResponse.data[i].title,
+                    author: bookResponse.data[i].author,
+                    link: bookResponse.data[i].previewLink,
+                    summary: bookResponse.data[i].description,
+                    topic: bookResponse.data[i].topic,
+                    }
+                    if (!testSubjects.some(subject => subject.id === transformedData.id)) {
+                    testSubjects.push(transformedData);
+                    }
+                    // console.log(bookResponse.data[i])
+                }
+            }catch(error){
+                if (axios.isAxiosError(error)) {
+                    if(error.response){
+                        console.log('Error: ', error.response.data)
+                    }
                 }
             }
-        }
-        try{
-            const response = await axios.post("http://localhost:8000/api/news/search", {keyword: query});
-            for(let i = 0; i < response.data.length; i++){
-                console.log(response.data[i])
-            }
-        }catch(error){
-            if (axios.isAxiosError(error)) {
-                if(error.response){
-                    console.log('Error: ', error.response.data)
+            try{
+                const newsResponse = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/news/search`, {keyword: query});
+                for(let i = 0; i < newsResponse.data.length; i++){
+                    const transformedData = {
+                    id: newsResponse.data[i]._id,
+                    type: "news",
+                    image: newsResponse.data[i].urlToImage || "",
+                    title: newsResponse.data[i].title,
+                    author: newsResponse.data[i].author,
+                    link: newsResponse.data[i].url,
+                    summary: newsResponse.data[i].description,
+                    topic: newsResponse.data[i].topic,
+                    }
+                    if (!testSubjects.some(subject => subject.id === transformedData.id)) {
+                    testSubjects.push(transformedData);
+                    }
+                    // console.log(newsResponse.data[i])
+                }
+            }catch(error){
+                if (axios.isAxiosError(error)) {
+                    if(error.response){
+                        console.log('Error: ', error.response.data)
+                    }
                 }
             }
-        }
-        try{
-            const response = await axios.post("http://localhost:8000/api/poem/search", {keyword: query});
-            for(let i = 0; i < response.data.length; i++){
-                console.log(response.data[i])
-            }
-        }catch(error){
-            if (axios.isAxiosError(error)) {
-                if(error.response){
-                    console.log('Error: ', error.response.data)
+            try{
+                const poemResponse = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/poem/search`, {keyword: query});
+                for(let i = 0; i < poemResponse.data.length; i++){
+                    let poem = "";
+                    for(let j = 0; j < poemResponse.data[i].lines.length; j++){
+                    poem = poem + poemResponse.data[i].lines[j] + "\n"
+                    }
+                    const transformedData = {
+                    id: poemResponse.data[i]._id,
+                    type: "poem",
+                    title: poemResponse.data[i].title,
+                    author: poemResponse.data[i].author,
+                    poem: poem,
+                    topic: poemResponse.data[i].topic,
+                    }
+                    
+                    if (!testSubjects.some(subject => subject.id === transformedData.id)) {
+                    testSubjects.push(transformedData);
+                    }
+                    // console.log(poemResponse.data[i])
+                }
+            }catch(error){
+                if (axios.isAxiosError(error)) {
+                    if(error.response){
+                        console.log('Error: ', error.response.data)
+                    }
                 }
             }
+            try{
+                const paperResponse = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/paper/search`, {keyword: query});
+                for(let i = 0; i < paperResponse.data.length; i++){
+                    let author = "";
+                    if(paperResponse.data[i].author[0] == "Unknown Author") author = "";
+                    const transformedData = {
+                    id: paperResponse.data[i]._id,
+                    type: "paper",
+                    title: paperResponse.data[i].title,
+                    author: author,
+                    summary: paperResponse.data[i].abstract,
+                    link: paperResponse.data[i].url,
+                    topic: paperResponse.data[i].topic,
+                    }
+                    
+                    if (!testSubjects.some(subject => subject.id === transformedData.id)) {
+                    testSubjects.push(transformedData);
+                    }
+                    // console.log(paperResponse.data[i])
+                }
+            }catch(error){
+                if (axios.isAxiosError(error)) {
+                    if(error.response){
+                        console.log('Error: ', error.response.data)
+                    }
+                }
+            }
+            setSearchItems(testSubjects)
+        } catch(error){
+            console.error('Error searching:', error);
         }
-
     }
-    type ItemProps = {
-        id: string,
-        type: string,
-        image?: string,
-        title: string;
-        author: string;
-        summary?: string;
-        poem?: string;
-        link?: string;
-    };
-
-  const Item = ({ item }: { item: ItemProps }) => (
-    <View style={styles.contentContainer}>
-        <View>
-            <Text style={[textStyles.heading2purple,{fontSize: 16}]}>{item.title}</Text>
-            <Text style={[textStyles.subheading, {fontSize: 14}]}>By: {item.author}</Text>
-        </View>
-        <View>
-            <TouchableOpacity>
-                <Text style={textStyles.heading2purple}> {`>`}</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
-  );
-
+   
     return (
-        <ScrollView style={styles.container}>
-            <TextInput
-                style={styles.inputContainer}
-                placeholder="Search"
-                placeholderTextColor="#807A7A"
-                clearButtonMode="always"
-                value={searchQuery}
-                onChangeText={(query) => handleSearch(query)}>
-            </TextInput>
-            
-            { searchQuery.trim() !=="" ? (
+        <View style={styles.container}>
+            {topic ? (
+                <View>
+                    <TouchableOpacity
+                        style={{alignSelf: 'flex-start'}}
+                        onPress={() => {router.push('/search')}}>
+                        <Text style={textStyles.subheading}>{`< Back`}</Text>
+                    </TouchableOpacity>
+                    <Text style={[textStyles.heading2purple,{marginTop: 4, alignSelf: 'center'}]}>{topic}: {category}</Text>
+                    
                     <LinearGradient
                         colors={["#4F3F7F", "#615796", "#646EA3"]}
-                        style={styles.flatlistContainer}
-                    >
-                        <FlatList
-                            data={testSubjects}
-                            renderItem={({ item }) => <Item item={item} />}
-                            keyExtractor={(item) => item.id}
-                            showsVerticalScrollIndicator={true}
-                            horizontal={false}
-                        />
+                        style={styles.flatlistContainer}>
+                            <FlatList
+                                data={searchItems}
+                                renderItem={({ item }) => <Item item={item} />}
+                                keyExtractor={(item) => item.id}
+                                showsVerticalScrollIndicator={true}
+                                horizontal={false}
+                            />
                     </LinearGradient>
-                ) : (
-                    <View style={styles.categoriesContainer}>
-                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
-                        <DropDownButtons
-                            title='Books'
-                            variant='white'
-                            categories={["Horror", "Romance", "Mystery"]}
-                            gradientColors={['#5C3E8F', '#2D1A4E']} 
-                        />
-                        <DropDownButtons
-                            title='News'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#615796', '#3B3461']} 
-                        />
-                        <DropDownButtons
-                            title='Poems'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#514F82', '#22205F']} 
-                        />
-                        <DropDownButtons
-                            title='Politics'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#3F497B', '#646EA3']} 
-                        />
-                        <DropDownButtons
-                            title='Research'
-                            variant='white'
-                            categories={[]}
-                            gradientColors={['#514F82', '#7347AD']} 
-                        />
-                        <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
-                        <DropDownButtons
-                            title='Quiz'
-                            variant='whiteOutline'
-                            categories={["Go to today's quiz", "See past results"]}
-                            gradientColors={['#103A70', '#485EEA']} 
-                        />
-                        <DropDownButtons
-                            title='Favorites'
-                            variant='whiteOutline'
-                            categories={["See all favorites"]}
-                            gradientColors={['#042C71', '#6D90EB']} 
-                        />
-                    </View>
-                )
+
+                </View>
+            ) : (
+                <View>
+                    <TextInput
+                    style={styles.inputContainer}
+                    placeholder="Search"
+                    placeholderTextColor="#807A7A"
+                    clearButtonMode="always"
+                    value={searchQuery}
+                    onChangeText={(query) => handleSearch(query)}>
+                    </TextInput>
+
+                    {searchQuery.length > 0 &&
+                        <TouchableOpacity
+                            onPress={() => setSearchQuery('')}
+                            style={{position: 'absolute', top: 15, right: 20}}>
+                            <Text style={{color: '#807A7A', fontSize: 15}}>x</Text>
+                        </TouchableOpacity>
+                    }
+
+                    { searchQuery.trim() !=="" ? (
+                            <LinearGradient
+                                colors={["#4F3F7F", "#615796", "#646EA3"]}
+                                style={styles.flatlistContainer}
+                            >
+                                <FlatList
+                                    data={searchItems}
+                                    renderItem={({ item }) => <Item item={item} />}
+                                    keyExtractor={(item) => item.id}
+                                    showsVerticalScrollIndicator={true}
+                                    horizontal={false}
+                                />
+                            </LinearGradient>
+                        ) : (
+                            <ScrollView style={styles.categoriesContainer} showsVerticalScrollIndicator={false}>
+                                <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Categories</Text>
+                                <DropDownButtons
+                                    title='Article'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science", "History"]}
+                                    gradientColors={['#5C3E8F', '#2D1A4E']} 
+                                />
+                                <DropDownButtons
+                                    title='Book'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science", "History"]}
+                                    gradientColors={['#615796', '#3B3461']} 
+                                />
+                                <DropDownButtons
+                                    title='News'
+                                    variant='white'
+                                    categories={["Ocean Life"]}
+                                    gradientColors={['#514F82', '#22205F']} 
+                                />
+                                <DropDownButtons
+                                    title='Paper'
+                                    variant='white'
+                                    categories={["Ocean Life", "Science"]}
+                                    gradientColors={['#3F497B', '#646EA3']} 
+                                />
+                                <DropDownButtons
+                                    title='Poem'
+                                    variant='white'
+                                    categories={["Ocean Life"]}
+                                    gradientColors={['#514F82', '#7347AD']} 
+                                />
+                                <Text style={[textStyles.heading2purple,{marginVertical: 10,}]}>Other</Text>
+                                <DropDownButtons
+                                    title='Quiz'
+                                    variant='whiteOutline'
+                                    categories={["Go to today's quiz", "Computer Science", "Science"]}
+                                    gradientColors={['#103A70', '#485EEA']} 
+                                />
+                            </ScrollView>
+                        )
+                    }
+                </View>
+            )
             }
 
-        </ScrollView>
+        </View>
     );
 }
 
@@ -214,18 +304,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-    },
-    contentContainer: {
-        width: 340,
-        height: 100,
-        marginVertical: 15,
-        padding: 15,
-        borderRadius: 5,
-        backgroundColor: "white",
-        shadowColor: "#000",
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
     },
     flatlistContainer: {
         backgroundColor: "#646EA3",

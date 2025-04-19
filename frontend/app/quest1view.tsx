@@ -4,11 +4,13 @@ import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import axios from "axios";
+import { useLocalSearchParams } from "expo-router";
 
 export default function question1View() {
     const router = useRouter();
     const maxLength = 200;
     const [expanded, setExpanded] = useState([]);
+    const { topicId, title, description } = useLocalSearchParams();
 
     const [replies, setReplies] = useState([
         {
@@ -23,8 +25,6 @@ export default function question1View() {
         },
     ]);
 
-    // const [replies, setReplies] = useState([]);
-
     useEffect(() => {
         const fetchComments = async () => {
             try {
@@ -36,7 +36,7 @@ export default function question1View() {
         };
 
         fetchComments();
-    }, [])
+    }, [topicId])
 
     // const toggleExpanded = (id) => {
     //     setExpanded((prevState) => ({
@@ -44,6 +44,13 @@ export default function question1View() {
     //         [id]: !prevState[id],
     //     }));
     // };
+
+    const toggleExpanded = (id) => {
+        setExpanded(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
 
     return (
         <View style={styles.container}>
@@ -62,7 +69,7 @@ export default function question1View() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>Topic Question 1</Text>
+                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
                 <Text style={[textStyles.subheading2, { fontSize: 25, right: 85, color: '#646EA3' }]}>View Discussion</Text>
             </View>
 
@@ -81,7 +88,7 @@ export default function question1View() {
                             </View>
 
                             <Text style={textStyles.bodytext5}>
-                                {expanded[item._id] ? item.text : `${item.text.slice(0, maxLength)}...`}
+                                {expanded[item._id] ? item.text : item.text.slice(0, maxLength) + '...'}
                             </Text>
 
                             <TouchableOpacity onPress={() => toggleExpanded(item._id)}>
