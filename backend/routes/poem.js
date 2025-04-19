@@ -1,22 +1,15 @@
-const router = require('express').Router();
-require("dotenv").config();
+const router = require('express').Router()
+require("dotenv").config(); // Load environment variables from .env file
 const mongoose = require("mongoose");
-const fetch = require("node-fetch");
 
-// Quiz schema
-const quizSchema = new mongoose.Schema({
-  question: { type: String, unique: true },
-  description: String,
-  answers: Object,
-  correct_answer: String,
-  explanation: String,
-  tags: Array,
-  category: String,
-  difficulty: String,
-  multiple_correct_answers: String,
+// Define Mongoose schema for storing poems
+const poemSchema = new mongoose.Schema({
+  title: { type: String, unique: true }, // Prevent duplicate poems by title
+  author: String,
+  lines: [String],
 });
 
-const Quiz = mongoose.model("Quiz", quizSchema);
+const Poem = mongoose.model("Poem", poemSchema);
 
 router.post("/getById", async (req, res) => {
   // console.log(req.body.itemId)
@@ -49,59 +42,55 @@ const API_URL = `https://poetrydb.org/author/${encodeURIComponent(AUTHOR_NAME)}`
 
 router.get("/data", async (req, res) => {
   try {
-    const API_KEY = process.env.QUIZ_API_KEY;
-    const API_URL = "https://quizapi.io/api/v1/questions?limit=1";
+    console.log("📖 Fetching poems from PoetryDB API:", API_URL);
 
     const response = await fetch(API_URL, {
-      headers: {
-        "X-Api-Key": API_KEY,
-        "Content-Type": "application/json",
-      },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`API Error: ${response.status} - ${errorText}`);
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
-    const [quiz] = await response.json();
+    const data = await response.json();
 
-    if (!quiz || !quiz.question) {
-      throw new Error("No quiz received or missing 'question' field");
+    if (!Array.isArray(data)) {
+      throw new Error("Expected an array of poems, but got something else.");
     }
 
-    const existingQuiz = await Quiz.findOne({ question: quiz.question });
-    if (existingQuiz) {
-      return res.json({ message: "Quiz already exists", quiz: existingQuiz });
+    let savedCount = 0;
+
+    for (let poem of data) {
+      const existingPoem = await Poem.findOne({ title: poem.title });
+
+      if (!existingPoem) {
+        const newPoem = new Poem({
+          title: poem.title,
+          author: poem.author,
+          lines: poem.lines,
+        });
+
+        await newPoem.save();
+        savedCount++;
+      }
     }
 
-    const newQuiz = new Quiz({
-      question: quiz.question,
-      description: quiz.description,
-      answers: quiz.answers,
-      correct_answer: quiz.correct_answer,
-      explanation: quiz.explanation,
-      tags: quiz.tags,
-      category: quiz.category,
-      difficulty: quiz.difficulty,
-      multiple_correct_answers: quiz.multiple_correct_answers,
-    });
-
-    await newQuiz.save();
-    res.json({ message: "Quiz saved successfully", quiz: newQuiz });
+    res.json({ message: "Poems processed", newPoemsAdded: savedCount });
   } catch (error) {
-    console.error("❌ Error fetching quiz:", error.message);
+    console.error("❌ Error fetching API data:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Endpoint to get all saved quizzes
-router.get("/get-quizzes", async (req, res) => {
+// Endpoint to retrieve stored poems
+router.get("/get-poems", async (req, res) => {
   try {
-    const quizzes = await Quiz.find();
-    res.json(quizzes);
+    const poems = await Poem.find();
+    res.json(poems);
   } catch (error) {
-    console.error("❌ Error retrieving quizzes:", error.message);
+    console.error("❌ Error retrieving poems:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
