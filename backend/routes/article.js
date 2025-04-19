@@ -49,12 +49,7 @@ router.post("/search", async (req, res) => {
 })
 
 router.get("/data", async (req, res) => {
-<<<<<<< HEAD
-  let queryTopic = "history";
-  const LIMIT = 5; // Set the limit for the number of articles saved per request
-=======
   let randomMedia = "technology"
->>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
 
   try {
     const API_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${queryTopic}&api-key=${API_KEY}`;

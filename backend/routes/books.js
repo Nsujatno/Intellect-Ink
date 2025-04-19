@@ -26,9 +26,6 @@ const bookSchema = new mongoose.Schema({
 
 const Book = mongoose.model("Book", bookSchema);
 
-<<<<<<< HEAD
-// Fetch books and save to DB, with a limit to avoid duplicates
-=======
 router.post("/getById", async (req, res) => {
   // console.log(req.body.itemId)
   const bookById = await Book.findById(req.body.itemId)
@@ -57,7 +54,6 @@ router.post("/search", async (req, res) => {
 
 
 // Fetch books and save to DB, avoiding duplicates
->>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
 router.get("/data", async (req, res) => {
   try {
     let queryTopic = "History";

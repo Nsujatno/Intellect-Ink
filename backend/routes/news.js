@@ -27,9 +27,6 @@ const newsSchema = new mongoose.Schema({
 
 const News = mongoose.model("News", newsSchema);
 
-<<<<<<< HEAD
-// Set up the endpoint for fetching news
-=======
 const API_URL = `https://newsapi.org/v2/everything?q=science&pageSize=10&apiKey=${API_KEY}`;
 
 router.post("/getById", async (req, res) => {
@@ -59,7 +56,6 @@ router.post("/search", async (req, res) => {
 })
 
 
->>>>>>> 5bdbc1bafa61b7e27fe36a92b3eb724be35fc7fe
 router.get("/data", async (req, res) => {
   try {
     // Get the query term from the request query, default to "Ocean" if not provided
