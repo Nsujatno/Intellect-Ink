@@ -22,7 +22,6 @@ export default function Notification({
 
     return (
         <View style={styles.container}>
-            {/* <Text style={[styles.message]}>{message}</Text> */}
             <Text style={[styles.message]}>
                 It's time to complete your daily reading goal!
             </Text>

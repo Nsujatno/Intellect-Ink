@@ -9,39 +9,26 @@ import { textStyles } from "../stylesheets/textStyles";
 export default function Stats() {
   const achievementsData = [
     {
-      id: '1',
-      title: 'Title',
-      description: 'Description',
-      icon: require('../../assets/images/stats_badge.png')
-    },
-    {
-      id: '2',
-      title: 'Title',
-      description: 'Description',
-      icon: require('../../assets/images/stats_badge.png')
-    },
-    {
-      id: '3',
-      title: 'Title',
-      description: 'Description',
-      icon: require('../../assets/images/stats_badge.png')
+      title: "Joined Intellect Ink!",
+      description: "Expanding your knowledge!",
+      icon: require("../../assets/images/stats_badge.png"),
     },
   ];
 
   const leaderboardData = [
     {
       id: '1',
-      title: 'Name',
+      title: 'Julie Smith',
       icon: require('../../assets/images/pfp.png')
     },
     {
       id: '2',
-      title: 'Name',
+      title: 'Arnold Johnson',
       icon: require('../../assets/images/pfp.png')
     },
     {
       id: '3',
-      title: 'Name',
+      title: 'Dakota Williams',
       icon: require('../../assets/images/pfp.png')
     }
   ];
@@ -139,7 +126,7 @@ export default function Stats() {
           source={require("../../assets/images/profilebg.png")}
           style={styles.imagebg}
         />
-        <View style={{height: 150, width: '100%', backgroundColor: '#8990B6'}}></View>
+        <View style={{ height: 150, width: '100%', backgroundColor: '#8990B6' }}></View>
       </View>
 
       <View style={styles.textContainer}>
@@ -148,23 +135,25 @@ export default function Stats() {
         {/* stacked bar chart */}
         <View style={styles.chartContainer}>
           <View style={styles.chartHeader}>
-            <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>{chartData[selectedDayIndex].day}</Text>
-            <Text style={[textStyles.heading2purple, { fontSize: 16 }]}>
+            <Text style={[textStyles.heading2purple, { fontSize: 22, marginLeft: 33 }]}>{chartData[selectedDayIndex].day}</Text>
+            <Text style={[textStyles.heading2purple, { fontSize: 22 }]}>
               {formatTime(
-                (chartData[selectedDayIndex].book + 
-                  chartData[selectedDayIndex].poem + 
-                  chartData[selectedDayIndex].news +
-                  chartData[selectedDayIndex].article +
-                  chartData[selectedDayIndex].paper) * 60000
+                (
+                  (chartData[selectedDayIndex]?.book || 0) +
+                  (chartData[selectedDayIndex]?.poem || 0) +
+                  (chartData[selectedDayIndex]?.news || 0) +
+                  (chartData[selectedDayIndex]?.article || 0) +
+                  (chartData[selectedDayIndex]?.paper || 0)
+                ) * 60000
               )}
-                {/* timeSpentData.book + timeSpentData.poem + timeSpentData.news)} */}
-              </Text>
+            </Text>
+
           </View>
           <VictoryChart
             domainPadding={{ x: 25 }}
             height={300}
             width={320}
-            padding={{ top: 50, bottom: 40, left: 40, right: 20 }}
+            padding={{ top: 35, bottom: 25, left: 40, right: 20 }}
             domain={{ y: [0, 480] }} // 8 hours
           >
 
@@ -250,6 +239,7 @@ export default function Stats() {
                 x="day"
                 y="paper"
                 barWidth={20}
+                cornerRadius={{ top: 6 }} // research is top stacked bar, so rounded corner
                 events={[{
                   target: "data",
                   eventHandlers: {
@@ -314,26 +304,38 @@ export default function Stats() {
         <Text style={[textStyles.heading1, { marginTop: -25, marginBottom: 30, alignSelf: 'center' }]}>Statistics</Text>
         <View style={styles.overallStatsContainer}>
           <Image
-            source={require('../../assets/images/stats_box1.png')}
+            source={require('../../assets/images/box.png')}
             style={styles.statsBoxPlacement2}
           />
           <View style={[styles.miniBoxContainer]}>
+            {/* Day Streak Box */}
             <View style={styles.miniBoxWrapper}>
               <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox} />
-              <Image source={require('../../assets/images/stats_streak.png')} style={styles.miniIcon} />
-              <Text style={[textStyles.bodytext3, { marginTop: -60 }]}>Day Streak</Text>
+              <View style={styles.iconNumberContainer}>
+                <Image source={require('../../assets/images/stats_streak.png')} style={styles.miniIcon} />
+                {/* <Text style={textStyles.bodytext3}>2</Text> */}
+              </View>
+              <Text style={[textStyles.bodytext3, styles.miniBoxText]}>Day Streak</Text>
             </View>
 
+            {/* Level Box */}
             <View style={styles.miniBoxWrapper}>
               <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox} />
-              <Image source={require('../../assets/images/stats_rank.png')} style={styles.miniIcon} />
-              <Text style={[textStyles.bodytext3, { marginTop: -60 }]}>Level #</Text>
+              <View style={styles.iconNumberContainer}>
+                <Image source={require('../../assets/images/stats_rank.png')} style={styles.miniIcon} />
+                {/* <Text style={textStyles.bodytext3}>4</Text> */}
+              </View>
+              <Text style={[textStyles.bodytext3, styles.miniBoxText]}>Level</Text>
             </View>
 
+            {/* Place Box */}
             <View style={styles.thirdBoxWrapper}>
               <Image source={require('../../assets/images/stats_mini_box.png')} style={styles.statsMiniBox} />
-              <Image source={require('../../assets/images/stats_trophy.png')} style={styles.miniIcon} />
-              <Text style={[textStyles.bodytext3, { marginTop: -60 }]}># Place</Text>
+              <View style={styles.iconNumberContainer}>
+                <Image source={require('../../assets/images/stats_trophy.png')} style={styles.miniIcon} />
+                {/* <Text style={textStyles.bodytext3}>#3</Text> */}
+              </View>
+              <Text style={[textStyles.bodytext3, styles.miniBoxText]}>Place</Text>
             </View>
           </View>
         </View>
@@ -422,39 +424,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     alignSelf: 'center',
   },
-  miniBoxContainer: {
-    position: 'absolute',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    width: '65%',
-    top: -10,
-  },
-  miniBoxWrapper: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '50%',
-  },
-  thirdBoxWrapper: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '50%',
-    alignSelf: 'flex-start',
-    marginLeft: -150,
-  },
-  statsMiniBox: {
-    width: 140,
-    height: 120,
-    resizeMode: 'contain',
-    marginBottom: 5,
-  },
-  miniIcon: {
-    position: 'absolute',
-    top: 35,
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
-  },
   colorCatsContainer: {
     position: 'absolute',
     top: 30,
@@ -476,5 +445,50 @@ const styles = StyleSheet.create({
     top: -4,
     left: -5,
     paddingVertical: -3,
+  },
+  miniBoxContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    width: '65%',
+    top: -10,
+  },
+  miniBoxWrapper: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '50%',
+    marginBottom: -30,
+  },
+  thirdBoxWrapper: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '50%',
+    alignSelf: 'flex-start',
+    marginLeft: -150,
+  },
+  statsMiniBox: {
+    width: 140,
+    height: 120,
+    resizeMode: 'contain',
+    marginBottom: 5,
+  },
+  iconNumberContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 35,
+  },
+  miniIcon: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+    marginRight: 5,
+  },
+  miniBoxText: {
+    position: 'absolute',
+    top: 60,
+    textAlign: 'center',
+    width: '100%',
   },
 });
