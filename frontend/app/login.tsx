@@ -12,7 +12,7 @@ export default function Login() {
     const [error, setError] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(true);
 
     const handleSubmit = async () => {
         setError("");
@@ -67,7 +67,7 @@ export default function Login() {
                 </TouchableOpacity>
             </View>
             {/* {error ? <Text style={{color: 'red', fontSize: 17}}>{error}</Text> : null} */}
-            <TouchableOpacity style={styles.button} onPress={()=>router.push("/discussion")}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             {/* onPress={()=>router.push("/discussion") */}
             {/* onPress={handleSubmit} */}
                 <Text style={[textStyles.heading2, { lineHeight: 25 }]}>Login</Text>

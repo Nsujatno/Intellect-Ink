@@ -34,25 +34,25 @@ export default function Profile() {
     { value: 'paper', label: 'paper' },
   ];
   interface favorites {
-    _id: string;
-    type: string;
-    image?: string;
+    _id: string,
+    type: string,
+    image?: string,
     title: string;
     author: string;
-    link?: string;
     summary?: string;
     poem?: string;
+    link?: string;
+    topic?: string;
   }
   const [favoriteItems, setFavorites] = useState<favorites[]>([]);
-  const favorite: favorites[] = [];
 
   const Item = ({ item }: { item: favorites }) => (
-    // <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
+   // <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
       <View style={styles.favorites}>
         <Text numberOfLines={4} style={textStyles.heading2purple}>{item.title}</Text>
         <Text numberOfLines={2} style={[textStyles.subheading, {fontSize: 15}]}>By: {item.author}</Text>
       </View>
-    // </TouchableOpacity>
+   // </TouchableOpacity>
   );
 
   const [dailyNotifications, setDailyNotifications] = useState(false);
@@ -133,6 +133,7 @@ export default function Profile() {
     useCallback(() => {
     const fetchData = async () => {
       try {
+        const favorite: favorites[] = [];
         const token = await AsyncStorage.getItem('token');
         if (!token) return;
 
@@ -215,7 +216,7 @@ export default function Profile() {
 
 
         // setFavorites(favorite)
-        // console.log("favorite array: " + favorite);
+        console.log("favorite array: " + favorite);
         // setTimeState(response.data.notificationTime)
         console.log(response.data)
         // console.log("Favorites: " + JSON.stringify(favorite))
