@@ -29,7 +29,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                 <Text
                 style={[ textStyles.subheading,
                     variant === 'purple' ? {color: 'white'} : null,
-                    variant === 'purple2' ? {color: 'white', fontSize: 18} : null,
+                    variant === 'purple2' ? {color: 'white', fontSize: 16} : null,
                     variant === 'purple3' ? {color: 'white', fontSize: 16} : null,
                     variant === 'white' ? {color: '#413F6F'} : null,
                     variant == 'gray' ? {color: '#413F6F'} : null,
@@ -63,8 +63,8 @@ const styles = StyleSheet.create ({
     },
     purple2Container: {
         backgroundColor:'#413F6F',
-        width: 120,
-        height: 40,
+        width: 110,
+        height: 35,
         paddingHorizontal: 20,
     },
     purple3Container: {
@@ -89,6 +89,7 @@ const styles = StyleSheet.create ({
         width: 80,
         height: 30,
         paddingHorizontal: 20,
+        fontWeight: 'bold',
     },
     smallContainer: {
         backgroundColor: '#D9D9D9',

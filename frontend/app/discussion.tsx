@@ -205,7 +205,7 @@ export default function Discussion() {
                 title="Answer"
                 variant="purple2"
                 onPress={() => router.push({
-                  pathname: `/topicQuestion1`,
+                  pathname: `/quest1view`,
                   params: {
                     id: item.id,
                     title: item.title,
@@ -362,14 +362,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   buttonWrapper: {
-    width: 120,
+    width: 105,
     bottom: -55,
     alignItems: 'flex-start',
+    marginLeft: -50,
   },
   editDeleteRow: {
     flexDirection: 'row',
-    gap: 8,
-    transform: [{ translateX: -220 }],
+    gap: 10,
+    marginTop: -42,
+    transform: [{ translateX: -240 }],
   },
   textButtonContainer: {
     flexDirection: 'row',
@@ -383,13 +385,13 @@ const styles = StyleSheet.create({
     flex: 1
   },
   topicTitle: {
-    fontSize: 25,
+    fontSize: 21.5,
     color: '#03045E',
     textAlign: 'left',
     top: -30,
   },
   topicDescription: {
-    fontSize: 18,
+    fontSize: 17,
     color: '#646EA3',
     textAlign: 'left',
     top: -30,

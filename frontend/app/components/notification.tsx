@@ -22,37 +22,42 @@ export default function Notification({
 
     return (
         <View style={styles.container}>
-            <Text style={[textStyles.subheading, styles.message]}>{message}</Text>
+            <Text style={[styles.message]}>
+                It's time to complete your daily reading goal!
+            </Text>
+            <Text style={[styles.message2]}>
+                Earn 20% amount of progress!
+            </Text>
 
             {showProgress && (
                 <>
-                <View style={styles.progressContainer}>
-                    <View style={styles.progressBar}>
-                        <View
-                            style={[
-                                styles.progressFill,
-                                { width: `${currentProgress}%` }
-                            ]}
-                        />
-                    </View>
-                    {/* <Text style={textStyles.subheading}>
+                    <View style={styles.progressContainer}>
+                        <View style={styles.progressBar}>
+                            <View
+                                style={[
+                                    styles.progressFill,
+                                    { width: `${currentProgress}%` }
+                                ]}
+                            />
+                        </View>
+                        {/* <Text style={textStyles.subheading}>
                         {currentProgress} / {goal} minutes ({Math.round(currentProgress)}%)
                     </Text> */}
-                    <Text style={styles.progressText}>
-                        {Math.round(currentProgress)}% to next level
-                    </Text>
-                </View>
+                        <Text style={styles.progressText}>
+                            {Math.round(currentProgress)}% to next level
+                        </Text>
+                    </View>
 
-                <Text style={styles.dailyGoalText}>
-                    You set your daily reading goal to: {goal} minutes
-                </Text>
+                    <Text style={styles.dailyGoalText}>
+                        You set your daily reading goal to: {goal} minutes
+                    </Text>
                 </>
             )}
             <View style={styles.imageContainer}>
-                    <Image
-                        source={require('../../assets/images/OctopusLogo.png')}
-                        style={styles.image}
-                    />
+                <Image
+                    source={require('../../assets/images/OctopusLogo.png')}
+                    style={styles.image}
+                />
             </View>
 
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
         height: width * 1.1,
         bottom: height * 0.15,
         alignSelf: 'center',
-        backgroundColor: '#413F6F',
+        backgroundColor: 'white',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -82,42 +87,51 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     message: {
-        color: 'white',
+        color: '#321383',
+        marginBottom: 20,
+        textAlign: 'center',
+        fontSize: 27.5,
+        fontWeight: 'bold',
+    },
+    message2: {
+        color: '#5363B5',
         marginBottom: 10,
         textAlign: 'center',
         fontSize: 22,
+        fontWeight: 'bold',
     },
     progressContainer: {
         marginVertical: 15,
     },
     progressBar: {
         height: 18,
-        backgroundColor: 'white',
+        backgroundColor: '#97A2DA',
         borderRadius: 5,
-        marginBottom: 5,
+        marginBottom: 10,
         overflow: 'hidden',
     },
     progressFill: {
         height: '100%',
-        backgroundColor: 'white',
+        backgroundColor: '4F3F7F',
     },
     progressText: {
-        color: 'white',
+        color: '#413F6F',
         // textAlign: 'center',
         marginTop: 5,
     },
     dailyGoalText: {
-        color: 'white',
+        color: '#5363B5',
         textAlign: 'center',
         // marginVertical: 10,
         fontStyle: 'italic',
-        fontSize: 19,
+        fontWeight: 'bold',
+        fontSize: 22,
     },
     closeButton: {
         alignSelf: 'flex-end',
         paddingHorizontal: 15,
         paddingVertical: 5,
-        backgroundColor: 'purple', // temporary color
+        backgroundColor: '#413F6F', // temporary color
         borderRadius: 15,
     },
     imageContainer: {
@@ -127,7 +141,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: width * 0.45,
-        height: width * 0.55 * 0.9,
+        height: width * 0.50 * 0.63,
         resizeMode: 'contain',
         marginTop: 5,
     },

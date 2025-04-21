@@ -5,6 +5,7 @@ import { textStyles } from "../stylesheets/textStyles";
 import { toggleAnimation } from "../animations/toggleAnimation";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Achievement {
     id: string;
@@ -37,7 +38,17 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
 
-    const toggleListItem = () => {
+    // const toggleListItem = () => {
+    //     const config = {
+    //         duration: 500,
+    //         toValue: showContent ? 0 : 1,
+    //         useNativeDriver: true
+    //     };
+    //     Animated.timing(animationController, config).start();
+    //     LayoutAnimation.configureNext(toggleAnimation);
+    //     setShowContent(!showContent);
+    // };
+    const toggleListItem = async () => {
         const config = {
             duration: 500,
             toValue: showContent ? 0 : 1,
@@ -46,7 +57,17 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
         Animated.timing(animationController, config).start();
         LayoutAnimation.configureNext(toggleAnimation);
         setShowContent(!showContent);
+    
+        // save achievements to AsyncStorage when dropdown is opened
+        if (!showContent && achievements.length > 0) {
+            try {
+                await AsyncStorage.setItem('userAchievements', JSON.stringify(achievements));
+            } catch (e) {
+                console.error("Error saving achievements", e);
+            }
+        }
     };
+    
 
     const arrowTransform = animationController.interpolate({
         inputRange: [0, 1],
@@ -101,8 +122,8 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                                 <View key={achievement.id} style={styles.achievementBox}>
                                     <Image source={achievement.icon} style={styles.achievementIcon} />
                                     <View style={styles.achievementText}>
-                                        <Text style={[textStyles.heading2purple, styles.centeredText]}>{achievement.title}</Text>
-                                        <Text style={[textStyles.bodytext3, styles.centeredText]}>{achievement.description}</Text>
+                                        <Text style={[styles.centeredText, {fontFamily: 'Lato Bold', marginVertical: 5, fontSize: 17, color: '#321383',}]}>{achievement.title}</Text>
+                                        <Text style={[styles.centeredText, {fontFamily: 'Literata Semi Bold', fontSize: 12, marginVertical: 5, color: '#5363B5'}]}>{achievement.description}</Text>
                                     </View>
                                 </View>
                                 ))}
@@ -162,6 +183,8 @@ const styles = StyleSheet.create ({
     },
     purpleContainer: {
         backgroundColor: '#413F6F',
+        width: 350,
+        alignSelf: 'center',
     },
     whiteContainer: {
         backgroundColor: '#888FB8',
@@ -191,6 +214,7 @@ const styles = StyleSheet.create ({
         padding: 10,
         marginBottom: 10,
         borderRadius: 0,
+        // width: 400,
         marginHorizontal: '4%', 
     },
     achievementIcon: {

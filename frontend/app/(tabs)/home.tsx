@@ -163,10 +163,10 @@ export default function Home() {
 
 
   useEffect(() => {
-    // For every different category the user views, awards 26.6% per category to reach a 80% max
-    const categoryProgress = (viewedCategories.size / 3) * 80; // adjust this once more categories are implemented
+    // For every different category the user views (5), awards 16% per category to reach a 80% max
+    const categoryProgress = (viewedCategories.size / 5) * 80;
     // Awards 20% for progress if daily reading goal is completed
-    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0; // const goalProgress = Math.min((timeReadToday / dailyGoal) * 67, 67);
+    const goalProgress = timeReadToday >= dailyGoal ? 20 : 0;
     
     // 100% max
     const totalProgress = Math.min(Math.round(categoryProgress + goalProgress), 100);
