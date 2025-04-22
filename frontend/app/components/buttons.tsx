@@ -63,8 +63,8 @@ const styles = StyleSheet.create ({
     },
     purple2Container: {
         backgroundColor:'#413F6F',
-        width: 120,
-        height: 40,
+        width: 110,
+        height: 35,
         paddingHorizontal: 20,
     },
     purple3Container: {
@@ -89,6 +89,7 @@ const styles = StyleSheet.create ({
         width: 80,
         height: 30,
         paddingHorizontal: 20,
+        fontWeight: 'bold',
     },
     smallContainer: {
         backgroundColor: '#D9D9D9',

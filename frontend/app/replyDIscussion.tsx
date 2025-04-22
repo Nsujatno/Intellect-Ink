@@ -6,34 +6,36 @@ import Buttons from "./components/buttons";
 
 export default function ReplyDiscussion() {
     const router = useRouter();
-    // const params = useLocalSearchParams();
-    const { id, title, description } = useLocalSearchParams();
     const [inputText, setInputText] = useState("");
     const [replyingTo, setReplyingTo] = useState(null);
     const maxChars = 1400;
 
-    const { topicId, replyId, replyName, replyText } = useLocalSearchParams();
+    const { id, title, description, topicId, replyId, replyName, replyText } = useLocalSearchParams();
 
     useEffect(() => {
         if (replyId) {
             setReplyingTo({
                 id: replyId,
                 name: replyName,
-                text: replyText
+                text: replyText,
             });
+        } else {
+            setReplyingTo(null);
         }
     }, [replyId, replyName, replyText]);
+    
+    
 
-    const handleSubmit = useCallback(() => {
-        if (inputText.trim() === "") {
-            Alert.alert("Please enter your thoughts before submitting.");
-        } else if (inputText.trim().length < 50) {
-            Alert.alert("Please enter at least 50 characters");
-        } else {
-            router.push('/viewReplies');
-            params: {topicId}
-        }
-    }, [inputText, router, topicId]);
+    // const handleSubmit = useCallback(() => {
+    //     if (inputText.trim() === "") {
+    //         Alert.alert("Please enter your thoughts before submitting.");
+    //     // } else if (inputText.trim().length < 50) {
+    //     //     Alert.alert("Please enter at least 50 characters");
+    //     } else {
+    //         router.push('/viewReplies');
+    //         params: {topicId}
+    //     }
+    // }, [inputText, router, topicId]);
 
     return (
         <ScrollView style={styles.container}>
@@ -46,14 +48,14 @@ export default function ReplyDiscussion() {
 
             <TouchableOpacity
                 style={styles.backButton}
-                onPress={() => router.back()}
-            >
+                onPress={() => router.back()}>
                 <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
 
+
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 25, right: 140, color: '#646EA3' }]}>Reply</Text>
+                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 23, color: '#646EA3', textAlign: 'center', }]}>Reply</Text>
             </View>
 
             {replyingTo && (
@@ -86,15 +88,23 @@ export default function ReplyDiscussion() {
             </View>
 
             <Text style={styles.charCount}>
-    {inputText.length} / {maxChars} characters
-</Text>
+                {inputText.length} / {maxChars} characters
+            </Text>
 
 
             <View style={styles.buttonContainer}>
                 <Buttons
                     title='Comment'
                     variant='purple2'
-                    onPress={handleSubmit}
+                    onPress={() => router.push({
+                        pathname: "/viewReplies",
+                        params: {
+                            topicId: topicId,
+                            title: title,
+                            description: description,
+                            newComment: inputText,
+                        }
+                    })}
                 />
             </View>
         </ScrollView>
@@ -196,7 +206,7 @@ const styles = StyleSheet.create({
     },
     charCount: {
         fontSize: 14,
-        color: '#646EA3',
+        color: 'white',
         marginTop: 10,
         left: 45,
     },
