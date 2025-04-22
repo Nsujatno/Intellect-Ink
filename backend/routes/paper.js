@@ -1,24 +1,21 @@
-const router = require('express').Router()
-require("dotenv").config(); // Load environment variables from .env file
+const router = require("express").Router();
+require("dotenv").config();
 const mongoose = require("mongoose");
+const axios = require("axios");
 
-const CORE_API_KEY = process.env.CORE_API_KEY;
-if (!CORE_API_KEY) {
-  console.error("❌ Missing CORE API key! Check your .env file.");
-  process.exit(1);
-}
-
-// Define a Mongoose schema for storing research papers
+// ✅ Define Mongoose schema
 const researchPaperSchema = new mongoose.Schema({
-  title: String,
-  authors: [String], // Expecting an array of strings
+  title: { type: String, unique: true },
+  author: [String],
   publisher: String,
   year: Number,
-  url: String,
   abstract: String,
-  topics: [String],
+  topics: [String], // Will now include the query term
+  url: String,
+  journal: String,
 });
 
+// ✅ Define the model
 const ResearchPaper = mongoose.model("ResearchPaper", researchPaperSchema);
 
 router.post("/getById", async (req, res) => {
@@ -49,56 +46,61 @@ router.post("/search", async (req, res) => {
 
 
 // Fetch research papers from CORE API
+// Fetch research papers from Semantic Scholar API
 router.get("/data", async (req, res) => {
+  let queryTerm = req.query.topic || "Science"; // Use query param or default
+  let saveLimit = parseInt(req.query.limit) || 5; // Limit the number of saved papers (default: 5)
+  let apiKey = process.env.SEMANTIC_SCHOLAR_API_KEY;
+
   try {
-    console.log("📄 Fetching research papers...");
+    console.log(`📚 Fetching research papers for query: ${queryTerm} from Semantic Scholar`);
 
-    const response = await fetch(`https://api.core.ac.uk/v3/search/works?query=machine+learning`, {
-      headers: { Authorization: `Bearer ${CORE_API_KEY}` },
-    });
+    // ✅ API URL
+    const API_URL = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(queryTerm)}&fields=title,authors.name,year,abstract,url,venue,tldr&limit=10`;
 
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status} - ${await response.text()}`);
+    // ✅ Add API key to headers
+    const headers = apiKey ? { "x-api-key": apiKey } : {};
+
+    // Fetch data from Semantic Scholar API
+    const response = await axios.get(API_URL, { headers });
+
+    if (!response.data || !response.data.data) {
+      throw new Error("No research papers found.");
     }
 
-    const data = await response.json();
     let savedCount = 0;
+    const papers = response.data.data;
 
-    for (let paper of data.results || []) {
-      const exists = await ResearchPaper.findOne({ title: paper.title });
-      if (exists) continue; // Skip duplicates
+    for (let paper of papers) {
+      // ✅ Stop saving if the limit is reached
+      if (savedCount >= saveLimit) break;
 
-      // Extract authors' names into an array of strings
-      const authors = paper.authors ? paper.authors.map((author) => author.name) : [];
+      // ✅ Only save papers with an abstract
+      if (!paper.abstract) continue;
 
-      const newPaper = new ResearchPaper({
-        title: paper.title,
-        authors: authors,
-        publisher: paper.publisher,
-        year: paper.year,
-        url: paper.links?.[0]?.url,
-        abstract: paper.abstract,
-        topics: paper.topics || [],
-      });
+      const existingPaper = await ResearchPaper.findOne({ title: paper.title });
 
-      await newPaper.save();
-      savedCount++;
+      if (!existingPaper) {
+        const newPaper = new ResearchPaper({
+          title: paper.title || "No Title",
+          author: paper.author ? paper.author.map(a => a.name) : ["Unknown Author"],
+          publisher: paper.venue || "Unknown Publisher",
+          year: paper.year || new Date().getFullYear(),
+          abstract: paper.abstract, // ✅ Guaranteed to exist now
+          topics: [queryTerm], // ✅ Set topics to the search query
+          url: paper.url || "N/A",
+          journal: paper.venue || "N/A",
+        });
+
+        await newPaper.save();
+        savedCount++;
+      }
     }
 
-    res.json({ message: "Papers saved to database", count: savedCount });
+    res.json({ message: "Research papers processed", newPapersAdded: savedCount });
   } catch (error) {
-    console.error("❌ Error fetching papers:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get stored research papers
-router.get("/get-papers", async (req, res) => {
-  try {
-    const papers = await ResearchPaper.find();
-    res.json(papers);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("❌ Error fetching Semantic Scholar data:", error.response?.data || error.message);
+    res.status(500).json({ error: error.response?.data || error.message });
   }
 });
 

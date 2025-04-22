@@ -2,21 +2,132 @@ import {
   Text, View, Image, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView,
   Platform, TouchableWithoutFeedback, Keyboard, StyleSheet
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { ngrokPath, isExpoMode } from "./utils";
+import { useLocalSearchParams } from "expo-router";
+
+
+interface CommentItem {
+  id: string;
+  title: string;
+  description: string;
+  isEditing: boolean;
+  mediaId: string;
+}
+
+const defaultTopics: CommentItem[] = [
+  {
+    id: "1",
+    title: "What are your thoughts?",
+    description: "Feel free to share your opinions and insights.",
+    isEditing: false,
+    mediaId: "default1",
+  },
+  {
+    id: "2",
+    title: "Relation to current events?",
+    description: "How does this relate to current events.",
+    isEditing: false,
+    mediaId: "default2",
+  },
+];
 
 export default function Discussion() {
+  const { id } = useLocalSearchParams();
   const router = useRouter();
   const maxChars = 600;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showInput, setShowInput] = useState(false);
-  const [topics, setTopics] = useState([
-    { id: "1", title: "Topic Question 1", description: "Description", isEditing: false },
-    // { id: "2", title: "Topic Question 2", description: "Description", isEditing: false },
-  ]);
+
+  // const [topics, setTopics] = useState([
+  //   { id: "1", title: "Topic Question 1", description: "Description", isEditing: false },
+  //   // { id: "2", title: "Topic Question 2", description: "Description", isEditing: false },
+  // ]);
+
+  const [topics, setTopics] = useState<CommentItem[]>(defaultTopics);
+  const topicsArr: CommentItem[] = [];
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const response = await axios.post(
+          `${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/comments/get-comments`,
+          {
+            mediaId: id,
+            headers: {"ngrok-skip-browser-warning": "skip-browser-warning"},
+          }
+        );
+        console.log("Fetched topics:", response.data);
+
+        const fetchedTopics: CommentItem[] = response.data.map((topic: any) => ({
+          id: topic._id,
+          title: topic.question,
+          description: topic.body,
+          mediaId: topic.mediaId,
+          isEditing: false,
+        }));
+        setTopics([...defaultTopics, ...fetchedTopics]);
+      } catch (error) {
+        console.error("Error fetching topics:", error);
+      }
+    };
+
+    if (id) {
+      fetchTopics();
+    }
+  }, [id]);
+
+  const handlePost = async () => {
+    
+
+    const token = await AsyncStorage.getItem('token');
+    if (!token) return;
+      const profileResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`, {
+        headers: {
+          "Content-Type": "application/json",
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+          Authorization: `Bearer ${token}`
+        }
+      });
+        // console.log(profileResponse.data.email)
+
+      const payload = {
+        email: profileResponse.data.email, 
+        question: title,
+        body: description,
+        mediaId: id
+      };
+      const response = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/comments/post-comment`, payload, {
+        headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+      });
+    if (title && description) {
+      const newTopic = {
+        id: response.data._id,
+        mediaId: response.data.mediaId,
+        title: response.data.question,
+        description: response.data.body,
+        isEditing: false,
+        isNew: true,
+      };
+      // setTopics([...topics, newTopic]);
+
+      // topicsArr.push(newTopic);
+
+
+      setTopics((prevTopics) => [...prevTopics, newTopic]);
+      setTitle("");
+      setDescription("");
+      setShowInput(false);
+    }
+    console.log(response.data)
+  }
+
 
   const toggleEdit = (index) => {
     const updated = [...topics];
@@ -36,10 +147,18 @@ export default function Discussion() {
     setTopics(updated);
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
+    console.log("handling delete")
+    const topicId = topics[index].id;
+    console.log("topicId", topicId)
+    const response = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/comments/delete-comment`, {_id: topicId}, {
+      headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+    });
+    console.log("Delete response:", response.data)
     const updated = [...topics];
     updated.splice(index, 1);
     setTopics(updated);
+    
   };
 
   const renderItem = ({ item, index }) => (
@@ -189,21 +308,7 @@ export default function Discussion() {
                         <Buttons
                           title="Post"
                           variant="purple2"
-                          onPress={() => {
-                            if (title && description) {
-                              const newTopic = {
-                                id: Date.now().toString(),
-                                title,
-                                description,
-                                isEditing: false,
-                                isNew: true
-                              };
-                              setTopics([...topics, newTopic]);
-                              setTitle("");
-                              setDescription("");
-                              setShowInput(false);
-                            }
-                          }}
+                          onPress={handlePost}
                         />
                       </View>
                     </View>

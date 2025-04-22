@@ -13,6 +13,9 @@ const paperRouter = require('./routes/paper')
 const poemRouter = require('./routes/poem')
 const commentRouter = require('./routes/comments')
 const replyRouter = require('./routes/replys')
+const quiz2Router = require('./routes/quiz2'); // add this
+
+
 
 const app = express()
 
@@ -29,6 +32,9 @@ app.use('/api/paper', paperRouter);
 app.use('/api/poem', poemRouter);
 app.use('/api/comments', commentRouter);
 app.use('/api/replys', replyRouter);
+app.use('/api/quiz2', quiz2Router);
+
+
 
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`)

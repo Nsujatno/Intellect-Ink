@@ -1,8 +1,6 @@
-const router = require('express').Router()
-require("dotenv").config(); // Load environment variables from .env file
+const router = require('express').Router();
+require("dotenv").config();
 const mongoose = require("mongoose");
-const axios = require('axios');
-
 
 // Define Mongoose schema for storing articles
 const articleSchema = new mongoose.Schema({
@@ -11,9 +9,9 @@ const articleSchema = new mongoose.Schema({
     name: String,
   },
   author: String,
-  title: { type: String, unique: true }, // Prevent duplicate articles by title
+  title: { type: String, unique: true },
   description: String,
-  url: { type: String, unique: true }, // Prevent duplicate articles by URL
+  url: { type: String, unique: true },
   urlToImage: String,
   publishedAt: Date,
   content: String,
@@ -59,15 +57,16 @@ router.post("/search", async (req, res) => {
 
 router.get("/data", async (req, res) => {
   let randomMedia = "technology"
+  let queryTopic = "history";
+  const LIMIT = 5; // Set the limit for the number of articles saved per request
 
   try {
-    const API_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${randomMedia}&api-key=${API_KEY}`;
+    const API_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${queryTopic}&api-key=${API_KEY}`;
     console.log("📰 Fetching data from NYT API:", API_URL);
 
-    const response = await fetch(API_URL); // Native fetch in Node.js 18+
+    const response = await fetch(API_URL);
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API request failed: ${response.status} - ${errorText}`);
+      throw new Error(`API request failed: ${response.status} - ${await response.text()}`);
     }
 
     const data = await response.json();
@@ -79,6 +78,8 @@ router.get("/data", async (req, res) => {
     const articles = data.response.docs;
 
     for (let article of articles) {
+      if (savedCount >= LIMIT) break; // Stop saving once the limit is reached
+
       const existingArticle = await Article.findOne({ url: article.web_url });
 
       if (!existingArticle) {
@@ -91,6 +92,7 @@ router.get("/data", async (req, res) => {
           urlToImage: article.multimedia?.[0]?.url || "",
           publishedAt: article.pub_date,
           content: article.lead_paragraph,
+          topic: queryTopic,
         });
 
         await newArticle.save();

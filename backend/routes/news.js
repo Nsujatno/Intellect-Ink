@@ -1,10 +1,8 @@
-const router = require('express').Router()
+const router = require('express').Router();
 require("dotenv").config(); // Load environment variables from .env file
 const mongoose = require("mongoose");
 
 const API_KEY = process.env.API_KEY;
-
-// console.log("API Key:", API_KEY ? "Loaded" : "Missing");
 
 if (!API_KEY) {
   console.error("❌ Missing API key! Check your .env file.");
@@ -24,6 +22,7 @@ const newsSchema = new mongoose.Schema({
   urlToImage: String,
   publishedAt: Date,
   content: String,
+  topic: String
 });
 
 const News = mongoose.model("News", newsSchema);
@@ -57,9 +56,15 @@ router.post("/search", async (req, res) => {
 })
 
 
+// Set up the endpoint for fetching news
 router.get("/data", async (req, res) => {
   try {
-    console.log("📢 Fetching news from:", API_URL);
+    // Get the query term from the request query, default to "Ocean" if not provided
+    let queryTerm = "Ocean";
+
+    console.log(`📢 Fetching news for query: ${queryTerm}`);
+
+    const API_URL = `https://newsapi.org/v2/everything?q=${queryTerm}&pageSize=11&apiKey=${API_KEY}`;
 
     const response = await fetch(API_URL, {
       method: "GET",
@@ -74,7 +79,11 @@ router.get("/data", async (req, res) => {
     const data = await response.json();
     let savedCount = 0;
 
+    const LIMIT = 5; // Set a limit on the number of articles to save
+
     for (let article of data.articles) {
+      if (savedCount >= LIMIT) break; // Stop once the limit is reached
+
       const existingArticle = await News.findOne({ title: article.title });
 
       if (!existingArticle) {
@@ -87,6 +96,7 @@ router.get("/data", async (req, res) => {
           urlToImage: article.urlToImage,
           publishedAt: article.publishedAt,
           content: article.content,
+          topic: queryTerm,
         });
 
         await newsArticle.save();
