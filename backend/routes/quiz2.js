@@ -1,3 +1,4 @@
+// quiz2.js
 const express = require('express');
 const axios = require('axios');
 const mongoose = require('mongoose');
@@ -21,7 +22,6 @@ const router = express.Router();
 router.get('/fetch', async (req, res) => {
   try {
     const response = await axios.get('https://opentdb.com/api.php?amount=13&category=23&type=multiple');
-    
     const questions = response.data.results;
 
     if (!questions || questions.length === 0) {
@@ -37,7 +37,7 @@ router.get('/fetch', async (req, res) => {
         question: q.question,
         correct_answer: q.correct_answer,
         incorrect_answers: q.incorrect_answers,
-        category: modifiedCategory, // Saving the modified category
+        category: modifiedCategory,
         difficulty: q.difficulty,
         type: q.type
       });
@@ -59,4 +59,28 @@ router.get('/fetch', async (req, res) => {
   }
 });
 
+// Route to get quizzes from the database
+router.get('/get-quiz', async (req, res) => {
+  try {
+    const numberOfQuestions = 10; // Choose how many you want to return
+    const total = await OpenTDBQuiz.countDocuments();
+
+    if (total === 0) {
+      return res.status(404).json({ error: 'No quiz questions found.' });
+    }
+
+    const actualCount = Math.min(numberOfQuestions, total); // Prevent oversampling
+
+    // Randomly select documents
+    const questions = await OpenTDBQuiz.aggregate([{ $sample: { size: actualCount } }]);
+
+    res.json(questions);
+  } catch (error) {
+    console.error('Error fetching quiz:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// Export the router properly
 module.exports = router;
