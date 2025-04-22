@@ -20,7 +20,7 @@ export default function Search() {
         link?: string;
         summary?: string;
         poem?: string;
-        topic?: string;
+        topic: string;
     }
     const [searchItems, setSearchItems] = useState<SubjectItem[]>([]);
     const testSubjects: SubjectItem[] = [];
@@ -33,7 +33,7 @@ export default function Search() {
             console.log(query);
 
             try{
-                const response = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/search`, {keyword: query});
+                const response = await axios.post(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/search`, {keyword: query, topic: topic || undefined});
                 for(let i = 0; i < response.data.length; i++){
                     response.data[i].author = response.data[i].author.substr(3);
                     const transformedData = {
@@ -239,6 +239,7 @@ export default function Search() {
                                     variant='white'
                                     categories={["Ocean Life", "Science", "History"]}
                                     gradientColors={['#5C3E8F', '#2D1A4E']} 
+                                    handleSearch = {handleSearch}
                                 />
                                 <DropDownButtons
                                     title='Book'

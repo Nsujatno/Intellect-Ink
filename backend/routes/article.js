@@ -17,6 +17,7 @@ const articleSchema = new mongoose.Schema({
   urlToImage: String,
   publishedAt: Date,
   content: String,
+  topic: String,
 });
 
 const Article = mongoose.model("Article", articleSchema);
@@ -37,14 +38,21 @@ router.get("/shuffle", async (req, res) => {
 router.post("/search", async (req, res) => {
   // console.log(req.body.keyword);
   keyword = req.body.keyword
+  topic = req.body.topic
   if(!keyword) return res.json([])
   const regex = new RegExp(keyword, "i");
-  const results = await Article.find({
+  const filter = {
     $or: [
       { title: regex },
       { description: regex }
     ]
-  });
+  };
+
+  if (topic) {
+    filter.topic = topic; 
+  }
+
+  const results = await Article.find(filter);
   // console.log(results);
   res.json(results)
 })

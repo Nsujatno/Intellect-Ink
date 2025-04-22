@@ -31,9 +31,10 @@ interface ButtonProps {
     categories?: string[];
     achievements?: Achievement[];
     leaderboards?: Leaderboard[];
+    handleSearch?:(query: string, topic: string, category: string) => Promise<void>;
 }
 
-const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors=['#413F6F', '#413F6F']}) => {
+const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors=['#413F6F', '#413F6F'], handleSearch = () => {}}) => {
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
 
@@ -137,7 +138,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                             if (category === "Go to today's quiz") {
                               router.push('/quiz');
                             } else {
-                              router.push({ pathname: '/search', params: { topic: title, category } });
+                                handleSearch("", title, category);
                             }
                           }}
                         >
