@@ -55,8 +55,8 @@ export default function TopicQuestion() {
                 <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { right: 40 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 25, right: 110, color: '#646EA3' }]}>
+                <Text style={[textStyles.pageHeader, { marginTop: 20, marginHorizontal: 10, fontSize: 27}]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 20, marginHorizontal: 10, color: '#646EA3' }]}>
                     {description}
                 </Text>
 

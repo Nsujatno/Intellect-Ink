@@ -29,7 +29,7 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                 <Text
                 style={[ textStyles.subheading,
                     variant === 'purple' ? {color: 'white'} : null,
-                    variant === 'purple2' ? {color: 'white', fontSize: 18} : null,
+                    variant === 'purple2' ? {color: 'white', fontSize: 16} : null,
                     variant === 'purple3' ? {color: 'white', fontSize: 16} : null,
                     variant === 'white' ? {color: '#413F6F'} : null,
                     variant == 'gray' ? {color: '#413F6F'} : null,

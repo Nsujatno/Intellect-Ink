@@ -260,7 +260,7 @@ export default function Discussion() {
           </TouchableOpacity>
 
           <View style={styles.textHeaderContainer}>
-            <Text style={[textStyles.pageHeader, { marginRight: 200 }]}>Discussions</Text>
+            <Text style={[textStyles.pageHeader, { marginLeft: 0}]}>Discussions</Text>
           </View>
 
           <FlatList
@@ -380,7 +380,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   textContainer: {
-    flex: 1
+    flex: 1,
+    marginTop: 40,
   },
   topicTitle: {
     fontSize: 25,
