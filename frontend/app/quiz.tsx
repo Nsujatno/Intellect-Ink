@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
+import { ngrokPath, isExpoMode } from "./utils";
 
 export default function Quiz() {
   const router = useRouter();
@@ -22,7 +23,9 @@ export default function Quiz() {
   // Fetch question from backend
   const fetchQuestion = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/quiz2/get-quiz');
+      const response = await fetch(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/quiz2/get-quiz`, {
+      headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+    });
       const data = await response.json();
       console.log("Fetched Question Data:", data);
   
@@ -93,8 +96,8 @@ export default function Quiz() {
         </View>
         { questionIndex === -1 && (
           <View style={styles.topicContainer}>
-            <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Quiz Title</Text>
-            <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Description</Text>
+            <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Daily Trivia</Text>
+            <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Test your knowledge!</Text>
             <Buttons
               title='Start'
               variant='purple'
