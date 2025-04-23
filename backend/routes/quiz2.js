@@ -62,7 +62,7 @@ router.get('/fetch', async (req, res) => {
 // Route to get quizzes from the database
 router.get('/get-quiz', async (req, res) => {
   try {
-    const numberOfQuestions = 10; // Choose how many you want to return
+    const numberOfQuestions = 5; // Choose how many you want to return
     const total = await OpenTDBQuiz.countDocuments();
 
     if (total === 0) {
