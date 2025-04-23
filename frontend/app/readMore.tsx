@@ -7,32 +7,159 @@ import { LinearGradient } from "expo-linear-gradient";
 import Buttons from "./components/buttons";
 import TrackWrapper from "../app/layouts/trackWrapper";
 import Item from "./components/item";
+import { ngrokPath, isExpoMode } from "./utils";
+import axios from "axios";
 
 export default function ReadMore() {
     const router = useRouter();
     const { item } = useLocalSearchParams();
     const parseItem = JSON.parse(item as string);
     
-    const testSubjects = [
-        {
-            id: '1',
-            type: 'book',
-            image: 'https://i5.walmartimages.com/seo/Harry-Potter-and-the-Chamber-of-Secrets-9780807281949_57baa93a-bf72-475f-a16a-a8a68527b723.8bcd0fed9c3a1130f7ead9251ea885be.jpeg',
-            title: 'Harry Potter and the Chamber of Secrets',
-            author: 'JK Rowling',
-            summary: 'Harry a 2nd year student at Hogwarts starts hearing mysterious voices in serpent’s tongue. When unusual tragedies start occurring, him and his friends search for answers.',
-            link: 'https://www.barnesandnoble.com/w/harry-potter-and-the-chamber-of-secrets-j-k-rowling/1004338523?ean=9780439064866',    
-        },
-        {
-            id: '2',
-            type: 'news',
-            image: '',
-            title: 'Chuck E. Cheese wants to be the Costco of family fun',
-            author: 'Savannah Sellers and Alexandra Byrne',
-            summary: 'Chuck E. Cheese wants you to stop by as frequently as you pick up groceries, and it’s selling subscription plans to sweeten the pitch',
-            link: 'https://www.nbcnews.com/business/consumer/chuck-e-cheese-wants-costco-family-fun-rcna195652',    
-        },
-    ]
+    interface favorites {
+        id: string;
+        type: string;
+        image?: string;
+        title: string;
+        author: string;
+        link?: string;
+        summary?: string;
+        poem?: string;
+      }
+      const [recommended, setRecommended] = useState<favorites[]>([]);
+
+    console.log("item is: " + item);
+    console.log(parseItem);
+    console.log(parseItem.type)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const recommendedArr: favorites[] = [];
+            if(parseItem.type === "article") {
+                try{
+                    const response = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/article/shuffle`);
+          
+                    for(let i = 0; i < 2; i++){
+                      response.data[i].author = response.data[i].author.substr(3);
+                      const transformedData = {
+                        id: response.data[i]._id,
+                        type: "article",
+                        image: `https://static01.nyt.com/${response.data[i].urlToImage}` || "",
+                        title: response.data[i].title,
+                        author: response.data[i].author,
+                        link: response.data[i].url,
+                        summary: response.data[i].description,
+                        topic: response.data[i].topic,
+                      }
+                        recommendedArr.push(transformedData);
+                      // console.log(response.data[i])
+                    }
+                  } catch(error){
+                    console.log(error);
+                  }
+            }
+            if(parseItem.type === "book") {
+                try{
+          
+                    const bookResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/book/shuffle`);
+          
+                    for(let i = 0; i < 2; i++){
+                      if(bookResponse.data[i].author.length == 0){
+                        bookResponse.data[i].author = bookResponse.data[i].publisher
+                      }
+                      else{
+                        bookResponse.data[i].author = bookResponse.data[i].author[0]
+                      }
+                      const transformedData = {
+                        id: bookResponse.data[i]._id,
+                        type: "book",
+                        image: bookResponse.data[i].thumbnail || "",
+                        title: bookResponse.data[i].title,
+                        author: bookResponse.data[i].author,
+                        link: bookResponse.data[i].previewLink,
+                        summary: bookResponse.data[i].description,
+                        topic: bookResponse.data[i].topic,
+                      }
+                        recommendedArr.push(transformedData);
+                    }
+                  }catch(error){
+                    console.log(error);
+                  }
+            }
+            if(parseItem.type === "news") {
+                try{
+                    const newsResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/news/shuffle`);
+                    for(let i = 0; i < 2; i++){
+                      const transformedData = {
+                        id: newsResponse.data[i]._id,
+                        type: "news",
+                        image: newsResponse.data[i].urlToImage || "",
+                        title: newsResponse.data[i].title,
+                        author: newsResponse.data[i].author,
+                        link: newsResponse.data[i].url,
+                        summary: newsResponse.data[i].description,
+                        topic: newsResponse.data[i].topic,
+                      }
+                        recommendedArr.push(transformedData);
+                    }
+                  }catch(error){
+                    console.log(error)
+                  }
+            }
+            if(parseItem.type === "poem") {
+                try{
+                    const poemResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/poem/shuffle`);
+                    for(let i = 0; i < 2; i++){
+                      let poem = "";
+                      for(let j = 0; j < poemResponse.data[i].lines.length; j++){
+                        poem = poem + poemResponse.data[i].lines[j] + "\n"
+                      }
+                      const transformedData = {
+                        id: poemResponse.data[i]._id,
+                        type: "poem",
+                        title: poemResponse.data[i].title,
+                        author: poemResponse.data[i].author,
+                        poem: poem,
+                        topic: poemResponse.data[i].topic,
+                      }
+                      
+                        recommendedArr.push(transformedData);
+                    }
+                  }catch(error){
+                    console.log(error)
+                  }
+            }
+            if(parseItem.type === "paper") {
+                try{
+                    const paperResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/paper/shuffle`);
+                    for(let i = 0; i < 2; i++){
+                      let author = "";
+                      if(paperResponse.data[i].author[0] == "Unknown Author") author = "";
+                      const transformedData = {
+                        id: paperResponse.data[i]._id,
+                        type: "paper",
+                        title: paperResponse.data[i].title,
+                        author: author,
+                        summary: paperResponse.data[i].abstract,
+                        link: paperResponse.data[i].url,
+                        topic: paperResponse.data[i].topic,
+                      }
+                      
+                        recommendedArr.push(transformedData);
+                    }
+                  }catch(error){
+                    console.log(error)
+                  }
+            }
+        
+            setRecommended(recommendedArr);
+        }
+
+        
+        fetchData();
+    }, []);
+
+    
+    
        
 
     return (
@@ -113,7 +240,7 @@ export default function ReadMore() {
                         </View>
                     </View> */}
 
-                {testSubjects.map((item) => (
+                {recommended.map((item) => (
                     <Item key={item.id} item={item} />
                 ))}
 
