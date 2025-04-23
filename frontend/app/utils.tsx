@@ -1,2 +1,2 @@
-export const ngrokPath = "https://3c39-129-110-241-40.ngrok-free.app"
-export let isExpoMode = false
+export const ngrokPath = "https://36b8-76-78-190-43.ngrok-free.app"
+export let isExpoMode = true
