@@ -130,8 +130,7 @@ export default function Home() {
       // 2. Check if current time matches scheduled time
       const isNotificationTime =
         now.getHours() === notificationDateTime.getHours() &&
-        now.getMinutes() >= notificationDateTime.getMinutes() &&
-        now.getMinutes() <= notificationDateTime.getMinutes() + 5;
+        now.getMinutes() === notificationDateTime.getMinutes();
 
       if (isNotificationTime && !shownNotifications.scheduledNotification) {
         setNotificationMessage("It's time to complete your daily reading goal! Earn 20% of progress!");
