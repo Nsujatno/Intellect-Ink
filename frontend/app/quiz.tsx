@@ -59,7 +59,7 @@ export default function Quiz() {
   };
 
   useEffect(() => { // Update percentage progress
-    if (questionIndex >= 0) {
+    if (questionIndex >= 1) {
       const newPercent = ((questionIndex / quizQuestions.length) * 100);
       setPercent(newPercent);
     }
@@ -113,28 +113,28 @@ export default function Quiz() {
             <Text style={[textStyles.heading2purple, {fontSize: 25, color: '#03045E'}]}>Question {questionIndex+1}</Text>
             <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3'}]}>{quizQuestions[questionIndex].question}</Text>
 
-            {quizQuestions[questionIndex].options.map((option, index) => (
+            {quizQuestions[questionIndex].options.map((option: string, index: string) => (
               <TouchableOpacity key={index} onPress={() => {setSelectedOption(option); setSelected(false)}} style={styles.optionContainer}>
                 <View style={[{width: 20, height: 20, borderRadius: 20, marginRight: 20},{backgroundColor: selectedOption === option ? '#413F6F' : '#E2E2E2'}]}></View>
-                <Text style={textStyles.subheading}>{option}</Text>
+                <Text numberOfLines={1} style={textStyles.subheading}>{option}</Text>
               </TouchableOpacity>
             ))}
-            {selected && <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3', marginTop: 30, alignSelf: 'center'}]}>You must select an answer</Text>}
-            <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
-              {/* <Buttons
-                title='Back'
-                variant='purple'
-                onPress={()=>setQuestionIndex(questionIndex-1)}
-              /> */}
+            {selected && <Text style={[textStyles.subheading2, {fontSize: 20, color: '#646EA3', marginTop: 20, alignSelf: 'center'}]}>You must select an answer</Text>}
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', bottom: 5, alignSelf: 'center'}}>
+              <Buttons
+                title='Skip'
+                variant='gray2'
+                onPress={()=>setQuestionIndex(questionIndex+1)}
+              />
               <Buttons
                 title='Next'
-                variant='purple'
+                variant='purple2'
                 onPress={()=>handleAnswer(selectedOption)}
               />
             </View>
           </View>
         )}
-        {questionIndex === quizQuestions.length && (
+        {questionIndex === 5 && (
           <View style={[styles.topicContainer, {height: 380, marginTop: '22%'}]}>
           <Text style={[textStyles.heading2purple, {fontSize: 29, color: '#03045E'}]}>Quiz Completed</Text>
           <Text style={[textStyles.subheading2, {fontSize: 24, color: '#646EA3'}]}>Your Score: {score}/{questionIndex}</Text>

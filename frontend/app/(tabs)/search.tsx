@@ -269,7 +269,7 @@ export default function Search() {
                                 <DropDownButtons
                                     title='Quiz'
                                     variant='whiteOutline'
-                                    categories={["Go to today's quiz", "Computer Science", "Science"]}
+                                    categories={["Go to today's quiz"]}
                                     gradientColors={['#103A70', '#485EEA']} 
                                 />
                             </ScrollView>

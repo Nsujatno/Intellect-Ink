@@ -86,8 +86,8 @@ const styles = StyleSheet.create ({
     },
     gray2Container: {
         backgroundColor: '#D9D9D9',
-        width: 80,
-        height: 30,
+        width: 110,
+        height: 35,
         paddingHorizontal: 20,
         fontWeight: 'bold',
     },
