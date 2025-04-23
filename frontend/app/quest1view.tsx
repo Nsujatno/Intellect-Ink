@@ -5,81 +5,90 @@ import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
+import { ngrokPath, isExpoMode } from "./utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+interface ReplyItem {
+  id: string;
+  name: string;
+  text: string;
+  commentId: string;
+}
 
 export default function question1View() {
     const router = useRouter();
     const maxLength = 200;
-
-    const [expanded, setExpanded] = useState([]);
-    const [replies, setReplies] = useState();
-
-    const { topicId, title, description, newComment } = useLocalSearchParams();
-
+    
+    const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
+    const [replies, setReplies] = useState<ReplyItem[]>([]);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
+  
+    const { topicId, title, description, newComment, articleId } = useLocalSearchParams();
+    console.log("topic id: " + topicId);
+  
     useEffect(() => {
-        let baseReplies = [
-            {
-                _id: '1',
-                name: 'Name',
-                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.'
-            },
-            {
-                _id: '2',
-                name: 'Name',
-                text: 'Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.'
-            },
-        ];
+      const fetchReplies = async () => {
+        try {
+            // get email
+            const token = await AsyncStorage.getItem("token");
+            if (!token) return;
 
-        if (newComment) {
-            baseReplies = [
-                ...baseReplies,
-                {
-                    _id: Date.now().toString(),
-                    name: 'You',
-                    text: newComment,
+            const profileResponse = await axios.get(
+            `${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`,
+            {
+                headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "skip-browser-warning",
+                Authorization: `Bearer ${token}`,
                 },
-            ];
+            }
+            );
+            setUserEmail(profileResponse.data.email);
+
+
+          // Fetch replies from the backend
+          const response = await axios.post(
+            `${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/replys/get-replys`,
+            {
+              commentId: topicId,
+            },
+            {
+              headers: { "ngrok-skip-browser-warning": "skip-browser-warning" },
+            }
+          );
+          console.log("Fetched replies:", response.data);
+  
+          // Map the fetched replies to the ReplyItem structure
+          const fetchedReplies: ReplyItem[] = response.data.map((reply: any) => ({
+            id: reply._id,
+            name: reply.email || "Anonymous", // Use email or default to "Anonymous"
+            text: reply.text,
+            commentId: reply.commentId,
+          }));
+  
+          // Add the new comment if provided
+          if (newComment) {
+            fetchedReplies.push({
+              id: Date.now().toString(),
+              name: "You",
+              text: newComment,
+              commentId: topicId as string,
+            });
+          }
+  
+          // Update the replies state
+          setReplies(fetchedReplies);
+        } catch (err) {
+          console.error("Error fetching replies:", err);
         }
-
-        setReplies(baseReplies);
-    }, [newComment]);
-
-
-    // useEffect(() => {
-    //     const fetchComments = async () => {
-    //         try {
-    //             const response = await axios.get(""); // api link
-    //             setReplies(response.data);
-    //         } catch (error) {
-    //             console.error("Error fetching comments:", error)
-    //         }
-    //     };
-
-    //     fetchComments();
-    // }, [topicId])
-
-    // const fetchComments = async () => {
-    //     try {
-    //         const response = await axios.get("");
-    //         let fetchedReplies = response.data;
-
-    //         if (newComment) {
-    //             fetchedReplies = [
-    //                 ...fetchedReplies,
-    //                 {
-    //                     _id: Date.now().toString(),
-    //                     name: "You",
-    //                     text: newComment,
-    //                 },
-    //             ];
-    //         }
-
-    //         setReplies(fetchedReplies);
-    //     } catch (err) {
-    //         console.error("Error fetching comments:", err);
-    //     }
-    // };
-
-
+      };
+  
+      if (topicId) {
+        fetchReplies();
+      }
+    }, [topicId, newComment]);
+  
+    
     const toggleExpanded = (id) => {
         setExpanded(prev => ({
             ...prev,
@@ -98,7 +107,8 @@ export default function question1View() {
 
             <TouchableOpacity
                 style={{ alignSelf: 'flex-start', marginTop: 50, marginBottom: -20, left: 20 }}
-                onPress={() => router.back()}
+                onPress={() => { router.back() }
+                }
             >
             <Text style={textStyles.subheadingBlack}>{`< Back`}</Text>
             </TouchableOpacity>
@@ -129,7 +139,7 @@ export default function question1View() {
 
             <FlatList
                 data={replies}
-                keyExtractor={(item) => item._id}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item, index }) => (
                     <View style={[
                         styles.replyContainer,
@@ -141,16 +151,16 @@ export default function question1View() {
                                     source={require('../assets/images/pfp.png')}
                                     style={styles.profileImage}
                                 />
-                                <Text style={styles.nameText}>{item.name}</Text>
+                                <Text style={styles.nameText}>{item.name === userEmail ? "You": item.name}</Text>
                             </View>
                 
                             <Text style={textStyles.bodytext5}>
-                                {expanded[item._id] ? item.text : item.text.slice(0, maxLength) + '...'}
+                                {expanded[item.id] ? item.text : item.text.slice(0, maxLength) + '...'}
                             </Text>
                 
-                            <TouchableOpacity onPress={() => toggleExpanded(item._id)}>
+                            <TouchableOpacity onPress={() => toggleExpanded(item.id)}>
                                 <Text style={styles.viewMoreText}>
-                                    {expanded[item._id] ? "View Less" : "View More"}
+                                    {expanded[item.id] ? "View Less" : "View More"}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -162,7 +172,7 @@ export default function question1View() {
                                 onPress={() => router.push({
                                     pathname: "/viewReplies",
                                     params: item ? {
-                                        replyId: item._id,
+                                        replyId: item.id,
                                         replyName: item.name,
                                         replyText: item.text,
                                         title: title,
@@ -261,7 +271,7 @@ export default function question1View() {
     );
 }
 
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
     container: {
         flex: 1,
     },

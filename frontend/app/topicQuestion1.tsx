@@ -4,6 +4,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
 import Buttons from "./components/buttons";
 import axios from "axios";
+import { ngrokPath, isExpoMode } from "./utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TopicQuestion() {
     const router = useRouter();
@@ -24,22 +26,33 @@ export default function TopicQuestion() {
 
     // const currentTopic = topicData[id] || topicData["1"];
 
-    // const handleComment = () => {
-    //     if (inputText.trim() === "") {
-    //         Alert.alert("Please enter your thoughts before submitting.");
-    //     } else if (inputText.trim().length < 150) {
-    //         Alert.alert("Please enter at least 30 words (150 characters)");
-    //     } else {
-    //         router.push({
-    //             pathname: '/quest1view',
-    //             params: {
-    //               topicId: id,
-    //               title: title,
-    //               description: description
-    //             }
-    //           });              
-    //     }
-    // };
+    const handleComment = async () => {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) return;
+        const profileResponse = await axios.get(`${isExpoMode == true ? ngrokPath : "http://localhost:8000"}/api/user/get-profile`, {
+            headers: {
+            "Content-Type": "application/json",
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+            Authorization: `Bearer ${token}`
+            }
+        });
+        const payload = {
+            email: profileResponse.data.email,
+            text: inputText,
+            commentId: topicId
+          };
+        const response = await axios.post(`${isExpoMode ? ngrokPath : "http://localhost:8000"}/api/replys/post-reply`, payload, {
+            headers: { 'ngrok-skip-browser-warning': 'skip-browser-warning' }
+          });
+        console.log("Response from server:", response.data);
+        router.push({
+            pathname: "/quest1view",
+            params: {
+                topicId,
+            },
+        });
+
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -80,20 +93,22 @@ export default function TopicQuestion() {
                 <Buttons
                     title='Comment'
                     variant='purple2'
-                    onPress={() => {
-                        // if (inputText.trim().length < 150) {
-                        //     Alert.alert("Please enter at least 30 words (150 characters)");
-                        // } else {
-                        router.push({
-                            pathname: "/quest1view",
-                            params: {
-                                topicId,
-                                title,
-                                description,
-                                newComment: inputText,
-                            },
-                        });
-                    }}
+                    onPress={ handleComment
+                    //     () => {
+                    //     // if (inputText.trim().length < 150) {
+                    //     //     Alert.alert("Please enter at least 30 words (150 characters)");
+                    //     // } else {
+                    //     router.push({
+                    //         pathname: "/quest1view",
+                    //         params: {
+                    //             topicId,
+                    //             title,
+                    //             description,
+                    //             newComment: inputText,
+                    //         },
+                    //     });
+                    // }
+                }
                 />
 
             </View>

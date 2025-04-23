@@ -22,6 +22,12 @@ const replySchema = new mongoose.Schema({
 
 const Reply = mongoose.model('Reply', replySchema);
 
+router.post("/get-replys", async (req, res) => {
+    const {commentId} = req.body
+    const comments = await Reply.find({commentId})
+    res.json(comments)
+})
+
 router.post("/post-reply", async (req, res) => {
     const { commentId, email, text } = req.body;
     const newReply = new Reply({

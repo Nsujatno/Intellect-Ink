@@ -96,7 +96,7 @@ export default function Discussion() {
         }
       });
         // console.log(profileResponse.data.email)
-
+      const userEmail = profileResponse.data.email;
       const payload = {
         email: profileResponse.data.email, 
         question: title,
@@ -162,6 +162,7 @@ export default function Discussion() {
   };
 
   const renderItem = ({ item, index }) => (
+
     <View style={styles.boxContainer}>
       <Image source={require("../assets/images/discussion_topicBox.png")} style={styles.boxImage} />
       <View style={styles.textButtonContainer}>
@@ -207,7 +208,7 @@ export default function Discussion() {
                 onPress={() => router.push({
                   pathname: `/quest1view`,
                   params: {
-                    id: item.id,
+                    topicId: item.id,
                     title: item.title,
                     description: item.description,
                   }
@@ -308,21 +309,7 @@ export default function Discussion() {
                         <Buttons
                           title="Post"
                           variant="purple2"
-                          onPress={() => {
-                            if (title.trim()) {
-                              const newTopic = {
-                                id: Date.now().toString(),
-                                title,
-                                description, // not required
-                                isEditing: false,
-                                isNew: true
-                              };
-                              setTopics([...topics, newTopic]);
-                              setTitle("");
-                              setDescription("");
-                              setShowInput(false);
-                            }
-                          }}
+                          onPress={handlePost}
                         />
                       </View>
                     </View>

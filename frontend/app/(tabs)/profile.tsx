@@ -45,6 +45,7 @@ export default function Profile() {
     topic?: string;
   }
   const [favoriteItems, setFavorites] = useState<favorites[]>([]);
+  
 
   const Item = ({ item }: { item: favorites }) => (
    // <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
@@ -132,6 +133,7 @@ export default function Profile() {
   useFocusEffect(
     useCallback(() => {
     const fetchData = async () => {
+      const favorite: favorites[] = [];
       try {
         const favorite: favorites[] = [];
         const token = await AsyncStorage.getItem('token');

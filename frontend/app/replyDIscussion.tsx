@@ -11,6 +11,7 @@ export default function ReplyDiscussion() {
     const maxChars = 1400;
 
     const { id, title, description, topicId, replyId, replyName, replyText } = useLocalSearchParams();
+    console.log("id is: " + id, "topicId is: " + topicId, "replyId is: " + replyId, "replyName is: " + replyName, "replyText is: " + replyText);
 
     useEffect(() => {
         if (replyId) {
