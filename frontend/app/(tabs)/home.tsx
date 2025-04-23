@@ -29,7 +29,7 @@ export default function Home() {
   const router = useRouter();
   const [userId, setUserId] = useState("");
   const [state, setState] = useState({ page: 0 });
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(1); // fixed starting level to 1
   const [percent, setPercent] = useState(0);
   const [viewedCategories, setViewedCategories] = useState<Set<string>>(new Set());
   const [dailyGoal, setDailyGoal] = useState(30);
@@ -177,8 +177,10 @@ export default function Home() {
       setLevel(prev => prev + 1);
       setPercent(0);
       saveProgress();
+    } else {
+      saveProgress(); // should save progress even if the user exits homepage screen to go to anywhere else
     }
-  }, [viewedCategories, timeReadToday, dailyGoal]);
+  }, [viewedCategories, timeReadToday, dailyGoal, percent, level]); // should save progress data when the user exits homepage to any page
 
 
   const handleBookmark = async (item: ItemProps) => {
