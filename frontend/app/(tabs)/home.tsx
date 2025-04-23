@@ -119,13 +119,13 @@ export default function Home() {
       const [eveningHour, eveningMinute] = eveningReminderTime.split(":").map(Number); // evening time
 
       // 1. If 20% progress left on progress bar (80% reached)
-      if (percent >= 80 && percent <= 100 && !shownNotifications.progressNotification) {
-        setNotificationMessage("You're almost there! Just ~20% left to level up!");
-        setShowProgressInNotification(true);
-        setShowNotification(true);
-        setShownNotifications(prev => ({...prev, progressNotification: true}));
-        return;
-    }
+    //   if (percent >= 80 && percent <= 100 && !shownNotifications.progressNotification) {
+    //     setNotificationMessage("You're almost there! Just ~20% left to level up!");
+    //     setShowProgressInNotification(true);
+    //     setShowNotification(true);
+    //     setShownNotifications(prev => ({...prev, progressNotification: true}));
+    //     return;
+    // }
 
       // 2. Check if current time matches scheduled time
       const isNotificationTime =
@@ -142,18 +142,18 @@ export default function Home() {
       }
 
       // 3. Check if it's past notification time and reading goal isn't complete
-      const isGoalIncomplete = timeReadToday < dailyGoal;
-      const isEveningTime =
-        now.getHours() == eveningHour &&
-        now.getMinutes() >= eveningMinute &&
-        now.getMinutes() <= eveningMinute + 5;
+      // const isGoalIncomplete = timeReadToday < dailyGoal;
+      // const isEveningTime =
+      //   now.getHours() == eveningHour &&
+      //   now.getMinutes() >= eveningMinute &&
+      //   now.getMinutes() <= eveningMinute + 5;
 
-      if (isEveningTime && isGoalIncomplete && !shownNotifications.eveningNotification) {
-        setNotificationMessage("Remember to complete your daily reading goal!");
-        setShowProgressInNotification(true);
-        setShowNotification(true);
-        setShownNotifications(prev => ({...prev, eveningNotification: true}));
-      }
+      // if (isEveningTime && isGoalIncomplete && !shownNotifications.eveningNotification) {
+      //   setNotificationMessage("Remember to complete your daily reading goal!");
+      //   setShowProgressInNotification(true);
+      //   setShowNotification(true);
+      //   setShownNotifications(prev => ({...prev, eveningNotification: true}));
+      // }
     };
 
     const interval = setInterval(checkReadingGoal, 60000);
