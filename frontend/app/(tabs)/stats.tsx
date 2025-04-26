@@ -135,8 +135,8 @@ export default function Stats() {
         {/* stacked bar chart */}
         <View style={styles.chartContainer}>
           <View style={styles.chartHeader}>
-            <Text style={[textStyles.heading2purple, { fontSize: 22, marginLeft: 33 }]}>{chartData[selectedDayIndex].day}</Text>
-            <Text style={[textStyles.heading2purple, { fontSize: 22 }]}>
+            <Text style={[textStyles.heading2purple, { fontSize: 18, marginLeft: 33 }]}>{chartData[selectedDayIndex].day}</Text>
+            <Text style={[textStyles.heading2purple, { fontSize: 18 }]}>
               {formatTime(
                 (
                   (chartData[selectedDayIndex]?.book || 0) +

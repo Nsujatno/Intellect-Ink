@@ -32,10 +32,10 @@ interface ButtonProps {
     categories?: string[];
     achievements?: Achievement[];
     leaderboards?: Leaderboard[];
-    handleSearch?:(query: string, topic: string, category: string) => Promise<void>;
+    handleSearch?: (query: string, topic: string, category: string) => Promise<void>;
 }
 
-const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors=['#413F6F', '#413F6F'], handleSearch = () => {}}) => {
+const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors = ['#413F6F', '#413F6F'], handleSearch = () => { } }) => {
     const [showContent, setShowContent] = useState(false);
     const animationController = useRef(new Animated.Value(0)).current;
 
@@ -49,6 +49,15 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
     //     LayoutAnimation.configureNext(toggleAnimation);
     //     setShowContent(!showContent);
     // };
+
+    // const dropdownTextStyle = StyleSheet.flatten([
+    //     textStyles.subheadingWhite,
+    //     (title === 'Achievements' || title === 'Leaderboard') && { 
+    //       fontSize: 25, 
+    //       textAlign: 'center' 
+    //     }
+    //   ]);
+
     const toggleListItem = async () => {
         const config = {
             duration: 500,
@@ -58,7 +67,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
         Animated.timing(animationController, config).start();
         LayoutAnimation.configureNext(toggleAnimation);
         setShowContent(!showContent);
-    
+
         // save achievements to AsyncStorage when dropdown is opened
         if (!showContent && achievements.length > 0) {
             try {
@@ -68,7 +77,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
             }
         }
     };
-    
+
 
     const arrowTransform = animationController.interpolate({
         inputRange: [0, 1],
@@ -79,57 +88,60 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
 
     return (
         <View style={[styles.container,
-            variant == 'purple' ? styles.purpleContainer : null,
-            variant == 'white' ? styles.whiteContainer : null,
-            variant == 'whiteOutline' ? styles.outlineContainer: null,
+        variant == 'purple' ? styles.purpleContainer : null,
+        variant == 'white' ? styles.whiteContainer : null,
+        variant == 'whiteOutline' ? styles.outlineContainer : null,
         ]}>
             {gradientColors ? (
                 <LinearGradient
                     colors={gradientColors}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    // style={styles.gradientHeader}
-            >
-            <TouchableOpacity onPress={() => toggleListItem()}>
-                <View style={styles.titleContainer}>
-                    <Text
-                        style={textStyles.subheadingWhite}
-                    >{title}</Text>
-                    <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
+                // style={styles.gradientHeader}
+                >
+                    <TouchableOpacity onPress={() => toggleListItem()}>
+                        <View style={styles.titleContainer}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={textStyles.subheadingWhite}>{title}</Text>
+                            </View>
+                            {/* <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
                         <MaterialIcons name={'keyboard-arrow-right'}color='white' size={30}/>
-                    </Animated.View>
-                </View>
-            </TouchableOpacity>
-            </LinearGradient>):
-            (
-            <TouchableOpacity onPress={() => toggleListItem()}>
-                <View style={styles.titleContainer}>
-                    <Text
-                        style={textStyles.subheadingWhite}
-                    >{title}</Text>
-                    <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
-                        <MaterialIcons name={'keyboard-arrow-right'} color='white' size={30}/>
-                    </Animated.View>
-                </View>
-            </TouchableOpacity>
-            )}
+                    </Animated.View> */}
+                            <Animated.View style={{ position: 'absolute', right: 20, transform: [{ rotateZ: arrowTransform }] }}>
+                                <MaterialIcons name={'keyboard-arrow-right'} color='white' size={30} />
+                            </Animated.View>
+                        </View>
+                    </TouchableOpacity>
+                </LinearGradient>) :
+                (
+                    <TouchableOpacity onPress={() => toggleListItem()}>
+                        <View style={styles.titleContainer}>
+                            <Text
+                                style={textStyles.subheadingWhite}
+                            >{title}</Text>
+                            <Animated.View style={{ transform: [{ rotateZ: arrowTransform }] }}>
+                                <MaterialIcons name={'keyboard-arrow-right'} color='white' size={30} />
+                            </Animated.View>
+                        </View>
+                    </TouchableOpacity>
+                )}
 
             {showContent && (
                 <View style={styles.bodyBackground}>
                     <View style={styles.body}>
                         {achievements.length > 0 && (
-                            <ScrollView style={{marginVertical: 20}}>
+                            <ScrollView style={{ marginVertical: 20 }}>
                                 {achievements.map((achievement) => (
-                                <View key={achievement.id} style={styles.achievementBox}>
-                                    <Image source={achievement.icon} style={styles.achievementIcon} />
-                                    <View style={styles.achievementText}>
-                                        <Text style={[styles.centeredText, {fontFamily: 'Lato Bold', marginVertical: 5, fontSize: 17, color: '#321383',}]}>{achievement.title}</Text>
-                                        <Text style={[styles.centeredText, {fontFamily: 'Literata Semi Bold', fontSize: 12, marginVertical: 5, color: '#5363B5'}]}>{achievement.description}</Text>
+                                    <View key={achievement.id} style={styles.achievementBox}>
+                                        <Image source={achievement.icon} style={styles.achievementIcon} />
+                                        <View style={styles.achievementText}>
+                                            <Text style={[styles.centeredText, { fontFamily: 'Lato Bold', marginVertical: 5, fontSize: 17, color: '#321383', }]}>{achievement.title}</Text>
+                                            <Text style={[styles.centeredText, { fontFamily: 'Literata Semi Bold', fontSize: 12, marginVertical: 5, color: '#5363B5' }]}>{achievement.description}</Text>
+                                        </View>
                                     </View>
-                                </View>
                                 ))}
                                 <TouchableOpacity
-                                    style={styles.viewMoreButton} 
+                                    style={styles.viewMoreButton}
                                     onPress={() => router.push("/achievements")}>
                                     <Text style={styles.viewMoreText}>View More</Text>
                                 </TouchableOpacity>
@@ -140,42 +152,44 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                             <ScrollView>
                                 {leaderboards.map((entry, index) => (
                                     <View key={entry.id} style={styles.leaderboardBox}>
-                                        <Text style={styles.rankNumber}>{index + 1}.</Text>
+                                        <Text style={[styles.rankNumber, { fontSize: 15, color: '#5363B5' }]}>{index + 1}.</Text>
                                         <Image source={entry.icon} style={styles.leaderboardIcon} />
-                                        <Text style={[textStyles.bodytext4, styles.centeredText]}>{entry.title}</Text>
+                                        <Text style={[styles.centeredText, { fontSize: 14, color: '#321383', fontFamily: 'Lato Bold' }]}>
+                                            {entry.title}
+                                        </Text>
                                     </View>
                                 ))}
                             </ScrollView>
                         )}
-                        </View>
+                    </View>
 
                     {categories.map((category, index) => (
                         <TouchableOpacity key={index} style={[styles.categoryBox,
-                            variant == 'purple' ? styles.purpleContainer : null,
-                            variant == 'white' ? styles.whiteContainer : null,
-                            variant == 'whiteOutline' ? styles.outlineContainer: null,
+                        variant == 'purple' ? styles.purpleContainer : null,
+                        variant == 'white' ? styles.whiteContainer : null,
+                        variant == 'whiteOutline' ? styles.outlineContainer : null,
                         ]}
-                        onPress={() => {
-                            if (category === "Go to today's quiz") {
-                              router.push('/quiz');
-                            } else {
-                                handleSearch("", title, category);
-                            }
-                          }}
+                            onPress={() => {
+                                if (category === "Go to today's quiz") {
+                                    router.push('/quiz');
+                                } else {
+                                    handleSearch("", title, category);
+                                }
+                            }}
                         >
-                            <Text style={textStyles.subheadingWhite}>{category}</Text>
-                            <MaterialIcons name={'keyboard-arrow-right'}color='white' size={30}/>
+                            <Text style={[textStyles.subheadingWhite]}>{category}</Text>
+                            <MaterialIcons name={'keyboard-arrow-right'} color='white' size={30} />
                         </TouchableOpacity>
                     ))}
 
-                    <View/>
+                    <View />
                 </View>
             )}
         </View>
     )
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
     container: {
         width: '100%',
         backgroundColor: '#FFFFFF',
@@ -216,7 +230,7 @@ const styles = StyleSheet.create ({
         marginBottom: 10,
         borderRadius: 0,
         // width: 400,
-        marginHorizontal: '4%', 
+        marginHorizontal: '4%',
     },
     achievementIcon: {
         justifyContent: 'center',
@@ -242,7 +256,7 @@ const styles = StyleSheet.create ({
         backgroundColor: '#F5F5F5',
         marginBottom: 10,
         borderRadius: 0,
-        marginHorizontal: '4%', 
+        marginHorizontal: '4%',
     },
     rankNumber: {
         color: '#413F6F',
@@ -277,7 +291,6 @@ const styles = StyleSheet.create ({
     },
     viewMoreText: {
         color: 'white',
-        fontWeight: 'bold',
     }
 })
 

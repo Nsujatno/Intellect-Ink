@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         height: width * 1.1,
         bottom: height * 0.15,
         alignSelf: 'center',
-        backgroundColor: 'white',
+        backgroundColor: '#D9D9D9',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
