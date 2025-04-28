@@ -1,7 +1,4 @@
-import {
-  Text, View, Image, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView,
-  Platform, TouchableWithoutFeedback, Keyboard, StyleSheet
-} from "react-native";
+import { Text, View, Image, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { textStyles } from "./stylesheets/textStyles";
@@ -32,6 +29,13 @@ const defaultTopics: CommentItem[] = [
     id: "2",
     title: "Relation to current events?",
     description: "How does this relate to current events.",
+    isEditing: false,
+    mediaId: "default2",
+  },
+  {
+    id: "3",
+    title: "What does this say about the impact of urban environments on wildlife?",
+    description: "How should communities respond when nature crosses into cities?",
     isEditing: false,
     mediaId: "default2",
   },
@@ -363,10 +367,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   buttonWrapper: {
-    width: 105,
+    width: 92,
     bottom: -55,
     alignItems: 'flex-start',
-    marginLeft: -50,
+    marginLeft: -70,
   },
   editDeleteRow: {
     flexDirection: 'row',
@@ -387,13 +391,13 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   topicTitle: {
-    fontSize: 21.5,
+    fontSize: 19,
     color: '#03045E',
     textAlign: 'left',
     top: -30,
   },
   topicDescription: {
-    fontSize: 17,
+    fontSize: 15.5,
     color: '#646EA3',
     textAlign: 'left',
     top: -30,

@@ -135,8 +135,8 @@ export default function Stats() {
         {/* stacked bar chart */}
         <View style={styles.chartContainer}>
           <View style={styles.chartHeader}>
-            <Text style={[textStyles.heading2purple, { fontSize: 22, marginLeft: 33 }]}>{chartData[selectedDayIndex].day}</Text>
-            <Text style={[textStyles.heading2purple, { fontSize: 22 }]}>
+            <Text style={[textStyles.heading2purple, { fontSize: 18, marginLeft: 33 }]}>{chartData[selectedDayIndex].day}</Text>
+            <Text style={[textStyles.heading2purple, { fontSize: 18 }]}>
               {formatTime(
                 (
                   (chartData[selectedDayIndex]?.book || 0) +
@@ -286,13 +286,13 @@ export default function Stats() {
               </Text>
             </View>
             <View style={styles.categoryRow}>
-              <Text style={textStyles.bodytext2}>Politics</Text>
+              <Text style={textStyles.bodytext2}>Articles</Text>
               <Text style={textStyles.bodytext2}>
                 {formatTime(timeSpentData.article)}
               </Text>
             </View>
             <View style={styles.categoryRow}>
-              <Text style={textStyles.bodytext2}>Research</Text>
+              <Text style={textStyles.bodytext2}>Papers</Text>
               <Text style={textStyles.bodytext2}>
                 {formatTime(timeSpentData.paper)}
               </Text>
@@ -426,8 +426,8 @@ const styles = StyleSheet.create({
   },
   colorCatsContainer: {
     position: 'absolute',
-    top: 30,
-    left: -20
+    top: 25, // adjust
+    left: -20,
   },
   todaysDataContainer: {
     position: 'absolute',
@@ -442,9 +442,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '87%',
-    top: -4,
-    left: -5,
-    paddingVertical: -3,
+    marginBottom: -4, // adjust
   },
   miniBoxContainer: {
     position: 'absolute',
@@ -490,5 +488,6 @@ const styles = StyleSheet.create({
     top: 60,
     textAlign: 'center',
     width: '100%',
+    // fontSize: 14,
   },
 });

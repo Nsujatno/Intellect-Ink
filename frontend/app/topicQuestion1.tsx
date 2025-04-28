@@ -69,8 +69,8 @@ export default function TopicQuestion() {
             </TouchableOpacity>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 23, color: '#646EA3', textAlign: 'center', }]}>Comment</Text>
+                <Text style={[textStyles.pageHeader, { fontSize: 21 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 18, color: '#646EA3', textAlign: 'center', }]}>Comment</Text>
             </View>
 
             <View style={styles.answerBox}>
@@ -92,23 +92,21 @@ export default function TopicQuestion() {
             <View style={styles.buttonContainer}>
                 <Buttons
                     title='Comment'
-                    variant='purple2'
-                    onPress={ handleComment
-                    //     () => {
-                    //     // if (inputText.trim().length < 150) {
-                    //     //     Alert.alert("Please enter at least 30 words (150 characters)");
-                    //     // } else {
-                    //     router.push({
-                    //         pathname: "/quest1view",
-                    //         params: {
-                    //             topicId,
-                    //             title,
-                    //             description,
-                    //             newComment: inputText,
-                    //         },
-                    //     });
-                    // }
-                }
+                    variant='purple4'
+                    onPress={() => {
+                        // if (inputText.trim().length < 150) {
+                        //     Alert.alert("Please enter at least 30 words (150 characters)");
+                        // } else {
+                        router.push({
+                            pathname: "/quest1view",
+                            params: {
+                                topicId,
+                                title,
+                                description,
+                                newComment: inputText,
+                            },
+                        });
+                    }}
                 />
 
             </View>
@@ -138,6 +136,7 @@ const styles = StyleSheet.create({
         marginTop: 100,
         alignSelf: 'center',
         alignItems: 'center',
+        paddingHorizontal: 20,
     },
     buttonContainer: {
         alignSelf: 'flex-end',
@@ -162,14 +161,14 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         height: 280,
-        fontSize: 16,
+        fontSize: 14,
         color: '#504F4F',
         textAlign: 'left',
         padding: 5,
     },
     placeholder: {
         position: 'absolute',
-        fontSize: 16,
+        fontSize: 14,
         color: '#504F4F',
         textAlign: 'left',
         padding: 10,

@@ -55,8 +55,8 @@ export default function ReplyDiscussion() {
 
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 23, color: '#646EA3', textAlign: 'center', }]}>Reply</Text>
+                <Text style={[textStyles.pageHeader, { fontSize: 21 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 18, color: '#646EA3', textAlign: 'center', }]}>Reply</Text>
             </View>
 
             {replyingTo && (
@@ -96,7 +96,7 @@ export default function ReplyDiscussion() {
             <View style={styles.buttonContainer}>
                 <Buttons
                     title='Comment'
-                    variant='purple2'
+                    variant='purple4'
                     onPress={() => router.push({
                         pathname: "/viewReplies",
                         params: {
@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
         marginTop: 100,
         alignSelf: 'center',
         alignItems: 'center',
+        paddingHorizontal: 20,
     },
     replyContainer: {
         position: 'relative',
@@ -193,14 +194,14 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         height: 280,
-        fontSize: 16,
+        fontSize: 14,
         color: '#504F4F',
         textAlign: 'left',
         padding: 5,
     },
     placeholder: {
         position: 'absolute',
-        fontSize: 16,
+        fontSize: 14,
         color: '#504F4F',
         textAlign: 'left',
         padding: 10,

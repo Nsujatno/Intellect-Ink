@@ -113,8 +113,8 @@ export default function viewReplies() {
             </View>
 
             <View style={styles.textContainer}>
-                <Text style={[textStyles.pageHeader, { fontSize: 25 }]}>{title}</Text>
-                <Text style={[textStyles.subheading2, { fontSize: 23, color: '#646EA3', textAlign: 'center', }]}>View Replies</Text>
+                <Text style={[textStyles.pageHeader, { fontSize: 21 }]}>{title}</Text>
+                <Text style={[textStyles.subheading2, { fontSize: 18, color: '#646EA3', textAlign: 'center', }]}>View Replies</Text>
             </View>
 
             <FlatList
@@ -123,7 +123,7 @@ export default function viewReplies() {
                 renderItem={({ item, index }) => (
                     <View style={[
                         styles.replyContainer,
-                        index === 0 && { marginTop: 12 } // add space above the first reply
+                        index === 0 && { marginTop: 3 } // add space above the first reply
                     ]}>
                         <View style={styles.indivReplyContainer}>
                             <View style={styles.profileSection}>
@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 50,
         marginBottom: 60,
+        paddingHorizontal: 20,
     },
     replyContainer: {
         position: 'relative',
