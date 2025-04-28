@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         height: width * 1.1,
         bottom: height * 0.15,
         alignSelf: 'center',
-        backgroundColor: '#D9D9D9',
+        backgroundColor: '#C7C5C5',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         paddingHorizontal: 15,
         paddingVertical: 5,
-        backgroundColor: '#413F6F', // temporary color
+        backgroundColor: '#413F6F',
         borderRadius: 15,
     },
     imageContainer: {

@@ -1,7 +1,6 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { textStyles } from "../stylesheets/textStyles";
 import React from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface ButtonProps {
     title: string;
@@ -42,7 +41,6 @@ const Buttons: React.FC<ButtonProps> = ({title, variant, onPress}) => {
                     variant === 'whiteOutlineBig' ? {color: 'white', fontSize: 25} : null, ]}>
                     {title }
                 </Text>
-                {/* <MaterialIcons name={'keyboard-arrow-right'} size={30} color="white"/> <-- fix for stats*/}
            </TouchableOpacity>
         </View>
     )
