@@ -245,7 +245,7 @@ export default function Home() {
       ) : item.type === "poem" ? (
         <Image source={require('../../assets/images/poemImg3.png')} style={styles.image} />
       ) : item.type === "paper" ? (
-        <Image source={require('../../assets/images/paperImg2.png')} style={styles.image} />
+        <Image source={require('../../assets/images/poemImg3.png')} style={styles.image} />
       ) : (
         <Image source={require('../../assets/images/Homebg.png')} style={styles.image} />
       )}

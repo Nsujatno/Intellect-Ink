@@ -32,7 +32,7 @@ interface ButtonProps {
     categories?: string[];
     achievements?: Achievement[];
     leaderboards?: Leaderboard[];
-    handleSearch?:(query: string, topic: string, category: string) => Promise<void>;
+    handleSearch?:(query: string) => Promise<void>;
 }
 
 const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = [], leaderboards = [], categories = [], gradientColors=['#413F6F', '#413F6F'], handleSearch = () => {}}) => {
@@ -159,7 +159,7 @@ const dropDownButton: React.FC<ButtonProps> = ({ title, variant, achievements = 
                             if (category === "Go to today's quiz") {
                               router.push('/quiz');
                             } else {
-                                handleSearch("", title, category);
+                                handleSearch("");
                             }
                           }}
                         >

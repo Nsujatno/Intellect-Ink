@@ -50,7 +50,8 @@ export default function Profile() {
   const Item = ({ item }: { item: favorites }) => (
    // <TouchableOpacity onPress={() => (router.push({ pathname: "/readMore", params: { item: JSON.stringify(item) } }))}>
       <View style={styles.favorites}>
-        <Text numberOfLines={4} style={textStyles.heading2purple}>{item.title}</Text>
+        <Text numberOfLines={4} style={[textStyles.heading2purple,{fontSize: 18}]}>{item.title}</Text>
+        <Text></Text>
         <Text numberOfLines={2} style={[textStyles.subheading, {fontSize: 15}]}>By: {item.author}</Text>
       </View>
    // </TouchableOpacity>
@@ -294,7 +295,7 @@ export default function Profile() {
                 </View>
             ):(
                 <View style={{marginTop: 45, marginBottom: 35, alignSelf: 'center'}}>
-                    <Text style={textStyles.heading1}>Hello, {name}</Text>
+                    <Text style={textStyles.heading1}>Hello, {name}!</Text>
                 </View>
             )}
           
@@ -484,5 +485,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 5,
     marginRight: 15,
+    justifyContent: 'space-between'
   },
 });
